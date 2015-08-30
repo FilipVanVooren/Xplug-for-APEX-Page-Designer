@@ -1,0 +1,17 @@
+{
+  "name"         : "xplug",  
+  "title"        : "Xplug for APEX Page Designer",
+  "version"      : "1.0.2",
+  "author"       : "Filip van Vooren",
+  "description"  : "Enhance the APEX 5.0 Page Designer with some features currently unavailable in the official release (switch panes, ...)",
+  "homepage"     : "http://blog.oratronik.org/?page_id=144",
+  
+  "unpack"       : "true",
+  "icon"         : "ext/icons/icon48.png",  
+  "main"         : "ext/src/inject/inject.js",
+  
+  "engines"      : {
+                    "firefox": ">=38.0a1"
+                   },
+  "license"      : "-"
+}
