@@ -2,16 +2,21 @@
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 // 
-// v0.1 - 2015-07-27  * Initial version 
-// v0.2 - 2015-07-28  * Bug fix: 
-//                       - pd_dock_grid_right() and pd_dock_grid_middle() now also work in non-english 
-//                         language environments => C_SPLIT_HANDLE does not longer filter on element title,
-//                         instead we take the 2nd splitter.
-// v0.3 - 2015-08-01  * Some enhancements
+// v0.1   - 2015-07-27  * Initial version 
+// v0.2   - 2015-07-28  * Bug fix: 
+//                        - pd_dock_grid_right() and pd_dock_grid_middle() now also work in non-english 
+//                          language environments => C_SPLIT_HANDLE does not longer filter on element title,
+//                          instead we take the 2nd splitter.
+// v0.3   - 2015-08-01  * Some enhancements
 //                       - Options saved in local storage.         
 //  
-// v1.0 - 2015-08-07  * First official release as a chrome plugin
+// v1.0   - 2015-08-07  * First official release as a chrome plugin
 //
+// v1.0.1 - 2015-08-30  * Bug-fix: 
+//                        - The html of the XPLUG menu button was missing the attribute type="button",
+//                          This resulted in the ENTER keypress on the page text input element being converted into
+//                          an onclick event on my XPLUG menu button. That's apparently a normal (and weird) browser behaviour.
+//                          See https://github.com/facebook/react/issues/3907 for details.                                 
 //
 // REMARKS
 // Not for production use! For educational purposes only.
@@ -32,7 +37,7 @@ function install_xplug()
        return 0;    
     }       
         
-    var C_plugin = 'Xplug v1.0 (www.oratronik.de)';
+    var C_plugin = 'Xplug v1.0.1 (www.oratronik.de)';
 	
     var C_menulabel = { 'en' : [ 'Dock grid to the right'          ],
                         'de' : [ 'Grid außen rechts positionieren' ]
@@ -66,7 +71,7 @@ function install_xplug()
     // Inject the Xplug button in Page Designer (next to Shared Components)
     //
     $('button#menu-shared-components')
-        .after('<button id="ORATRONIK_XPLUG"' 
+        .after('<button id="ORATRONIK_XPLUG" type="button"' 
                + l_class 
                + l_style
                + l_label 
