@@ -37,7 +37,7 @@ function install_xplug()
        return 0;    
     }       
         
-    var C_plugin = 'Xplug v1.0.1 (www.oratronik.de)';
+    var C_plugin = 'Xplug v1.0.3 (www.oratronik.de)';
 	
     var C_menulabel = { 'en' : [ 'Dock grid to the right'          ],
                         'de' : [ 'Grid außen rechts positionieren' ]
