@@ -12,7 +12,7 @@
 //  
 // v1.0   - 2015-08-07  * First official release as a chrome plugin
 //
-// v1.0.1 - 2015-08-30  * Bug-fix: 
+// v1.0.3 - 2015-08-30  * Bug-fix: 
 //                        - The html of the XPLUG menu button was missing the attribute type="button",
 //                          This resulted in the ENTER keypress on the page text input element being converted into
 //                          an onclick event on my XPLUG menu button. That's apparently a normal (and weird) browser behaviour.
