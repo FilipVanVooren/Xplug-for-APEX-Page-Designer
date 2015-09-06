@@ -12,7 +12,7 @@
 //  
 // v1.0 - 2015-08-07  * First official release as a chrome plugin
 //
-// v1.1 - 2015-08-29  * Several changes
+// v1.1 - 2015-08-29  * Multiple changes
 //                      - Code refactored for better integration with Page Designer
 //                      - Introduced previous/next page buttons
 //                      - Bug-fix: 
@@ -20,6 +20,10 @@
 //                           This resulted in the ENTER keypress on the page text input element being converted into
 //                           an onclick event on my XPLUG menu button. That's apparently a normal (and weird) browser behaviour.
 //                           See https://github.com/facebook/react/issues/3907 for details.
+//
+// v1.1 - 2015-09-06   * Multiple changes
+//                       - Now use apex.actions for handling Xplug buttons (e.g. previous/next page).
+//                         See /images/libraries/apex/actions.js for details.
 //                                 
 // REMARKS
 // Not for production use! For educational purposes only.
@@ -186,6 +190,100 @@ window.pageDesigner.dockGridMiddle = function()
 } // window.pageDesigner.dockGridMiddle
 
 
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: customizeShortcuts
+ ***************************************************************************/
+window.pageDesigner.customizeShortcuts = function(p_title) 
+{   
+    'use strict'
+
+    //
+    // Exit if not in APEX Page Designer
+    // 
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;    
+    }   
+
+    
+    //var l_arr_sc = apex.actions.listShortcuts();   // Array with shortcut definitions
+    //for (shortcut in l_arr_sc) { console.log(l_arr_sc[shortcut].shortcutDisplay); }    
+    
+    var    lPageFinderLovDialogOptions = {
+                    columnDefinitions: [
+                        {
+                            name:  "actionLabel",
+                            title: "Action"
+                        },
+                        {
+                            name:  "shortcutDisplay",
+                            title: "Shortcut"
+                        }
+                    ],
+                    filters: [
+                        {
+                            name:         "show",
+                            title:        "show",
+                            type:         "buttonset",
+                            defaultValue: "all",
+                            lov: [
+                                {
+                                    display: "all pages",
+                                    value:   "all"
+                                },
+                                {
+                                    display: "recent pages",
+                                    value:   "recent"
+                                }
+                            ]
+                        }
+                    ],
+                    filterLov: function( pFilters, pRenderLovEntries ) {
+
+                        var lFilters = {};
+
+/*                         if ( pFilters.show === "current_ui" ) {
+                            lFilters = {
+                                show: "user_interface_id",
+                                id:   model.getComponents( model.COMP_TYPE.PAGE, { id: model.getCurrentPageId() })[ 0 ].getProperty( model.PROP.USER_INTERFACE ).getValue()
+                            };
+                        } else if ( pFilters.show === "current_group" ) {
+                            lFilters = {
+                                show: "group_id",
+                                id:   model.getComponents( model.COMP_TYPE.PAGE, { id: model.getCurrentPageId() })[ 0 ].getProperty( model.PROP.PAGE_GROUP ).getValue()
+                            };
+                        } else if ( pFilters.show === "recent" ) {
+                            lFilters = {
+                                show: "recent"
+                            };
+                        }
+ */
+                        // model.getPagesLov( lFilters, function( pLovValues ) {
+                            // pRenderLovEntries( pLovValues, pFilters.search );
+                        // }, 'Y' );
+                    }
+                };
+
+
+    
+    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').length == 0
+        && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_SHORTCUTS"></div');
+
+    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS')
+        .lovDialog(
+                { modal             : true, 
+                  title             : p_title,
+                  resizable         : true,
+                  filterLov         : lPageFinderLovDialogOptions.filterLov,
+                  columnDefinitions : lPageFinderLovDialogOptions.columnDefinitions,               
+                  width             : 600, 
+                  height            : 340
+                }
+               );    
+    
+    return 1;
+} // window.pageDesigner.customizeShortcuts
+
 
 
 
@@ -204,6 +302,21 @@ var Xplug = function() {
       return 0;    
    }       
                    
+   var C_LAB_DOCK_RIGHT = 0,
+       C_LAB_SHORTCUTS  = 1;       
+
+   var C_menulabel = { 'en' : [ 'Dock grid to the right',
+                                'Customize shortcuts'
+                              ],
+                       'de' : [ 'Grid außen rechts positionieren',
+                                'Tastaturkürzel anpassen'
+                              ]
+                     };                   
+                   
+                   
+    function get_label(p_index) {
+        return C_menulabel[gBuilderLang][p_index] || C_menulabel['en'][p_index];
+    }            
             
   /****************************************************************************
    * Install buttons for going to previous / next page
@@ -211,26 +324,20 @@ var Xplug = function() {
    function __install_goto_page() 
    {
        $('div.a-PageSelect')
+       
           .before( '<button'
-                 + ' ID="ORATRONIK_XPLUG_prev_page_button" type="button"'
-                 + ' onclick="apex.actions.invoke(\'pd-goto-previous-page\'); return false;"'
-                 + ' class="a-Button a-Button--withIcon a-Button--pillStart"' 
-                 + ' aria-label="Previous page"'
-                 + ' title="Previous page"'
-                 + '>'
-                 + '<<'
-                 + '</button>'
+                 + ' type="button"'
+                 + ' ID="ORATRONIK_XPLUG_prev_page_button"'
+                 + ' class="a-Button a-Button--pillStart js-actionButton"'
+                 + ' data-action="pd-goto-previous-page">'
+                 + '</button>'                 
                  + '<button'
-                 + ' ID="ORATRONIK_XPLUG_next_page_button" type="button"'
-                 + ' onclick="apex.actions.invoke(\'pd-goto-next-page\'); return false;"'          
-                 + ' class="a-Button a-Button--withIcon a-Button--pillEnd b-Button--gapRight"'
-                 + ' aria-label="Next page"'
-                 + ' title="Next page"'
-                 + '>'
-                 + '>>'
-                 + '</button>'
-                 );
-
+                 + ' type="button"'
+                 + ' ID="ORATRONIK_XPLUG_next_page_button"'                 
+                 + ' class="a-Button a-Button--pillEnd js-actionButton"'
+                 + ' data-action="pd-goto-next-page">'
+                 + '</button>');
+                 
        $('.a-PageSelect').css('border-left','0px');
 
        // (Re-)enable buttons after page is loaded into Page Designer
@@ -238,14 +345,20 @@ var Xplug = function() {
             $('button#ORATRONIK_XPLUG_prev_page_button').removeAttr('disabled');     
             $('button#ORATRONIK_XPLUG_next_page_button').removeAttr('disabled');          
        });
+  } //install_goto_page            
 
-
-       // Install actions
+   
+  /****************************************************************************
+   * Install XPLUG custom actions
+   ***************************************************************************/
+    function __install_actions() 
+    {
        apex.actions.add(
         [
-          {
+         {
             name     : "pd-goto-previous-page",
-            label    : "Previous page",
+            label    : "<<",
+            title    : "Previous page",
             shortcut : "???",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToPrevPage();
@@ -254,26 +367,14 @@ var Xplug = function() {
           },
           {
             name     : "pd-goto-next-page",
-            label    : "Next page",
+            label    : ">>",
+            title    : "Next page",
             shortcut : "????",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToNextPage();
                            return true;
                        }
-          }
-        ]       
-       );
-  } //install_goto_page            
-
-   
-  /****************************************************************************
-   * Install switch panes
-   ***************************************************************************/
-   function __install_switch_panes() 
-   {
-       // Install actions
-       apex.actions.add(
-        [
+          },                
           {
             name     : "pd-dock-grid-right",
             label    : "Dock grid to the right",
@@ -291,21 +392,29 @@ var Xplug = function() {
                            window.pageDesigner.dockGridMiddle();
                            return true;
                        }
-          }
+          },
+          {
+            name     : "pd-customize-shortcuts",
+            label    : "Customize Page Designer shortcuts",
+            shortcut : "????",
+            action   : function( event, focusElement ) {
+                           window.pageDesigner.customizeShortcuts(get_label(C_LAB_SHORTCUTS));
+                           return true;
+                       }
+          },          
+          
+          
         ]       
-       );        
-    } // __install_switch_panes            
+       );      
+    } // install_actions
                 
+                               
                 
    /****************************************************************************
     * Xplug initialization
     ***************************************************************************/
     function __init()
-    {                        
-       var C_menulabel = { 'en' : [ 'Dock grid to the right'          ],
-                           'de' : [ 'Grid außen rechts positionieren' ]
-                         };
-                                                    
+    {                                                                            
        // SVG Lifebuoy icon definition
        var C_svg = '<path class="path1" d="M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512'
                  + ' 512-229.23 512-512-229.23-512-512-512zM320 512c0-106.040 85.96-192 192-192s192 85.96 192 192-85.96 192-192'
@@ -353,7 +462,7 @@ var Xplug = function() {
           items : [
             {         
               type     : "toggle",
-              label    : C_menulabel[gBuilderLang][0] || C_menulabel['en'][0],
+              label    : get_label(C_LAB_DOCK_RIGHT),
               get      : function()
                          {
                             return $('div#top_col').prevAll('div#right_col').length == 1;
@@ -368,6 +477,15 @@ var Xplug = function() {
                            return false;
                          }
             },
+            
+            {         
+              type     : "action",
+              label    : get_label(C_LAB_SHORTCUTS),
+              action   : function() {
+                           apex.actions.invoke('pd-customize-shortcuts');      
+                         }
+            },            
+            
             { type     : "separator" 
             },
             {
@@ -381,7 +499,7 @@ var Xplug = function() {
         });
                 
         __install_goto_page();
-        __install_switch_panes();               
+        __install_actions();        
    } // __init
 
    __init();   

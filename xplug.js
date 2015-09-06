@@ -12,7 +12,7 @@
 //  
 // v1.0 - 2015-08-07  * First official release as a chrome plugin
 //
-// v1.1 - 2015-08-29  * Several changes
+// v1.1 - 2015-08-29  * Multiple changes
 //                      - Code refactored for better integration with Page Designer
 //                      - Introduced previous/next page buttons
 //                      - Bug-fix: 
@@ -20,6 +20,10 @@
 //                           This resulted in the ENTER keypress on the page text input element being converted into
 //                           an onclick event on my XPLUG menu button. That's apparently a normal (and weird) browser behaviour.
 //                           See https://github.com/facebook/react/issues/3907 for details.
+//
+// v1.1 - 2015-09-06   * Multiple changes
+//                       - Now use apex.actions for handling Xplug buttons (e.g. previous/next page).
+//                         See /images/libraries/apex/actions.js for details.
 //                                 
 // REMARKS
 // Not for production use! For educational purposes only.
@@ -211,26 +215,20 @@ var Xplug = function() {
    function __install_goto_page() 
    {
        $('div.a-PageSelect')
+       
           .before( '<button'
-                 + ' ID="ORATRONIK_XPLUG_prev_page_button" type="button"'
-                 + ' onclick="apex.actions.invoke(\'pd-goto-previous-page\'); return false;"'
-                 + ' class="a-Button a-Button--withIcon a-Button--pillStart"' 
-                 + ' aria-label="Previous page"'
-                 + ' title="Previous page"'
-                 + '>'
-                 + '<<'
-                 + '</button>'
+                 + ' type="button"'
+                 + ' ID="ORATRONIK_XPLUG_prev_page_button"'
+                 + ' class="a-Button a-Button--pillStart js-actionButton"'
+                 + ' data-action="pd-goto-previous-page">'
+                 + '</button>'                 
                  + '<button'
-                 + ' ID="ORATRONIK_XPLUG_next_page_button" type="button"'
-                 + ' onclick="apex.actions.invoke(\'pd-goto-next-page\'); return false;"'          
-                 + ' class="a-Button a-Button--withIcon a-Button--pillEnd b-Button--gapRight"'
-                 + ' aria-label="Next page"'
-                 + ' title="Next page"'
-                 + '>'
-                 + '>>'
-                 + '</button>'
-                 );
-
+                 + ' type="button"'
+                 + ' ID="ORATRONIK_XPLUG_next_page_button"'                 
+                 + ' class="a-Button a-Button--pillEnd js-actionButton"'
+                 + ' data-action="pd-goto-next-page">'
+                 + '</button>');
+                 
        $('.a-PageSelect').css('border-left','0px');
 
        // (Re-)enable buttons after page is loaded into Page Designer
@@ -245,7 +243,8 @@ var Xplug = function() {
         [
           {
             name     : "pd-goto-previous-page",
-            label    : "Previous page",
+            label    : "<<",
+            title    : "Previous page",
             shortcut : "???",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToPrevPage();
@@ -254,7 +253,8 @@ var Xplug = function() {
           },
           {
             name     : "pd-goto-next-page",
-            label    : "Next page",
+            label    : ">>",
+            title    : "Next page",
             shortcut : "????",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToNextPage();
