@@ -21,10 +21,15 @@
 //                           an onclick event on my XPLUG menu button. That's apparently a normal (and weird) browser behaviour.
 //                           See https://github.com/facebook/react/issues/3907 for details.
 //
-// v1.1 - 2015-09-06   * Multiple changes
-//                       - Now use apex.actions for handling Xplug buttons (e.g. previous/next page).
-//                         See /images/libraries/apex/actions.js for details.
+// v1.1 - 2015-09-06  * Now use apex.actions for handling Xplug buttons (e.g. previous/next page).
+//                      See /images/libraries/apex/actions.js for details.
 //                                 
+// v1.1 - 2015-09-13  * Multiple changes
+//                      - Preliminary work on customizing shortcuts.
+//                      - Renamed Xplug custom apex actions to contain "xplug" in name, e.g. "pd-xplug-goto-next-page" 
+//                        instead of "pd-goto-next-page".
+//                        
+//
 // REMARKS
 // Not for production use! For educational purposes only.
 //
@@ -288,13 +293,13 @@ var Xplug = function() {
                  + ' type="button"'
                  + ' ID="ORATRONIK_XPLUG_prev_page_button"'
                  + ' class="a-Button a-Button--pillStart js-actionButton"'
-                 + ' data-action="pd-goto-previous-page">'
+                 + ' data-action="pd-xplug-goto-previous-page">'
                  + '</button>'                 
                  + '<button'
                  + ' type="button"'
                  + ' ID="ORATRONIK_XPLUG_next_page_button"'                 
                  + ' class="a-Button a-Button--pillEnd js-actionButton"'
-                 + ' data-action="pd-goto-next-page">'
+                 + ' data-action="pd-xplug-goto-next-page">'
                  + '</button>');
                  
        $('.a-PageSelect').css('border-left','0px');
@@ -315,7 +320,7 @@ var Xplug = function() {
        apex.actions.add(
         [
          {
-            name     : "pd-goto-previous-page",
+            name     : "pd-xplug-goto-previous-page",
             label    : "<<",
             title    : "Previous page",
             shortcut : "???",
@@ -325,7 +330,7 @@ var Xplug = function() {
                        }
           },
           {
-            name     : "pd-goto-next-page",
+            name     : "pd-xplug-goto-next-page",
             label    : ">>",
             title    : "Next page",
             shortcut : "????",
@@ -335,7 +340,7 @@ var Xplug = function() {
                        }
           },                
           {
-            name     : "pd-dock-grid-right",
+            name     : "pd-xplug-dock-grid-right",
             label    : "Dock grid to the right",
             shortcut : "???",
             action   : function( event, focusElement ) {
@@ -344,16 +349,16 @@ var Xplug = function() {
                        }
           },
           {
-            name     : "pd-dock-grid-middle",
+            name     : "pd-xplug-dock-grid-middle",
             label    : "Dock grid in the middle",
-            shortcut : "????",
+            shortcut : "Ctrl+A",
             action   : function( event, focusElement ) {
                            window.pageDesigner.dockGridMiddle();
                            return true;
                        }
           },
           {
-            name     : "pd-customize-shortcuts",
+            name     : "pd-xplug-customize-shortcuts",
             label    : "Customize Page Designer shortcuts",
             shortcut : "????",
             action   : function( event, focusElement ) {
@@ -428,8 +433,8 @@ var Xplug = function() {
                          },
               set      : function()
                          {
-                            if ($('div#top_col').prevAll('div#right_col').length == 0) apex.actions.invoke('pd-dock-grid-right') 
-                            else                                                       apex.actions.invoke('pd-dock-grid-middle');
+                            if ($('div#top_col').prevAll('div#right_col').length == 0) apex.actions.invoke('pd-xplug-dock-grid-right') 
+                            else                                                       apex.actions.invoke('pd-xplug-dock-grid-middle');
                          },
               disabled : function() 
                          {
@@ -441,7 +446,7 @@ var Xplug = function() {
               type     : "action",
               label    : get_label(C_LAB_SHORTCUTS),
               action   : function() {
-                           apex.actions.invoke('pd-customize-shortcuts');      
+                           apex.actions.invoke('pd-xplug-customize-shortcuts');      
                          }
             },            
             
@@ -488,7 +493,7 @@ var Xplug = function() {
 
     Xplug.prototype.loadSettings = function () 
     {
-       xplug.getStorage('PANES_SWITCHED','NO') == 'YES' && apex.actions.invoke('pd-dock-grid-right');	    
+       xplug.getStorage('PANES_SWITCHED','NO') == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');	    
         
     } // Xplug.prototype.loadSettings 
     
