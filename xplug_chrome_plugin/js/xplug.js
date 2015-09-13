@@ -208,64 +208,7 @@ window.pageDesigner.customizeShortcuts = function(p_title)
     
     //var l_arr_sc = apex.actions.listShortcuts();   // Array with shortcut definitions
     //for (shortcut in l_arr_sc) { console.log(l_arr_sc[shortcut].shortcutDisplay); }    
-    
-    var    lPageFinderLovDialogOptions = {
-                    columnDefinitions: [
-                        {
-                            name:  "actionLabel",
-                            title: "Action"
-                        },
-                        {
-                            name:  "shortcutDisplay",
-                            title: "Shortcut"
-                        }
-                    ],
-                    filters: [
-                        {
-                            name:         "show",
-                            title:        "show",
-                            type:         "buttonset",
-                            defaultValue: "all",
-                            lov: [
-                                {
-                                    display: "all pages",
-                                    value:   "all"
-                                },
-                                {
-                                    display: "recent pages",
-                                    value:   "recent"
-                                }
-                            ]
-                        }
-                    ],
-                    filterLov: function( pFilters, pRenderLovEntries ) {
-
-                        var lFilters = {};
-
-/*                         if ( pFilters.show === "current_ui" ) {
-                            lFilters = {
-                                show: "user_interface_id",
-                                id:   model.getComponents( model.COMP_TYPE.PAGE, { id: model.getCurrentPageId() })[ 0 ].getProperty( model.PROP.USER_INTERFACE ).getValue()
-                            };
-                        } else if ( pFilters.show === "current_group" ) {
-                            lFilters = {
-                                show: "group_id",
-                                id:   model.getComponents( model.COMP_TYPE.PAGE, { id: model.getCurrentPageId() })[ 0 ].getProperty( model.PROP.PAGE_GROUP ).getValue()
-                            };
-                        } else if ( pFilters.show === "recent" ) {
-                            lFilters = {
-                                show: "recent"
-                            };
-                        }
- */
-                        // model.getPagesLov( lFilters, function( pLovValues ) {
-                            // pRenderLovEntries( pLovValues, pFilters.search );
-                        // }, 'Y' );
-                    }
-                };
-
-
-    
+        
     $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').length == 0
         && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_SHORTCUTS"></div');
 
@@ -274,10 +217,26 @@ window.pageDesigner.customizeShortcuts = function(p_title)
                 { modal             : true, 
                   title             : p_title,
                   resizable         : true,
-                  filterLov         : lPageFinderLovDialogOptions.filterLov,
-                  columnDefinitions : lPageFinderLovDialogOptions.columnDefinitions,               
-                  width             : 600, 
-                  height            : 340
+                  columnDefinitions : [ { name  : "actionLabel",      title : "Action"   },
+                                        { name  : "shortcutDisplay",  title : "Shortcut" } ],   
+                                        
+                  filterLov         : function( pFilters, pRenderLovEntries ) {
+                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
+                                         // To render our LOV, all we need to do is call this function and pass
+                                         // our LOV as an array.
+                                         
+                                         // To understand where we get our LOV from, just 
+                                         // run apex.actions.listShortcuts in your javascript console and you'll
+                                         // get the idea.
+
+                                         pRenderLovEntries(apex.actions.listShortcuts());  
+                                      },            
+                  width             : 700, 
+                  height            : 340,
+                  close             : // called by widget.lovDialog.js close function
+                                      function() {                                         
+                                        $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();  
+                                      }
                 }
                );    
     
