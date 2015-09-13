@@ -209,10 +209,6 @@ window.pageDesigner.customizeShortcuts = function(p_title)
     if (typeof(window.pageDesigner) != 'object') {
        return 0;    
     }   
-
-    
-    //var l_arr_sc = apex.actions.listShortcuts();   // Array with shortcut definitions
-    //for (shortcut in l_arr_sc) { console.log(l_arr_sc[shortcut].shortcutDisplay); }    
         
     $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').length == 0
         && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_SHORTCUTS"></div');
@@ -222,26 +218,42 @@ window.pageDesigner.customizeShortcuts = function(p_title)
                 { modal             : true, 
                   title             : p_title,
                   resizable         : true,
-                  columnDefinitions : [ { name  : "actionLabel",      title : "Action"   },
-                                        { name  : "shortcutDisplay",  title : "Shortcut" } ],   
+                  
+                  columnDefinitions : [ { name  : "label",     title : "Action"   },
+                                        { name  : "shortcut",  title : "Shortcut" } ],   
                                         
-                  filterLov         : function( pFilters, pRenderLovEntries ) {
+                  filterLov         : function( pFilters, pRenderLovEntries ) {                                         
+                                         // To understand where we get our LOV from, just 
+                                         // run apex.actions.list() in your javascript console and you'll get the idea.
+                                         // 
+                                         // We're not using apex.actions.listShortcuts() because we also want to list 
+                                         // actions that do not yet have a shortcut assigned.
+
+                                         var l_arr = apex.actions.list();
+                                         for (var i=0; i<l_arr.length; i++) {
+                                             l_arr[i]["shortcut"] =  apex.actions.lookup(l_arr[i]["name"])["shortcut"];
+                                         }
+
                                          // pRenderLovEntries is a method function set by widget.lovDialog.js
                                          // To render our LOV, all we need to do is call this function and pass
-                                         // our LOV as an array.
-                                         
-                                         // To understand where we get our LOV from, just 
-                                         // run apex.actions.listShortcuts in your javascript console and you'll
-                                         // get the idea.
-
-                                         pRenderLovEntries(apex.actions.listShortcuts());  
-                                      },            
+                                         // our LOV as an array.                                         
+                                         pRenderLovEntries(l_arr);  
+                                      },  
+                                      
                   width             : 700, 
                   height            : 340,
+                  
                   close             : // called by widget.lovDialog.js close function
-                                      function() {                                         
-                                        $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();  
-                                      }
+                                      function(pEvent) {                                         
+                                         $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();  
+                                      },
+                                      
+                  multiValue       : false,                                      
+                  valueSelected    : function( pEvent, pData ) {
+                                         alert(pData.label);
+                                         console.log(pData);
+                                     }
+                                      
                 }
                );    
     
@@ -333,7 +345,7 @@ var Xplug = function() {
             name     : "pd-xplug-goto-next-page",
             label    : ">>",
             title    : "Next page",
-            shortcut : "????",
+            shortcut : "Alt+N",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToNextPage();
                            return true;
@@ -342,7 +354,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-dock-grid-right",
             label    : "Dock grid to the right",
-            shortcut : "???",
+            shortcut : "Alt+R",
             action   : function( event, focusElement ) {
                            window.pageDesigner.dockGridRight();
                            return true;
@@ -351,7 +363,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-dock-grid-middle",
             label    : "Dock grid in the middle",
-            shortcut : "Ctrl+A",
+            shortcut : "Alt+M",            
             action   : function( event, focusElement ) {
                            window.pageDesigner.dockGridMiddle();
                            return true;
@@ -360,7 +372,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-customize-shortcuts",
             label    : "Customize Page Designer shortcuts",
-            shortcut : "????",
+            shortcut : "???",
             action   : function( event, focusElement ) {
                            window.pageDesigner.customizeShortcuts(get_label(C_LAB_SHORTCUTS));
                            return true;
