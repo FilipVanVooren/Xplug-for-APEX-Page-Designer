@@ -29,6 +29,8 @@
 //                      - Renamed Xplug custom apex actions to contain "xplug" in name, e.g. "pd-xplug-goto-next-page" 
 //                        instead of "pd-goto-next-page".
 //                        
+// v1.1 - 2015-09-28  * Previous/Next page functionality now picks the correct page, based on page list instead 
+//                      of just fetching -1 or +1 page
 //
 // REMARKS
 // Not for production use! For educational purposes only.
@@ -45,11 +47,27 @@
  * METHOD: Go to previous page
  ***************************************************************************/
 window.pageDesigner.goToPrevPage = function () {
-  var l_page = $('#go_to_page').val() || 0;
-
-  l_page = l_page > 0 ? l_page-1 : 0;  
-  $('button#ORATRONIK_XPLUG_prev_page_button').attr('disabled','true');
-  window.pageDesigner.goToPage(l_page);  
+  var l_page  = $('#go_to_page').val() || 0;
+  var l_index = -1;
+  var l_prev  = -1;
+  
+  //
+  // Look for index of page in array
+  //
+  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) { 
+      if (xplug.arr_page_list[i].id == l_page) l_index = i;
+  }  
+  
+  //
+  // Found previous page, now goto page
+  //
+  if (l_index > -1) {
+     l_prev = xplug.arr_page_list[l_index > 0 
+                                          ? l_index - 1
+                                          : l_index].id;
+                                          
+     window.pageDesigner.goToPage(l_prev);
+  }  
 } // window.pageDesigner.goToPrevPage
 
 
@@ -59,11 +77,27 @@ window.pageDesigner.goToPrevPage = function () {
  * METHOD: Go to next page 
  ***************************************************************************/
 window.pageDesigner.goToNextPage = function () {
-  var l_page = $('#go_to_page').val() || 0;
-
-  l_page++;
-  $('button#ORATRONIK_XPLUG_next_page_button').attr('disabled','true');
-  window.pageDesigner.goToPage(l_page);
+  var l_page  = $('#go_to_page').val() || 0;
+  var l_index = -1;
+  var l_next  = -1;
+  
+  //
+  // Look for index of page in array
+  //
+  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) { 
+      if (xplug.arr_page_list[i].id == l_page) l_index = i;
+  }  
+  
+  //
+  // Found next page, now goto page
+  //
+  if (l_index > -1) {
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length 
+                                          ? l_index + 1
+                                          : l_index].id;
+                                   
+     window.pageDesigner.goToPage(l_next);
+  }
 } // window.pageDesigner.goToNextPage
 
 
@@ -270,22 +304,27 @@ var Xplug = function() {
    var C_version = 'Xplug v1.1 (www.oratronik.de)'; 
    var C_author  = 'Filip van Vooren';
     
-   this.version  = C_version;
-   this.author   = C_author;         
+   this.version       = C_version;
+   this.author        = C_author;
+   this.arr_page_list = [];
+   
         
    // Exit if not in APEX Page Designer
    if (typeof(window.pageDesigner) != 'object') {
       return 0;    
    }       
                    
-   var C_LAB_DOCK_RIGHT = 0,
-       C_LAB_SHORTCUTS  = 1;       
+   var C_LAB_DOCK_RIGHT  = 0,
+       C_LAB_SHORTCUTS   = 1,
+       C_LAB_UNZOOM_GRID = 2;              
 
    var C_menulabel = { 'en' : [ 'Dock grid to the right',
-                                'Customize shortcuts'
+                                'Customize shortcuts',
+                                'Unzoom grid to 60%',
                               ],
                        'de' : [ 'Grid außen rechts positionieren',
-                                'Tastaturkürzel anpassen'
+                                'Tastaturkürzel anpassen',
+                                'Gridansicht auf 60% verkleinern'
                               ]
                      };                   
                    
@@ -321,6 +360,24 @@ var Xplug = function() {
             $('button#ORATRONIK_XPLUG_prev_page_button').removeAttr('disabled');     
             $('button#ORATRONIK_XPLUG_next_page_button').removeAttr('disabled');          
        });
+       
+       // Get list of pages in JSON format and store result in array.
+       // Code based on getPagesLov() in images/apex_ui/js/pe.model.js       
+       apex.server.process 
+          (
+             "getPages", {
+                           x01:  "Y" ,
+                           x02:  "userInterfaceId" ,
+                           x03:  ""
+                         },
+             {
+               success : function(pPageList) 
+                         {
+                            xplug.arr_page_list = pPageList; 
+                         }
+             }
+          );
+       
   } //install_goto_page            
 
    
@@ -353,7 +410,7 @@ var Xplug = function() {
           },                
           {
             name     : "pd-xplug-dock-grid-right",
-            label    : "Dock grid to the right",
+            label    : C_LAB_DOCK_RIGHT,
             shortcut : "Alt+R",
             action   : function( event, focusElement ) {
                            window.pageDesigner.dockGridRight();
@@ -371,13 +428,24 @@ var Xplug = function() {
           },
           {
             name     : "pd-xplug-customize-shortcuts",
-            label    : "Customize Page Designer shortcuts",
+            label    : C_LAB_SHORTCUTS,
             shortcut : "???",
             action   : function( event, focusElement ) {
                            window.pageDesigner.customizeShortcuts(get_label(C_LAB_SHORTCUTS));
                            return true;
                        }
           },          
+
+
+          {
+            name     : "pd-xplug-unzoom-grid",
+            label    : C_LAB_UNZOOM_GRID,
+            shortcut : "???",
+            action   : function( event, focusElement ) {
+                           $('.a-GridLayout--z100').animate(  { width : '60%' },100)
+                           return true;
+                       }
+          },      
           
           
         ]       
@@ -447,6 +515,23 @@ var Xplug = function() {
                          {
                             if ($('div#top_col').prevAll('div#right_col').length == 0) apex.actions.invoke('pd-xplug-dock-grid-right') 
                             else                                                       apex.actions.invoke('pd-xplug-dock-grid-middle');
+                         },
+              disabled : function() 
+                         {
+                           return false;
+                         }
+            },
+
+            {         
+              type     : "toggle",
+              label    : get_label(C_LAB_UNZOOM_GRID),
+              get      : function()
+                         {
+                            return $('div#top_col').prevAll('div#right_col').length == 1;
+                         },
+              set      : function()
+                         {
+                            apex.actions.invoke('pd-xplug-unzoom-grid')                             
                          },
               disabled : function() 
                          {
