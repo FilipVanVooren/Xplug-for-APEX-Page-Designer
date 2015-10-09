@@ -30,14 +30,15 @@
 //                        instead of "pd-goto-next-page".
 //
 // v1.1 - 2015-09-28  * Previous/Next page functionality now picks the correct page, based on page list instead
-//                      of just fetching -1 or +1 page
+//                      of just fetching -1 or +1 page.
 //
 // v1.1 - 2015-10-03  * Added possibility to disable tooltips
 //
 // v1.1 - 2015-10-09  * Multiple changes
-//                      - Bug-fix in disabling/enabling tooltips
+//                      - Bug-fix in disabling/enabling tooltips.
 //                        For details on copy function see: http://blog.oratronik.org/?p=301
-//                      - Added CSS for adding previous/next icons
+//                      - Added CSS for adding previous/next icons.
+//                      - Added possibility to prettify grid layout with background image and without 100% stretched regions.
 //
 // REMARKS
 //
@@ -329,6 +330,37 @@ window.pageDesigner.enableTooltips = function()
 } // window.pageDesigner.enableTooltips
 
 
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: prettifyGrid
+ ***************************************************************************/
+window.pageDesigner.prettifyGrid = function()
+{
+  document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
+  $('.a-GridLayout--z100').css('width','60%');
+  xplug.setStorage('PRETTIFY_GRID','YES');
+
+  return 1;
+} // window.pageDesigner.prettifyGrid
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: restoreGrid
+ ***************************************************************************/
+window.pageDesigner.restoreGrid = function()
+{
+  $('.a-GridLayout--z100').css('width','100%');
+  $('#glv-viewport').css('background-image','none');
+  xplug.setStorage('PRETTIFY_GRID','NO');
+
+  return 1;
+} // window.pageDesigner.restoreGrid
+
+
+
+
 /****************************************************************************
  * Add custom method to pageDesigner Object
  * METHOD: customizeShortcuts
@@ -416,13 +448,15 @@ var Xplug = function() {
 
    var C_lang  = gBuilderLang ? gBuilderLang : 'en';
 
-   var C_label =  { 'en' : {   "DOCKRIGHT"  : "Dock grid right"
-                             , "DOCKMID"    : "Dock grid middle"
-                             , "PREVPAGE"   : "Goto previous page"
-                             , "NEXTPAGE"   : "Goto next page"
-                             , "SHORTCUTS"  : "Customize shortcuts"
-                             , "NOTOOLTIPS" : "Disable tooltips"
-                             , "TOOLTIPS"   : "Enable tooltips"
+   var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid right"
+                             , "DOCKMID"     : "Dock grid middle"
+                             , "PREVPAGE"    : "Goto previous page"
+                             , "NEXTPAGE"    : "Goto next page"
+                             , "SHORTCUTS"   : "Customize shortcuts"
+                             , "NOTOOLTIPS"  : "Disable tooltips"
+                             , "TOOLTIPS"    : "Enable tooltips"
+                             , "PRETTYGRID"  : "Prettify grid"
+                             , "RESTOREGRID" : "Restore grid"
 
                              , "MSG-TT-ENABLE-OK"   : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"  : "Tooltips are disabled."
@@ -430,13 +464,15 @@ var Xplug = function() {
                              , "MSG-TT-DISABLE-NOK" : "Could not disable tooltips."
                            },
 
-                    'de' : {   "DOCKRIGHT"  : "Grid rechts außen"
-                             , "DOCKMID"    : "Grid in der Mitte"
-                             , "PREVPAGE"   : "Gehe zu vorherige Seite"
-                             , "NEXTPAGE"   : "Gehe zu nächste Seite"
-                             , "SHORTCUTS"  : "Tastenkürzel einrichten"
-                             , "NOTOOLTIPS" : "Tooltips deaktivieren"
-                             , "TOOLTIPS"   : "Tooltips aktivieren"
+                    'de' : {   "DOCKRIGHT"   : "Grid rechts außen"
+                             , "DOCKMID"     : "Grid in der Mitte"
+                             , "PREVPAGE"    : "Gehe zu vorherige Seite"
+                             , "NEXTPAGE"    : "Gehe zu nächste Seite"
+                             , "SHORTCUTS"   : "Tastenkürzel einrichten"
+                             , "NOTOOLTIPS"  : "Tooltips deaktivieren"
+                             , "TOOLTIPS"    : "Tooltips aktivieren"
+                             , "PRETTYGRID"  : "Grid verschönern"
+                             , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
 
                              , "MSG-TT-ENABLE-OK"   : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"  : "Tooltips sind deaktiviert."
@@ -565,15 +601,21 @@ var Xplug = function() {
                        }
           },
           {
-            name     : "pd-xplug-unzoom-grid",
-            label    : 'Unzoom',
-            shortcut : "???",
+            name     : "pd-xplug-prettify-grid",
+            label    : get_label('PRETIFYGRID'),
+            shortcut : "????",
             action   : function( event, focusElement ) {
-                           $('.a-GridLayout--z100').animate(  { width : '60%' },100)
-                           return true;
+                           return window.pageDesigner.prettifyGrid();
                        }
           },
-
+          {
+            name     : "pd-xplug-restore-grid",
+            label    : get_label('RESTOREGRID'),
+            shortcut : "????",
+            action   : function( event, focusElement ) {
+                           return window.pageDesigner.restoreGrid();
+                       }
+          },
 
         ]
        );
@@ -659,6 +701,27 @@ var Xplug = function() {
 
             {
               type     : "toggle",
+              label    : get_label('PRETTYGRID'),
+              get      : function()
+                         {
+                            return xplug.getStorage('PRETTIFY_GRID','NO') == 'YES';
+                         },
+              set      : function()
+                         {
+                           xplug.getStorage('PRETTIFY_GRID','NO') == 'YES'
+                              ? apex.actions.invoke('pd-xplug-restore-grid')
+                              : apex.actions.invoke('pd-xplug-prettify-grid');
+                         },
+              disabled : function()
+                         {
+                           return false;
+                         }
+            },
+
+            { type     : "separator" },
+
+            {
+              type     : "toggle",
               label    : get_label('NOTOOLTIPS'),
               get      : function()
                          {
@@ -695,22 +758,7 @@ var Xplug = function() {
             },
 
 
-            {
-              type     : "toggle",
-              label    : 'Unzoom',
-              get      : function()
-                         {
-                            return $('div#top_col').prevAll('div#right_col').length == 1;
-                         },
-              set      : function()
-                         {
-                            apex.actions.invoke('pd-xplug-unzoom-grid')
-                         },
-              disabled : function()
-                         {
-                           return false;
-                         }
-            },
+
 
             {
               type     : "action",
@@ -764,6 +812,7 @@ var Xplug = function() {
     Xplug.prototype.loadSettings = function ()
     {
        xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+       xplug.getStorage('PRETTIFY_GRID','NO')     == 'YES' && apex.actions.invoke('pd-xplug-prettify-grid');
        xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
     } // Xplug.prototype.loadSettings
 
