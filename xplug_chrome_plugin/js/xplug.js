@@ -34,8 +34,12 @@
 //
 // v1.1 - 2015-10-03  * Added possibility to disable tooltips
 //
+// v1.1 - 2015-10-09  * Multiple changes
+//                      - Bug-fix in disabling/enabling tooltips
+//                        For details on copy function see: http://blog.oratronik.org/?p=301
+//                      - Added CSS for adding previous/next icons
+//
 // REMARKS
-// Not for production use! For educational purposes only.
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -49,7 +53,7 @@
  * METHOD: Go to previous page
  ***************************************************************************/
 window.pageDesigner.goToPrevPage = function () {
-  var l_page  = $('#go_to_page').val() || 0;
+  var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
   var l_index = -1;
   var l_prev  = -1;
 
@@ -64,11 +68,33 @@ window.pageDesigner.goToPrevPage = function () {
   // Found previous page, now goto page
   //
   if (l_index > -1) {
-     l_prev = xplug.arr_page_list[l_index > 0
-                                          ? l_index - 1
-                                          : l_index].id;
+    l_prev = xplug.arr_page_list[l_index > 0
+                                         ? l_index - 1
+                                         : l_index].id;
+  } else {
+    return;
+  }
 
-     window.pageDesigner.goToPage(l_prev);
+  if (l_prev != l_page) {
+    //
+    // Temporary disable actions until new page has loaded completely
+    //
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
+    $(document).on('modelReady',
+      function () {
+        console.debug("model is ready");
+        window.setTimeout(
+           function() {
+              apex.actions.enable('pd-xplug-goto-previous-page');
+              apex.actions.enable('pd-xplug-goto-next-page');
+           }
+           ,500    // Is this a good value?
+        );
+      }
+    );
+
+    window.pageDesigner.goToPage(l_prev);
   }
 } // window.pageDesigner.goToPrevPage
 
@@ -79,7 +105,7 @@ window.pageDesigner.goToPrevPage = function () {
  * METHOD: Go to next page
  ***************************************************************************/
 window.pageDesigner.goToNextPage = function () {
-  var l_page  = $('#go_to_page').val() || 0;
+  var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
   var l_index = -1;
   var l_next  = -1;
 
@@ -94,9 +120,31 @@ window.pageDesigner.goToNextPage = function () {
   // Found next page, now goto page
   //
   if (l_index > -1) {
-     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
                                           ? l_index + 1
                                           : l_index].id;
+  } else {
+    return;
+  }
+
+  if (l_next != l_page) {
+     //
+     // Temporary disable actions until new page has loaded completely
+     //
+     apex.actions.disable('pd-xplug-goto-previous-page');
+     apex.actions.disable('pd-xplug-goto-next-page');
+     $(document).on('modelReady',
+       function () {
+         console.debug("model is ready");
+         window.setTimeout(
+            function() {
+               apex.actions.enable('pd-xplug-goto-previous-page');
+               apex.actions.enable('pd-xplug-goto-next-page');
+            }
+            ,500    // Is this a good value?
+         );
+       }
+     );
 
      window.pageDesigner.goToPage(l_next);
   }
@@ -237,11 +285,24 @@ window.pageDesigner.dockGridMiddle = function()
  ***************************************************************************/
 window.pageDesigner.disableTooltips = function()
 {
-  apex.tooltipManager.disableTooltips();
-  xplug.setStorage('TOOLTIPS_DISABLED','YES');                                                 // Save option in local database
-  console.debug('XPLUG - Tooltips disabled');
+  if (typeof(pageDesigner.tooltipContentForComponent) == "function") {
 
-  return 1;
+     // Backup function
+     if (typeof(pageDesigner.tooltipContentForComponentCopy) == "undefined") {
+        pageDesigner.tooltipContentForComponentCopy = pageDesigner.tooltipContentForComponent;
+     }
+
+     // Turn off tooltips
+     pageDesigner.tooltipContentForComponent = function() { };
+
+     xplug.setStorage('TOOLTIPS_DISABLED','YES');                                             // Save option in local database
+     console.debug('XPLUG - Tooltips disabled');
+
+     return 1;
+   } else {
+      console.error("XPLUG - Tooltips can't be disabled");
+      return 0;
+   }
 } // window.pageDesigner.disableTooltips
 
 
@@ -251,11 +312,20 @@ window.pageDesigner.disableTooltips = function()
  ***************************************************************************/
 window.pageDesigner.enableTooltips = function()
 {
-  apex.tooltipManager.enableTooltips();
-  xplug.setStorage('TOOLTIPS_DISABLED','NO');                                                 // Save option in local database
-  console.debug('XPLUG - Tooltips enabled');
+  // Restore - Turn on tooltips again
+  if (typeof(pageDesigner.tooltipContentForComponentCopy) == "function") {
+     pageDesigner.tooltipContentForComponent = pageDesigner.tooltipContentForComponentCopy;
 
-  return 1;
+     pageDesigner.tooltipContentForComponentCopy = undefined;
+
+     xplug.setStorage('TOOLTIPS_DISABLED','NO');                                              // Save option in local database
+     console.debug('XPLUG - Tooltips enabled');
+
+     return 1;
+  } else {
+     console.error("XPLUG - Tooltips can't be enabled");
+     return 0;
+  }
 } // window.pageDesigner.enableTooltips
 
 
@@ -354,7 +424,12 @@ var Xplug = function() {
                              , "NOTOOLTIPS" : "Disable tooltips"
                              , "TOOLTIPS"   : "Enable tooltips"
 
+                             , "MSG-TT-ENABLE-OK"   : "Tooltips are enabled."
+                             , "MSG-TT-DISABLE-OK"  : "Tooltips are disabled."
+                             , "MSG-TT-ENABLE-NOK"  : "Could not enable tooltips."
+                             , "MSG-TT-DISABLE-NOK" : "Could not disable tooltips."
                            },
+
                     'de' : {   "DOCKRIGHT"  : "Grid rechts außen"
                              , "DOCKMID"    : "Grid in der Mitte"
                              , "PREVPAGE"   : "Gehe zu vorherige Seite"
@@ -362,6 +437,11 @@ var Xplug = function() {
                              , "SHORTCUTS"  : "Tastenkürzel einrichten"
                              , "NOTOOLTIPS" : "Tooltips deaktivieren"
                              , "TOOLTIPS"   : "Tooltips aktivieren"
+
+                             , "MSG-TT-ENABLE-OK"   : "Tooltips sind aktiviert."
+                             , "MSG-TT-DISABLE-OK"  : "Tooltips sind deaktiviert."
+                             , "MSG-TT-ENABLE-NOK"  : "Konnte Tooltips nicht aktivieren."
+                             , "MSG-TT-DISABLE-NOK" : "Konnte Tooltips nicht deaktivieren."
                            },
                   };
 
@@ -379,15 +459,19 @@ var Xplug = function() {
           .before( '<button'
                  + ' type="button"'
                  + ' ID="ORATRONIK_XPLUG_prev_page_button"'
-                 + ' class="a-Button a-Button--pillStart js-actionButton"'
+                 + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
                  + ' data-action="pd-xplug-goto-previous-page">'
+                 + ' <span class="a-Icon icon-xplug-previous" aria-hidden="true"></span>'
                  + '</button>'
+
                  + '<button'
                  + ' type="button"'
                  + ' ID="ORATRONIK_XPLUG_next_page_button"'
-                 + ' class="a-Button a-Button--pillEnd js-actionButton"'
+                 + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"'
                  + ' data-action="pd-xplug-goto-next-page">'
-                 + '</button>');
+                 + ' <span class="a-Icon icon-xplug-next" aria-hidden="true"></span>'
+                 + '</button>'
+               );
 
        $('.a-PageSelect').css('border-left','0px');
 
@@ -409,7 +493,7 @@ var Xplug = function() {
              }
           );
 
-  } //install_goto_page
+  } // install_goto_page
 
 
   /****************************************************************************
@@ -421,7 +505,7 @@ var Xplug = function() {
         [
          {
             name     : "pd-xplug-goto-previous-page",
-            label    : "<<",
+            label    : get_label('PREVPAGE'),
             title    : get_label('PREVPAGE'),
             shortcut : "???",
             action   : function( event, focusElement ) {
@@ -431,7 +515,7 @@ var Xplug = function() {
           },
           {
             name     : "pd-xplug-goto-next-page",
-            label    : ">>",
+            label    : get_label('NEXTPAGE'),
             title    : get_label('NEXTPAGE'),
             shortcut : "Alt+N",
             action   : function( event, focusElement ) {
@@ -444,8 +528,7 @@ var Xplug = function() {
             label    : get_label('DOCKRIGHT'),
             shortcut : "Alt+R",
             action   : function( event, focusElement ) {
-                           window.pageDesigner.dockGridRight();
-                           return true;
+                           return window.pageDesigner.dockGridRight();
                        }
           },
           {
@@ -453,8 +536,7 @@ var Xplug = function() {
             label    : get_label('DOCKMID'),
             shortcut : "Alt+M",
             action   : function( event, focusElement ) {
-                           window.pageDesigner.dockGridMiddle();
-                           return true;
+                           return window.pageDesigner.dockGridMiddle();
                        }
           },
           {
@@ -462,8 +544,7 @@ var Xplug = function() {
             label    : get_label('NOTOOLTIPS'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           window.pageDesigner.disableTooltips();
-                           return true;
+                           return window.pageDesigner.disableTooltips();
                        }
           },
           {
@@ -471,8 +552,7 @@ var Xplug = function() {
             label    : get_label('TOOLTIPS'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           window.pageDesigner.enableTooltips();
-                           return true;
+                           return window.pageDesigner.enableTooltips();
                        }
           },
           {
@@ -518,13 +598,21 @@ var Xplug = function() {
 
 
         // Definitions for Xplug button
-        var l_class     = ' class="a-Button a-Button--nolabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
+        var l_class     = ' class="a-Button a-Button--noLabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
         var l_style     = ' style="background-color:#A0E6D5; height: 32px" ';
         var l_label     = ' title="' + C_version + '" ';
         var l_data_menu = ' data-menu="XplugMenu"';
         var l_aria      = ' aria-haspopup="true" aria-expanded="false" aria-label ="' + C_version + '" ';
         var l_menu_icon = '<span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>';
 
+        // Add custom CSS to page header
+        $('head').append(
+              '<style type="text/css">'
+            + '  button#ORATRONIK_XPLUG:hover        { background-color: #1EE2B3!important; }'
+            + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
+            + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
+            + '</style>'
+        );
 
         // Inject the Xplug button in Page Designer (next to Shared Components)
         $('button#menu-shared-components')
@@ -540,8 +628,7 @@ var Xplug = function() {
                        + l_menu_icon
                        + '</button>');
 
-        // Add hover effect to Xplug button
-        $('head').append('<style type="text/css">button#ORATRONIK_XPLUG:hover { background-color : #1EE2B3!important; }</style>');
+
 
         // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
         // For details on the APEX popup menu functionality refer to /images/libraries/widget.menu.js
@@ -577,13 +664,30 @@ var Xplug = function() {
                          {
                             return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
                          },
+
               set      : function()
                          {
-                            xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES'
-                               ? apex.actions.invoke('pd-xplug-enable-tooltips')
-                               : apex.actions.invoke('pd-xplug-disable-tooltips');
+                           if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
 
+                              apex.actions.invoke('pd-xplug-enable-tooltips')
+                                 ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
+                                 : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
+
+                           } else {
+
+                               apex.actions.invoke('pd-xplug-disable-tooltips')
+                               ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
+                               : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
+                           }
+
+                           // Remove notification afer 1.5 seconds
+                           window.setTimeout( function() {
+                                                pageDesigner.hideNotification();
+                                              },
+                                              1500
+                                            );
                          },
+
               disabled : function()
                          {
                            return false;
@@ -661,10 +765,6 @@ var Xplug = function() {
     {
        xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
        xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-
-       $(document).on('modelReady', function () {
-           xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-       });
     } // Xplug.prototype.loadSettings
 
 
