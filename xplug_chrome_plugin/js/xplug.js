@@ -40,6 +40,10 @@
 //                      - Added CSS for adding previous/next icons.
 //                      - Added possibility to prettify grid layout with background image and without 100% stretched regions.
 //
+// v.1.1 - 2015-10-10 * Multiple changes
+//                      - Removed shortcut code for now. Will be included in a later version.
+//
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -333,100 +337,42 @@ window.pageDesigner.enableTooltips = function()
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: prettifyGrid
+ * METHOD: prettfyGrid
  ***************************************************************************/
-window.pageDesigner.prettifyGrid = function()
+window.pageDesigner.prettyGrid = function()
 {
   document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
-  $('.a-GridLayout--z100').css('width','60%');
-  xplug.setStorage('PRETTIFY_GRID','YES');
+  xplug.setStorage('PRETTY_GRID','YES');
 
   return 1;
-} // window.pageDesigner.prettifyGrid
+} // window.pageDesigner.prettyGrid
 
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: restoreGrid
+ * METHOD: noPrettyGrid
  ***************************************************************************/
-window.pageDesigner.restoreGrid = function()
+window.pageDesigner.noPrettyGrid = function()
 {
-  $('.a-GridLayout--z100').css('width','100%');
   $('#glv-viewport').css('background-image','none');
-  xplug.setStorage('PRETTIFY_GRID','NO');
+  xplug.setStorage('PRETTY_GRID','NO');
 
   return 1;
-} // window.pageDesigner.restoreGrid
-
-
+} // window.pageDesigner.noPrettyGrid
 
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: customizeShortcuts
+ * METHOD: setWidthOnGrid
  ***************************************************************************/
-window.pageDesigner.customizeShortcuts = function(p_title)
+window.pageDesigner.setWidthOnGrid = function(pSize)
 {
-    'use strict'
+  if ((pSize >= 0) && (pSize <= 100))
+     $('.a-GridLayout--z100').css('width',pSize + '%');
+     xplug.setStorage('SPACE_ON_GRID',pSize);
 
-    //
-    // Exit if not in APEX Page Designer
-    //
-    if (typeof(window.pageDesigner) != 'object') {
-       return 0;
-    }
-
-    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').length == 0
-        && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_SHORTCUTS"></div');
-
-    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS')
-        .lovDialog(
-                { modal             : true,
-                  title             : p_title,
-                  resizable         : true,
-
-                  columnDefinitions : [ { name  : "label",     title : "Action"   },
-                                        { name  : "shortcut",  title : "Shortcut" } ],
-
-                  filterLov         : function( pFilters, pRenderLovEntries ) {
-                                         // To understand where we get our LOV from, just
-                                         // run apex.actions.list() in your javascript console and you'll get the idea.
-                                         //
-                                         // We're not using apex.actions.listShortcuts() because we also want to list
-                                         // actions that do not yet have a shortcut assigned.
-
-                                         var l_arr = apex.actions.list();
-                                         for (var i=0; i<l_arr.length; i++) {
-                                             l_arr[i]["shortcut"] =  apex.actions.lookup(l_arr[i]["name"])["shortcut"];
-                                         }
-
-                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
-                                         // To render our LOV, all we need to do is call this function and pass
-                                         // our LOV as an array.
-                                         pRenderLovEntries(l_arr);
-                                      },
-
-                  width             : 700,
-                  height            : 340,
-
-                  close             : // called by widget.lovDialog.js close function
-                                      function(pEvent) {
-                                         $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();
-                                      },
-
-                  multiValue       : false,
-                  valueSelected    : function( pEvent, pData ) {
-                                         alert(pData.label);
-                                         console.log(pData);
-                                     }
-
-                }
-               );
-
-    return 1;
-} // window.pageDesigner.customizeShortcuts
-
-
+     return 1;
+} // window.pageDesigner.setWidthOnGrid
 
 
 //
@@ -441,6 +387,7 @@ var Xplug = function() {
    this.arr_page_list = [];
 
 
+
    // Exit if not in APEX Page Designer
    if (typeof(window.pageDesigner) != 'object') {
       return 0;
@@ -448,15 +395,16 @@ var Xplug = function() {
 
    var C_lang  = gBuilderLang ? gBuilderLang : 'en';
 
-   var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid right"
-                             , "DOCKMID"     : "Dock grid middle"
+   var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid on right side"
+                             , "DOCKMID"     : "Dock grid in middle"
                              , "PREVPAGE"    : "Goto previous page"
                              , "NEXTPAGE"    : "Goto next page"
                              , "SHORTCUTS"   : "Customize shortcuts"
                              , "NOTOOLTIPS"  : "Disable tooltips"
                              , "TOOLTIPS"    : "Enable tooltips"
-                             , "PRETTYGRID"  : "Prettify grid"
+                             , "PRETTYGRID"  : "Background image"
                              , "RESTOREGRID" : "Restore grid"
+                             , "GRIDLAYOUT"  : "Grid layout"
 
                              , "MSG-TT-ENABLE-OK"   : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"  : "Tooltips are disabled."
@@ -464,15 +412,16 @@ var Xplug = function() {
                              , "MSG-TT-DISABLE-NOK" : "Could not disable tooltips."
                            },
 
-                    'de' : {   "DOCKRIGHT"   : "Grid rechts außen"
-                             , "DOCKMID"     : "Grid in der Mitte"
+                    'de' : {   "DOCKRIGHT"   : "Grid rechts außen positionieren"
+                             , "DOCKMID"     : "Grid in der Mitte positionieren"
                              , "PREVPAGE"    : "Gehe zu vorherige Seite"
                              , "NEXTPAGE"    : "Gehe zu nächste Seite"
                              , "SHORTCUTS"   : "Tastenkürzel einrichten"
                              , "NOTOOLTIPS"  : "Tooltips deaktivieren"
                              , "TOOLTIPS"    : "Tooltips aktivieren"
-                             , "PRETTYGRID"  : "Grid verschönern"
+                             , "PRETTYGRID"  : "Hintergrundbild"
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
+                             , "GRIDLAYOUT"  : "Grid Layout einstellen"
 
                              , "MSG-TT-ENABLE-OK"   : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"  : "Tooltips sind deaktiviert."
@@ -592,28 +541,19 @@ var Xplug = function() {
                        }
           },
           {
-            name     : "pd-xplug-customize-shortcuts",
-            label    : get_label('SHORTCUTS'),
+            name     : "pd-xplug-pretty-grid",
+            label    : get_label('PRETTYGRID'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           window.pageDesigner.customizeShortcuts(get_label('SHORTCUTS'));
-                           return true;
+                           return window.pageDesigner.prettyGrid();
                        }
           },
           {
-            name     : "pd-xplug-prettify-grid",
-            label    : get_label('PRETIFYGRID'),
+            name     : "pd-xplug-no-pretty-grid",
+            label    : get_label('NOPRETTYGRID'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           return window.pageDesigner.prettifyGrid();
-                       }
-          },
-          {
-            name     : "pd-xplug-restore-grid",
-            label    : get_label('RESTOREGRID'),
-            shortcut : "????",
-            action   : function( event, focusElement ) {
-                           return window.pageDesigner.restoreGrid();
+                           return window.pageDesigner.noPrettyGrid();
                        }
           },
 
@@ -699,23 +639,46 @@ var Xplug = function() {
                          }
             },
 
-            {
-              type     : "toggle",
-              label    : get_label('PRETTYGRID'),
-              get      : function()
-                         {
-                            return xplug.getStorage('PRETTIFY_GRID','NO') == 'YES';
-                         },
-              set      : function()
-                         {
-                           xplug.getStorage('PRETTIFY_GRID','NO') == 'YES'
-                              ? apex.actions.invoke('pd-xplug-restore-grid')
-                              : apex.actions.invoke('pd-xplug-prettify-grid');
-                         },
-              disabled : function()
-                         {
-                           return false;
-                         }
+
+
+            { type    : "subMenu",
+              label   : get_label('GRIDLAYOUT'),
+              menu    : { items :
+                          [
+                              {
+                                type     : "toggle",
+                                label    : get_label('PRETTYGRID'),
+                                get      : function()
+                                           {
+                                              return xplug.getStorage('PRETTY_GRID','NO') == 'YES';
+                                           },
+                                set      : function()
+                                           {
+                                             xplug.getStorage('PRETTY_GRID','NO') == 'YES'
+                                                ? apex.actions.invoke('pd-xplug-no-pretty-grid')
+                                                : apex.actions.invoke('pd-xplug-pretty-grid');
+                                           },
+                                disabled : function()
+                                           {
+                                             return false;
+                                           }
+                              },
+
+                              {  type     : "radioGroup",
+                                 set      : function(pValue)
+                                            {
+                                              pageDesigner.setWidthOnGrid(pValue);
+                                            },
+                                 get      : function()
+                                            {
+                                              return parseInt(xplug.getStorage('SPACE_ON_GRID',100));
+                                            },
+                                 choices  : [ { label: '60%',  value : 60  },
+                                              { label: '80%',  value : 80  },
+                                              { label: '100%', value : 100 }
+                                            ]
+                              }
+                        ] }
             },
 
             { type     : "separator" },
@@ -757,17 +720,6 @@ var Xplug = function() {
                          }
             },
 
-
-
-
-            {
-              type     : "action",
-              label    : get_label('SHORTCUTS'),
-              action   : function() {
-                           apex.actions.invoke('pd-xplug-customize-shortcuts');
-                         }
-            },
-
             { type     : "separator"
             },
             {
@@ -806,14 +758,16 @@ var Xplug = function() {
                var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
                return localStorage.getItem(l_key) || p_default;
             }
-        } // Xplug.prototype.getStorage */
+        } // Xplug.prototype.getStorage
 
 
     Xplug.prototype.loadSettings = function ()
     {
        xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-       xplug.getStorage('PRETTIFY_GRID','NO')     == 'YES' && apex.actions.invoke('pd-xplug-prettify-grid');
+       xplug.getStorage('PRETTY_GRID','NO')       == 'YES' && apex.actions.invoke('pd-xplug-pretty-grid');
        xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+
+       window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
     } // Xplug.prototype.loadSettings
 
 
