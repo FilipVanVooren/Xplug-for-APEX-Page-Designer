@@ -44,6 +44,8 @@
 //                      - Removed shortcut code for now. Will be included in a later version.
 //
 //
+// v.1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much 
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -581,7 +583,7 @@ var Xplug = function() {
 
         // Definitions for Xplug button
         var l_class     = ' class="a-Button a-Button--noLabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
-        var l_style     = ' style="background-color:#A0E6D5; height: 32px" ';
+        var l_style     = ' style="background-color:#C3ECE2; height: 32px" ';
         var l_label     = ' title="' + C_version + '" ';
         var l_data_menu = ' data-menu="XplugMenu"';
         var l_aria      = ' aria-haspopup="true" aria-expanded="false" aria-label ="' + C_version + '" ';
