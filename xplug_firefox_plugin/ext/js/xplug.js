@@ -43,8 +43,11 @@
 // v.1.1 - 2015-10-10 * Multiple changes
 //                      - Removed shortcut code for now. Will be included in a later version.
 //
+// v.1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
 //
-// v.1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much 
+// v.1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
+//                               - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
+//                               - Show error message when clicking on Xplug button if localStorage is unavailable.
 //
 // REMARKS
 //
@@ -408,10 +411,11 @@ var Xplug = function() {
                              , "RESTOREGRID" : "Restore grid"
                              , "GRIDLAYOUT"  : "Grid layout"
 
-                             , "MSG-TT-ENABLE-OK"   : "Tooltips are enabled."
-                             , "MSG-TT-DISABLE-OK"  : "Tooltips are disabled."
-                             , "MSG-TT-ENABLE-NOK"  : "Could not enable tooltips."
-                             , "MSG-TT-DISABLE-NOK" : "Could not disable tooltips."
+                             , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
+                             , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
+                             , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
+                             , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
+                             , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
                            },
 
                     'de' : {   "DOCKRIGHT"   : "Grid rechts außen positionieren"
@@ -425,10 +429,11 @@ var Xplug = function() {
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
 
-                             , "MSG-TT-ENABLE-OK"   : "Tooltips sind aktiviert."
-                             , "MSG-TT-DISABLE-OK"  : "Tooltips sind deaktiviert."
-                             , "MSG-TT-ENABLE-NOK"  : "Konnte Tooltips nicht aktivieren."
-                             , "MSG-TT-DISABLE-NOK" : "Konnte Tooltips nicht deaktivieren."
+                             , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
+                             , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
+                             , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
+                             , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
+                             , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
                            },
                   };
 
@@ -736,6 +741,13 @@ var Xplug = function() {
 
         __install_goto_page();
         __install_actions();
+
+        if (localStorage === null) {
+           $('#ORATRONIK_XPLUG')
+               .on('click', function()
+                 { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ) }
+               );
+        }
    } // __init
 
    __init();
@@ -746,9 +758,15 @@ var Xplug = function() {
         {
             if (typeof(localStorage) == 'object') {
                var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
+
+               if (localStorage === null) {
+                  console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
+                  return false;
+               }
                localStorage.setItem(l_key, p_value);
                return true;
             } else {
+               console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
                return false;
             }
         } // Xplug.prototype.setStorage
@@ -758,8 +776,16 @@ var Xplug = function() {
         {
             if (typeof(localStorage) == 'object') {
                var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
+
+               if (localStorage === null) {
+                  console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
+                  return p_default;
+               }
                return localStorage.getItem(l_key) || p_default;
-            }
+            } else {
+               console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
+               return p_default;
+           }
         } // Xplug.prototype.getStorage
 
 

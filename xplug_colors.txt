@@ -1,0 +1,166 @@
+// Space between tree and its surroundings (tab1-tab4)
+$('.a-PageDesigner-treeWrap').css('background-color','#00FF00')
+
+// Rendering - Tree (=tab1) - Background color
+$('div#PDrenderingTree.a-TreeView').css('background-color','#FF0000');
+
+// Dynamic Actions - Tree (=tab2) - Background color
+$('div#PDdynamicActionTree.a-TreeView').css('background-color','#FF0000')
+
+//  Processing - Tree (=tab3) - Background color
+$('div#PDprocessingTree.a-TreeView').css('background-color','#FF0000');
+
+// Processing - Tree (=tab4) - Background color
+$('div#PDsharedCompTree.a-TreeView').css('background-color','#FF0000');
+
+//================================
+// Tree tab1 (Rendering)
+//================================
+
+// Color Tree labels
+$('.a-TreeView-label').css('color','#FFFFFF')
+
+// Tree collapse/expand toggle iccon
+$('span.a-TreeView-toggle').css('color','#000000')
+
+// Tree Attributes icon
+$('span.icon-tree-attributes').css('color','#000000')
+
+// Tree Folder icon
+$('span.icon-tree-folder').css('color','#00FF00')
+
+// Tree Folder region
+$('span.icon-tree-region').css('color','#0000FF')
+
+// Tree Breadcrumb
+$('span.icon-region-native-breadcrumb').css('color','#030303')
+
+// Tree static region
+$('span.icon-region-native-static').css('color','#080808')
+
+// Tree region native calendar
+$('span.icon-region-native-calendar').css('color','#0303003')
+
+// Tree region plsql
+$('span.icon-region-native-plsql').css('color','#000000')
+
+// Tree region native sql report
+$('span.icon-region-native-sql-report').css('color','#000000')
+
+// Tree region item hidden 
+$('span.icon-item-native-hidden').css('color','#000000')
+
+// Tree region item native select 
+$('span.icon-item-native-select-list').css('color','#000000')
+
+// Tree region item native text field
+$('span.icon-item-native-text-field').css('color','#000000')
+
+// Tree region item native date picker
+$('span.icon-item-native-date-picker').css('color','#000000')
+
+// Space between tree and its surroundings (tab1-tab4)
+$('.a-PageDesigner-treeWrap').css('background-color','#00FF00')
+
+// Rendering - Tree (=tab1) - Background color
+$('div#PDrenderingTree.a-TreeView').css('background-color','#FF0000');
+
+// Dynamic Actions - Tree (=tab2) - Background color
+$('div#PDdynamicActionTree.a-TreeView').css('background-color','#FF0000')
+
+//  Processing - Tree (=tab3) - Background color
+$('div#PDprocessingTree.a-TreeView').css('background-color','#FF0000');
+
+// Processing - Tree (=tab4) - Background color
+$('div#PDsharedCompTree.a-TreeView').css('background-color','#FF0000');
+
+
+//================================
+// Tree tab2 (Dynamic actions)
+//================================
+
+// Tree process icon  (tab2)
+$('span.icon-tree-process').css('color','#000000')
+
+
+//================================
+// Tree tab3 (processes)
+//================================
+
+// Tree process icon  (tab3)
+$('span.icon-tree-process').css('color','#000000')
+
+
+//================================
+// Tree tab4 (shared components)
+//================================
+// Tree templates  (tab4)
+$('span.icon-tree-templates').css('color','#000000')
+
+
+
+//================================
+// Properties Editor
+//================================
+//Properties Editor header - Background Color
+$('.a-PropertyEditor-propertyGroup-header').css('background-color','#000000');
+
+// Properties Editor - Foreground Color Title
+$('.a-PropertyEditor-propertyGroup-title').css('color','#ffffff');
+
+// Properties Editor header - Foreground corlor icon
+$('.a-PropertyEditor-propertyGroup-header .a-Icon').css('color','#ff0000');
+
+
+$('.a-Property-labelContainer').css('color','#ff0000');
+
+//================================
+//Gallery
+//================================
+$('ul.a-Gallery').css('background-color','#FF0000');
+$('ul.ui-widget-header').css('background-color','#000000')
+
+//================================
+//Toolbar, Tabs and widgets in general
+//================================
+$('div.a-Toolbar-items').css('background-color','#000000')
+$('body .ui-widget-content').css('background-color','#0000FF');
+$('a.ui-tabs-anchor').css('background-color','#c0c0c0');
+
+// Tree region plugin
+$('span.icon-region-plugin').css('color','#000000')
+
+
+
+//================================
+// Properties Editor
+//================================
+//Properties Editor header - Background Color
+$('.a-PropertyEditor-propertyGroup-header').css('background-color','#000000');
+
+// Properties Editor - Foreground Color Title
+$('.a-PropertyEditor-propertyGroup-title').css('color','#ffffff');
+
+// Properties Editor header - Foreground corlor icon
+$('.a-PropertyEditor-propertyGroup-header .a-Icon').css('color','#ff0000');
+$('.a-Property-labelContainer').css('color','#ff0000');
+
+// Properties Editor - Fieldcontainer background-color
+$('div.a-Property-fieldContainer').css('background-color','#00FF00');
+$('div.a-Property-labelContainer').css('background-color','#FF0000');
+$('div.a-Property').css('background-color','#FF0000')
+
+//================================
+//Gallery
+//================================
+$('ul.a-Gallery').css('background-color','#FF0000');
+$('ul.ui-widget-header').css('background-color','#000000')
+
+//================================
+//Toolbar, Tabs and widgets in general
+//================================
+$('div.a-Toolbar-items').css('background-color','#000000')
+$('body .ui-widget-content').css('background-color','#0000FF');
+$('a.ui-tabs-anchor').css('background-color','#FF0000');
+$('div.a-ControlBar-col').css('background-color','#FF0000');
+$('#R48577912101738240').css('background-color','#00FF00');
