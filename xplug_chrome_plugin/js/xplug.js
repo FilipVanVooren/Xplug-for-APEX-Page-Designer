@@ -49,6 +49,8 @@
 //                               - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
 //                               - Show error message when clicking on Xplug button if localStorage is unavailable.
 //
+// v.1.2 - 2015-12-04 * Implementation of custom midnight style
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -380,17 +382,137 @@ window.pageDesigner.setWidthOnGrid = function(pSize)
 } // window.pageDesigner.setWidthOnGrid
 
 
+window.pageDesigner.setStyle = function() {
+    var l_c1 = '#3f3f3f';       // Dark-Grey
+    var l_c2 = '#505050';       // Light-Grey shade 3
+    var l_c3 = '#246396';       // Blue
+    var l_c4 = '#3c424f';       // Dark-Grey 2
+    var l_c5 = '#909090';       // Light grey
+
+    var l_txt_c1 = '#a0a0a0';   // Text-color 1
+    var l_txt_c2 = '#ffffff';   // Text-color 2
+    var l_txt_c3 = '#cfe6fa';   // Text-color 3
+
+    var l_lf     = "\n";
+
+    var p1 = l_c2;
+
+
+    //==========================================================================
+    // Custom icon for Page Designer select element. Needed due to colours
+    //==========================================================================
+    var l_icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" enable-background="new 0 0 24 24">'
+               + '<path fill="' + l_c1     + '" d="M0 0h24v24h-24z"/>'                                  // Background color
+               + '<path fill="' + l_c2     + '" d="M0 0h1v24h-1z"/>'                                    // Left vertical line
+               + '<path fill="' + l_txt_c3 + '" d="M16.5 14.293c0 .128-.049.256-.146.354l-4.354 4.353-4.354-4.354c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.647 3.647 3.646-3.646c.195-.195.512-.195.707 0 .098.097.147.225.147.353zM7.5 9.707c0-.128.049-.256.146-.354l4.354-4.353 4.354 4.354c.195.195.195.512 0 .707s-.512.195-.707 0l-3.647-3.647-3.646 3.646c-.195.195-.512.195-.707 0-.098-.097-.147-.225-.147-.353z"/>'
+               + '</svg>';
+
+    //==========================================================================
+    // Toolbar, Widgets, tabs, buttons, input fields, etc.
+    //==========================================================================
+    l_css = ' body                      { background-color: ' + l_c2     + '; }' + l_lf
+          + ' div.a-Toolbar-items       { background-color: ' + l_c2     + '; }' + l_lf   // Toolbar items
+          + ' a.ui-tabs-anchor          { background-color: ' + l_c2     + '; }' + l_lf
+          + ' .ui-tabs-anchor > span    { color: '            + l_txt_c2 + '; }' + l_lf   // Icon color tabs (Rendering, ...)
+          + ' .a-PageDesigner-treeTitle { color: '            + l_txt_c2 + '; }' + l_lf   // Tab Tree title color (Rendering, ...)
+          + ' a.ui-tabs-anchor          { color: '            + l_txt_c2 + '; }' + l_lf   // Tab label color (Grid Layout, ...)
+          + '';
+
+    l_css +='.body,'
+          + '.ui-widget-content,'
+          + '.a-Toolbar-pageColumn,'
+          + '.a-Property, '
+          + '.a-PropertyEditor-propertyGroup, '
+          + '.a-PropertyEditor-propertyGroup-body, '
+          + '.a-PropertyEditor-propertyGroup-header, '
+          + '.ui-dialog .a-Property    { border-color: ' + l_c4 + '; }' + l_lf  // Border-color between elements
+          + l_lf;
+
+
+    l_css += ' .ui-tabs-nav .ui-tabs-anchor     { border-right-color : ' + l_c4 + '; }' + l_lf
+          +  ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }' + l_lf  // Buttons
+          +  ' div#sp_main input,select,textarea '                                       + l_lf
+          +  '     { color             : ' + l_txt_c2  + ';'   + l_lf
+          +  '       background-color  : ' + l_c4      + '; }' + l_lf           // Input fields
+          +  l_lf;
+
+     l_css += 'div#sp_main select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }' + l_lf
+
+    //==========================================================================
+    // Left pane (Tree)
+    //==========================================================================
+    l_css += ' .a-PageDesigner-treeWrap           { background-color : ' + l_c1 + '; }' + l_lf   // Space between tree and surroundings (tab1-tab4)
+          +  ' div#PDrenderingTree.a-TreeView     { background-color : ' + l_c1 + '; }' + l_lf   // Rendering - Tree (=tab1)
+          +  ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }' + l_lf   // Dynamic Actions - Tree (=tab2)
+          +  ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }' + l_lf   // Processing - Tree (=tab3)
+          +  ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }' + l_lf   // Processing - Tree (=tab4)
+          +  ' span.a-TreeView-label              { color       : ' + l_txt_c1  + '; }' + l_lf   // Node label text color
+          +  ' span.a-TreeView-toggle             { color       : ' + l_txt_c1  + '; }' + l_lf   // Node collapse/expand icon color
+          +  l_lf;
+
+    //==========================================================================
+    // Properties Editor
+    //==========================================================================
+    l_css += ' .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3     + '; }' + l_lf  // Group header
+          +  ' .a-PropertyEditor-propertyGroup-title  { color            : ' + l_txt_c2 + '; }' + l_lf  // Group header title
+          +  ' div.a-Property-fieldContainer          { background-color : ' + l_c2     + '; }' + l_lf  // Fieldcontainer
+          +  ' div.a-Property-labelContainer          { background-color : ' + l_c2     + '; }' + l_lf  // Labelcontainer
+          +  ' div.a-Property, div.a-Property:hover, div.a-Property:focus, div.a-Property:active { background-color : ' + l_c2     + '; }' + l_lf  // Property button
+          +  ' div.a-Property                         { border-color     : ' + l_c1     + ' !important; }' + l_lf  // Property border color
+          +  ' .a-Property-field:hover,.a-Property-field:focus  { background-color : ' + l_c2 + '; }'      + l_lf  // Property input field (active)
+          +  ' .a-Property-field                      { background-color : ' + l_c2     + '; }' + l_lf  // Property input field
+          +  ' .a-Property-field                      { color            : ' + l_txt_c3 + '; }' + l_lf  // Property input field
+          +  ' .a-Property-label { color : ' + l_txt_c1 + '; text-shadow : none; }'             + l_lf  // Property label
+          +  l_lf;
+
+    //==========================================================================
+    // Gallery
+    //==========================================================================
+    l_css += ' div#gallery-tabs div           { background-color : ' + l_c2 + '; }' + l_lf
+          +  ' div#gallery-tabs .aTabs-Toolbar { }'
+          +  ' ul.a-Gallery                   { background-color : ' + l_c2 + '; }' + l_lf
+          +  ' ul.ui-widget-header            { background-color : ' + l_c2 + '; }' + l_lf
+          +  ' div.resize.u-ScrollingViewport { background-color : ' + l_c2 + '; }' + l_lf  // Gallery overlay
+          +  l_lf;
+
+
+    //==========================================================================
+    // Add CSS style to HTML page head
+    //==========================================================================
+    var l_style = '<style type="text/css" ID="XPLUG_THEME">'                    + l_lf
+                + l_css
+                + '</style>'                                                    + l_lf;
+    console.log(l_style)
+
+    $("link[href*='/css/Theme-Standard']").after(l_style);
+
+    xplug.setStorage('STYLE','YES');                                            // Save option in local database
+
+    return 1;
+} // window.pageDesigner.setStyle
+
+
+window.pageDesigner.removeStyle = function() {
+   $('style#XPLUG_THEME').remove();
+
+   xplug.setStorage('STYLE','NO');                                              // Save option in local database
+
+   return 1;
+} // window.pageDesigner.removeStyle
+
+
+
+
 //
 // Constructor for the Xplug object
 //
 var Xplug = function() {
-   var C_version = 'Xplug v1.1 (www.oratronik.de)';
+   var C_version = 'Xplug v1.2 (www.oratronik.de)';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
    this.author        = C_author;
    this.arr_page_list = [];
-
 
 
    // Exit if not in APEX Page Designer
@@ -585,7 +707,6 @@ var Xplug = function() {
                  + ' 34.020-171.476zM340.524 925.98l73.49-177.42c30.184 12.518 63.276 19.44 97.986 19.44s67.802-6.922 97.986-19.44l73.49 177.42c-52.822 21.904-110.73 34.020-171.476'
                  + ' 34.020-60.744 0-118.654-12.114-171.476-34.020z"></path>';
 
-
         // Definitions for Xplug button
         var l_class     = ' class="a-Button a-Button--noLabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
         var l_style     = ' style="background-color:#C3ECE2; height: 32px" ';
@@ -647,11 +768,30 @@ var Xplug = function() {
             },
 
 
-
             { type    : "subMenu",
               label   : get_label('GRIDLAYOUT'),
               menu    : { items :
                           [
+
+                            {
+                              type     : "toggle",
+                              label    : 'Midnight Theme',
+                              get      : function()
+                                         {
+                                            return xplug.getStorage('STYLE','NO') == 'YES';
+                                         },
+                              set      : function()
+                                         {
+                                           xplug.getStorage('STYLE','NO') == 'YES'
+                                              ? window.pageDesigner.removeStyle()
+                                              : window.pageDesigner.setStyle()
+                                         },
+                              disabled : function()
+                                         {
+                                           return false;
+                                         }
+                            },
+
                               {
                                 type     : "toggle",
                                 label    : get_label('PRETTYGRID'),
@@ -791,9 +931,11 @@ var Xplug = function() {
 
     Xplug.prototype.loadSettings = function ()
     {
+       xplug.getStorage('STYLE','NO')             == 'YES' && window.pageDesigner.setStyle();
        xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
        xplug.getStorage('PRETTY_GRID','NO')       == 'YES' && apex.actions.invoke('pd-xplug-pretty-grid');
        xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+
 
        window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
     } // Xplug.prototype.loadSettings

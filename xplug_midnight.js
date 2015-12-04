@@ -40,8 +40,8 @@ function midnight() {
 // alternativ: $('button.a-Button').css('background-color','#a0a0a0')
 //
     l_css += ' .ui-tabs-nav .ui-tabs-anchor     { border-right-color : ' + l_c4 + '; }' + l_lf
-          +  ' div#spmain .a-Button             { background-color   : ' + l_c5 + '; }' + l_lf  // Buttons
-          +  ' div#spmain input,select,textarea '                                       + l_lf
+          +  ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }' + l_lf  // Buttons
+          +  ' div#sp_main input,select,textarea '                                       + l_lf
           +  '     { color             : ' + l_txt_c2  + ';'   + l_lf
           +  '       background-color  : ' + l_c4      + '; }' + l_lf           // Input fields
           +  l_lf;
