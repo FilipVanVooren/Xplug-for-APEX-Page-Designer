@@ -83,16 +83,35 @@ function midnight() {
           +  ' div.resize.u-ScrollingViewport { background-color : ' + l_c2 + '; }' + l_lf  // Gallery overlay
           +  l_lf;
 
+    //==========================================================================
+    // Scrollbars
+    //==========================================================================
+    var l_scroll =        '::-webkit-scrollbar              { width: 10px; height: 10px; }'
+                 + l_lf + '::-webkit-scrollbar-button       { width: 0px;  height: 0px;  }'
+                 + l_lf + '::-webkit-scrollbar-thumb        { background: #0080ff; border: 0px solid #ffffff; border-radius: 50px; }'
+                 + l_lf + '::-webkit-scrollbar-thumb:hover  { background: #ffffff;     }'
+                 + l_lf + '::-webkit-scrollbar-thumb:active { background: #00557d;     }'
+                 + l_lf + '::-webkit-scrollbar-track        { background: #666666; border: 90px none #ffffff; border-radius: 45px; }'
+                 + l_lf + '::-webkit-scrollbar-track:hover  { background: #666666;     }'
+                 + l_lf + '::-webkit-scrollbar-track:active { background: #333333;     }'
+                 + l_lf + '::-webkit-scrollbar-corner       { background: transparent; }'
+                 + l_lf;
+
 
     //==========================================================================
     // Add CSS style to HTML page head
     //==========================================================================
     var l_style = '<style type="text/css" ID="xplug_theme">'                    + l_lf
                 + l_css
+                + l_scroll
                 + '</style>'                                                    + l_lf;
     console.log(l_style)
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
+
+
+
+
 
     return;
 }

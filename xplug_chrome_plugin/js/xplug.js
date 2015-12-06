@@ -46,10 +46,14 @@
 // v.1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
 //
 // v.1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
-//                               - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
-//                               - Show error message when clicking on Xplug button if localStorage is unavailable.
+//                      - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
+//                      - Show error message when clicking on Xplug button if localStorage is unavailable.
 //
 // v.1.2 - 2015-12-04 * Implementation of custom midnight style
+//
+// v.1.2 - 2015-12-06 * More work on custom midnight style
+//                      - Redefine scrollbars on Webkit
+//                      - Bug-fixing CSS colors of page elements
 //
 // REMARKS
 //
@@ -392,6 +396,7 @@ window.pageDesigner.setStyle = function() {
     var l_txt_c1 = '#a0a0a0';   // Text-color 1
     var l_txt_c2 = '#ffffff';   // Text-color 2
     var l_txt_c3 = '#cfe6fa';   // Text-color 3
+    var l_txt_c4 = '#ac761b';   // Text-color 4
 
     var l_lf     = "\n";
 
@@ -408,15 +413,16 @@ window.pageDesigner.setStyle = function() {
                + '</svg>';
 
     //==========================================================================
-    // Toolbar, Widgets, tabs, buttons, input fields, etc.
+    // Toolbar, Widgets, tabs, buttons, input fields, messages, etc.
     //==========================================================================
-    l_css = ' body                      { background-color: ' + l_c2     + '; }' + l_lf
-          + ' div.a-Toolbar-items       { background-color: ' + l_c2     + '; }' + l_lf   // Toolbar items
-          + ' a.ui-tabs-anchor          { background-color: ' + l_c2     + '; }' + l_lf
-          + ' .ui-tabs-anchor > span    { color: '            + l_txt_c2 + '; }' + l_lf   // Icon color tabs (Rendering, ...)
-          + ' .a-PageDesigner-treeTitle { color: '            + l_txt_c2 + '; }' + l_lf   // Tab Tree title color (Rendering, ...)
-          + ' a.ui-tabs-anchor          { color: '            + l_txt_c2 + '; }' + l_lf   // Tab label color (Grid Layout, ...)
-          + '';
+    l_css = ' body                          { background-color: ' + l_c2     + '; }' + l_lf
+          + ' div.a-Toolbar-items           { background-color: ' + l_c2     + '; }' + l_lf   // Toolbar items
+          + ' a.ui-tabs-anchor              { background-color: ' + l_c2     + '; }' + l_lf
+          + ' .ui-tabs-anchor > span        { color: '            + l_txt_c2 + '; }' + l_lf   // Icon color tabs (Rendering, ...)
+          + ' .a-PageDesigner-treeTitle     { color: '            + l_txt_c2 + '; }' + l_lf   // Tab Tree title color (Rendering, ...)
+          + ' a.ui-tabs-anchor              { color: '            + l_txt_c2 + '; }' + l_lf   // Tab label color (Grid Layout, ...)
+          + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-tabs-anchor { color: ' + l_txt_c1 + '; }' + l_lf; // Tab label color (Grid Layout, ...)
+          + l_lf;
 
     l_css +='.body,'
           + '.ui-widget-content,'
@@ -431,6 +437,9 @@ window.pageDesigner.setStyle = function() {
 
     l_css += ' .ui-tabs-nav .ui-tabs-anchor     { border-right-color : ' + l_c4 + '; }' + l_lf
           +  ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }' + l_lf  // Buttons
+          + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
+          + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
+          + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active { background-color: ' + l_txt_c3 + ' !important; }' // Active Buttons
           +  ' div#sp_main input,select,textarea '                                       + l_lf
           +  '     { color             : ' + l_txt_c2  + ';'   + l_lf
           +  '       background-color  : ' + l_c4      + '; }' + l_lf           // Input fields
@@ -462,7 +471,9 @@ window.pageDesigner.setStyle = function() {
           +  ' .a-Property-field:hover,.a-Property-field:focus  { background-color : ' + l_c2 + '; }'      + l_lf  // Property input field (active)
           +  ' .a-Property-field                      { background-color : ' + l_c2     + '; }' + l_lf  // Property input field
           +  ' .a-Property-field                      { color            : ' + l_txt_c3 + '; }' + l_lf  // Property input field
-          +  ' .a-Property-label { color : ' + l_txt_c1 + '; text-shadow : none; }'             + l_lf  // Property label
+          +  ' .a-Property-label             { color : ' + l_txt_c1 + '; text-shadow : none; }' + l_lf  // Property label
+          +  ' .a-PropertyEditor-messageText { color: '  + l_txt_c4 + '; }'                     + l_lf  // Properties editor message
+
           +  l_lf;
 
     //==========================================================================
@@ -477,16 +488,40 @@ window.pageDesigner.setStyle = function() {
 
 
     //==========================================================================
+    // Scrollbars
+    //==========================================================================
+    // Webkit scrollbar generator
+    // http://mikethedj4.github.io/Webkit-Scrollbar-Generator/
+    //
+    var l_scroll =        '::-webkit-scrollbar              { width: 10px; height: 10px; }'
+                 + l_lf + '::-webkit-scrollbar-button       { width: 0px;  height: 0px;  }'
+                 + l_lf + '::-webkit-scrollbar-thumb        { background: ' + l_c5 + ';  border: 0px solid #ffffff; border-radius: 50px; }'
+                 + l_lf + '::-webkit-scrollbar-thumb:hover  { background: #ffffff;      }'
+                 + l_lf + '::-webkit-scrollbar-thumb:active { background: ' + l_c3 + '; }'
+                 + l_lf + '::-webkit-scrollbar-track        { background: #666666; border: 90px none #ffffff; border-radius: 45px; }'
+                 + l_lf + '::-webkit-scrollbar-track:hover  { background: #666666;     }'
+                 + l_lf + '::-webkit-scrollbar-track:active { background: #333333;     }'
+                 + l_lf + '::-webkit-scrollbar-corner       { background: transparent; }'
+                 + l_lf;
+
+    // TODO
+    // Add CSS style for the below
+    // $('.ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-tabs-anchor').css('background-color','#1E90FF')
+
+
+    //==========================================================================
     // Add CSS style to HTML page head
     //==========================================================================
     var l_style = '<style type="text/css" ID="XPLUG_THEME">'                    + l_lf
                 + l_css
+                + l_scroll
                 + '</style>'                                                    + l_lf;
     console.log(l_style)
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
     xplug.setStorage('STYLE','YES');                                            // Save option in local database
+
 
     return 1;
 } // window.pageDesigner.setStyle
