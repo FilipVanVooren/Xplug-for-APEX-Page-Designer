@@ -52,8 +52,8 @@
 // v.1.2 - 2015-12-04 * Implementation of custom midnight style
 //
 // v.1.2 - 2015-12-06 * More work on custom midnight style
-//                      - Redefine scrollbars on Webkit
-//                      - Bug-fixing CSS colors of page elements
+//         2015-12-06   - Redefine scrollbars on Webkit
+//         2015-12-08   - Bug-fixing CSS colors of page elements
 //
 // REMARKS
 //
@@ -389,9 +389,9 @@ window.pageDesigner.setWidthOnGrid = function(pSize)
 window.pageDesigner.setStyle = function() {
     var l_c1 = '#3f3f3f';       // Dark-Grey
     var l_c2 = '#505050';       // Light-Grey shade 3
-    var l_c3 = '#246396';       // Blue
+    var l_c3 = '#246396';       // Light-blue
     var l_c4 = '#3c424f';       // Dark-Grey 2
-    var l_c5 = '#909090';       // Light grey
+    var l_c5 = '#909090';       // Light-Grey
 
     var l_txt_c1 = '#a0a0a0';   // Text-color 1
     var l_txt_c2 = '#ffffff';   // Text-color 2
@@ -412,17 +412,22 @@ window.pageDesigner.setStyle = function() {
                + '<path fill="' + l_txt_c3 + '" d="M16.5 14.293c0 .128-.049.256-.146.354l-4.354 4.353-4.354-4.354c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.647 3.647 3.646-3.646c.195-.195.512-.195.707 0 .098.097.147.225.147.353zM7.5 9.707c0-.128.049-.256.146-.354l4.354-4.353 4.354 4.354c.195.195.195.512 0 .707s-.512.195-.707 0l-3.647-3.647-3.646 3.646c-.195.195-.512.195-.707 0-.098-.097-.147-.225-.147-.353z"/>'
                + '</svg>';
 
+
+
+
     //==========================================================================
-    // Toolbar, Widgets, tabs, buttons, input fields, messages, etc.
+    // Toolbar, Widgets, tabs
     //==========================================================================
-    l_css = ' body                          { background-color: ' + l_c2     + '; }' + l_lf
-          + ' div.a-Toolbar-items           { background-color: ' + l_c2     + '; }' + l_lf   // Toolbar items
-          + ' a.ui-tabs-anchor              { background-color: ' + l_c2     + '; }' + l_lf
-          + ' .ui-tabs-anchor > span        { color: '            + l_txt_c2 + '; }' + l_lf   // Icon color tabs (Rendering, ...)
-          + ' .a-PageDesigner-treeTitle     { color: '            + l_txt_c2 + '; }' + l_lf   // Tab Tree title color (Rendering, ...)
-          + ' a.ui-tabs-anchor              { color: '            + l_txt_c2 + '; }' + l_lf   // Tab label color (Grid Layout, ...)
-          + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-tabs-anchor { color: ' + l_txt_c1 + '; }' + l_lf; // Tab label color (Grid Layout, ...)
+    l_css =        ' body                          { background-color: ' + l_c2     + '; }'
+          + l_lf + ' div.a-Toolbar-items           { background-color: ' + l_c2     + '; }'   // Toolbar items
+          + l_lf + ' #sp_main a.ui-tabs-anchor     { background-color: ' + l_c5     + '; }'
+          + l_lf + ' .ui-tabs-anchor > span        { color: '            + l_txt_c4 + '; }'   // Icon color tabs (Rendering, ...)
+          + l_lf + ' .a-PageDesigner-treeTitle     { color: '            + l_txt_c2 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
+          + l_lf + ' a.ui-tabs-anchor              { color: '            + l_txt_c2 + '; }'   // Tab label color (Grid Layout, ...)
+          + l_lf + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
+                 + ' .ui-tabs-anchor               { color: ' + l_txt_c1 + '; }'              // Tab label color (Grid Layout, ...)
           + l_lf;
+
 
     l_css +='.body,'
           + '.ui-widget-content,'
@@ -431,60 +436,80 @@ window.pageDesigner.setStyle = function() {
           + '.a-PropertyEditor-propertyGroup, '
           + '.a-PropertyEditor-propertyGroup-body, '
           + '.a-PropertyEditor-propertyGroup-header, '
-          + '.ui-dialog .a-Property    { border-color: ' + l_c4 + '; }' + l_lf  // Border-color between elements
+          + '.ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'         // Border-color between elements
           + l_lf;
 
 
-    l_css += ' .ui-tabs-nav .ui-tabs-anchor     { border-right-color : ' + l_c4 + '; }' + l_lf
-          +  ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }' + l_lf  // Buttons
-          + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
-          + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
-          + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active { background-color: ' + l_txt_c3 + ' !important; }' // Active Buttons
-          +  ' div#sp_main input,select,textarea '                                       + l_lf
-          +  '     { color             : ' + l_txt_c2  + ';'   + l_lf
-          +  '       background-color  : ' + l_c4      + '; }' + l_lf           // Input fields
+    //==========================================================================
+    //Buttons
+    //==========================================================================
+    l_css += ' .ui-tabs-nav .ui-tabs-anchor            { border-right-color : ' + l_c4 + '; }'
+          +  l_lf + ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }'            // Buttons
+          +  l_lf + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
+          +  l_lf + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
+                  + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
+                  + '    { background-color: ' + l_txt_c3 + ' !important; }'                              // Active Buttons
+
+    l_css += ' div#sp_main .a-Button:hover,'
+           + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_txt_c2 + '!important; }';  // Hover Buttons
+           + l_lf;
+
+    //==========================================================================
+    // Input fields, select, textarea
+    //==========================================================================
+    l_css += 'div#sp_main input,select,textarea '
+          +  l_lf + '     { color             : ' + l_txt_c2  + ';'
+          +  l_lf + '       background-color  : ' + l_c4      + '; }'   // Input fields
           +  l_lf;
 
+    //==========================================================================
+    // Redefine select icon
+    //==========================================================================
      l_css += 'div#sp_main select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }' + l_lf
 
     //==========================================================================
     // Left pane (Tree)
     //==========================================================================
-    l_css += ' .a-PageDesigner-treeWrap           { background-color : ' + l_c1 + '; }' + l_lf   // Space between tree and surroundings (tab1-tab4)
-          +  ' div#PDrenderingTree.a-TreeView     { background-color : ' + l_c1 + '; }' + l_lf   // Rendering - Tree (=tab1)
-          +  ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }' + l_lf   // Dynamic Actions - Tree (=tab2)
-          +  ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }' + l_lf   // Processing - Tree (=tab3)
-          +  ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }' + l_lf   // Processing - Tree (=tab4)
-          +  ' span.a-TreeView-label              { color       : ' + l_txt_c1  + '; }' + l_lf   // Node label text color
-          +  ' span.a-TreeView-toggle             { color       : ' + l_txt_c1  + '; }' + l_lf   // Node collapse/expand icon color
+    l_css +=      + ' .a-PageDesigner-treeWrap           { background-color : ' + l_c1 + '; }'          // Space between tree and surroundings (tab1-tab4)
+          +  l_lf + ' div#PDrenderingTree.a-TreeView     { background-color : ' + l_c1 + '; }'          // Rendering - Tree (=tab1)
+          +  l_lf + ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
+          +  l_lf + ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
+          +  l_lf + ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
+          +  l_lf + ' span.a-TreeView-label              { color       : ' + l_txt_c1  + '; }'          // Node label text color
+          +  l_lf + ' span.a-TreeView-toggle             { color       : ' + l_txt_c1  + '; }'          // Node collapse/expand icon color
           +  l_lf;
 
     //==========================================================================
     // Properties Editor
     //==========================================================================
-    l_css += ' .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3     + '; }' + l_lf  // Group header
-          +  ' .a-PropertyEditor-propertyGroup-title  { color            : ' + l_txt_c2 + '; }' + l_lf  // Group header title
-          +  ' div.a-Property-fieldContainer          { background-color : ' + l_c2     + '; }' + l_lf  // Fieldcontainer
-          +  ' div.a-Property-labelContainer          { background-color : ' + l_c2     + '; }' + l_lf  // Labelcontainer
-          +  ' div.a-Property, div.a-Property:hover, div.a-Property:focus, div.a-Property:active { background-color : ' + l_c2     + '; }' + l_lf  // Property button
-          +  ' div.a-Property                         { border-color     : ' + l_c1     + ' !important; }' + l_lf  // Property border color
-          +  ' .a-Property-field:hover,.a-Property-field:focus  { background-color : ' + l_c2 + '; }'      + l_lf  // Property input field (active)
-          +  ' .a-Property-field                      { background-color : ' + l_c2     + '; }' + l_lf  // Property input field
-          +  ' .a-Property-field                      { color            : ' + l_txt_c3 + '; }' + l_lf  // Property input field
-          +  ' .a-Property-label             { color : ' + l_txt_c1 + '; text-shadow : none; }' + l_lf  // Property label
-          +  ' .a-PropertyEditor-messageText { color: '  + l_txt_c4 + '; }'                     + l_lf  // Properties editor message
-
+    l_css +=        ' .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3     + '; }'  // Group header
+          +  l_lf + ' .a-PropertyEditor-propertyGroup-title  { color            : ' + l_txt_c2 + '; }'  // Group header title
+          +  l_lf + ' div.a-Property-fieldContainer          { background-color : ' + l_c2     + '; }'  // Fieldcontainer
+          +  l_lf + ' div.a-Property-labelContainer          { background-color : ' + l_c2     + '; }'  // Labelcontainer
+          +  l_lf + ' div.a-Property, div.a-Property:hover,'
+                  + ' div.a-Property:focus,'
+                  + ' div.a-Property:active                  { background-color : ' + l_c2     + '; }'  // Property button
+          +  l_lf + ' div.a-Property                         { border-color     : ' + l_c1     + ' !important; }'  // Property border color
+          +  l_lf + ' .a-Property-field:hover,'
+                  +  '.a-Property-field:focus                { background-color : ' + l_c2     + '; }'  // Property input field (active)
+          +  l_lf + ' .a-Property-field                      { background-color : ' + l_c2     + '; }'  // Property input field
+          +  l_lf + ' .a-Property-field                      { color            : ' + l_txt_c3 + '; }'  // Property input field
+          +  l_lf + ' .a-Property-label             { color : ' + l_txt_c1 + '; text-shadow : none; }'  // Property label
+          +  l_lf + ' .a-PropertyEditor-messageText { color: '  + l_txt_c4 + '; }'                      // Properties editor message
           +  l_lf;
 
     //==========================================================================
     // Gallery
     //==========================================================================
-    l_css += ' div#gallery-tabs div           { background-color : ' + l_c2 + '; }' + l_lf
-          +  ' div#gallery-tabs .aTabs-Toolbar { }'
-          +  ' ul.a-Gallery                   { background-color : ' + l_c2 + '; }' + l_lf
-          +  ' ul.ui-widget-header            { background-color : ' + l_c2 + '; }' + l_lf
-          +  ' div.resize.u-ScrollingViewport { background-color : ' + l_c2 + '; }' + l_lf  // Gallery overlay
-          +  l_lf;
+
+    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'      // Gallery background
+          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                       // Gallery tab row reset
+          + l_lf + ' div#gallery-tabs .ui-tabs-anchor { color            : ' + l_txt_c2 + '; }'  // Gallery tab button color
+          + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_txt_c4 + '; }'  // Gallery tab background color
+          + l_lf + ' ul.a-Gallery                     { background-color : ' + l_c2 + '; }'
+          + l_lf + ' ul.ui-widget-header              { background-color : ' + l_c2 + '; }'
+          + l_lf + ' div.resize.u-ScrollingViewport   { background-color : ' + l_c2 + '; }'      // Gallery overlay
+          + l_lf;
 
 
     //==========================================================================
@@ -503,10 +528,6 @@ window.pageDesigner.setStyle = function() {
                  + l_lf + '::-webkit-scrollbar-track:active { background: #333333;     }'
                  + l_lf + '::-webkit-scrollbar-corner       { background: transparent; }'
                  + l_lf;
-
-    // TODO
-    // Add CSS style for the below
-    // $('.ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-tabs-anchor').css('background-color','#1E90FF')
 
 
     //==========================================================================
