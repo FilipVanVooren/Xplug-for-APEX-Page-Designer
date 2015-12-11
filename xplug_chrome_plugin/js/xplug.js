@@ -64,6 +64,47 @@
 
 
 
+function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
+   var C_icon = {};
+   var l_svg  = '';
+
+   p_width  = p_width  || 16;
+   p_height = p_height || 16;
+   p_color  = p_color  || '#000000';
+
+   C_icon['moon']  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+                   + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
+                   + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
+                   + ' 248.5t136.5 204 204 136.5 248.5 51q144 0 273.5-61.5t220.5-171.5zm203-85q-94'
+                   + ' 203-283.5 324.5t-413.5 121.5q-156 0-298-61t-245-164-164-245-61-298q0-153'
+                   + ' 57.5-292.5t156-241.5 235.5-164.5 290-68.5q44-2 61 39 18 41-15 72-86 78-131.5'
+                   + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
+                   + ' 17.5 34t-4.5 38z"/></svg>';
+
+   C_icon['sun']   = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+                   + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
+                   + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
+                   + ' 223.5 45.5 223.5 123 184 184 123 223.5 45.5 223.5-45.5 184-123 123-184'
+                   + ' 45.5-223.5zm276 277q-4 15-20 20l-292 96v306q0 16-13 26-15 10-29 4l-292-94-180'
+                   + ' 248q-10 13-26 13t-26-13l-180-248-292 94q-14'
+                   + ' 6-29-4-13-10-13-26v-306l-292-96q-16-5-20-20-5-17 4-29l180-248-180-248q-9-13-4-29'
+                   + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
+                   + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
+                   + ' 248q9 12 4 29z"/></svg>';
+
+   l_svg = C_icon[p_icon] || '';
+   l_svg = l_svg.replace('%%',p_width);
+   l_svg = l_svg.replace('%%',p_height);
+   l_svg = l_svg.replace('%%',p_color);
+
+   if (p_is_css_background) return '{ background : url(data:image/svg+xml;base64,' + btoa(l_svg) + ') no-repeat; }';
+
+   return l_svg;
+}
+
+
+
+
 /****************************************************************************
  * Add custom method to pageDesigner Object
  * METHOD: Go to previous page
@@ -465,7 +506,9 @@ window.pageDesigner.setStyle = function() {
     //==========================================================================
     // Redefine select icon
     //==========================================================================
-     l_css += 'div#sp_main select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }' + l_lf
+     l_css += 'div#sp_main select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }' + l_lf;
+
+     l_css += l_lf;
 
     //==========================================================================
     // Left pane (Tree)
@@ -556,6 +599,22 @@ window.pageDesigner.removeStyle = function() {
    return 1;
 } // window.pageDesigner.removeStyle
 
+
+window.pageDesigner.setMoonlightStyle = function() {
+   window.pageDesigner.setStyle();
+   $('#ORATRONIK_XPLUG_moonsun_button span')
+        .removeClass('icon-xplug-sun')
+        .addClass('icon-xplug-moon');
+}
+
+
+
+window.pageDesigner.setDaylightStyle = function() {
+  window.pageDesigner.removeStyle();
+  $('#ORATRONIK_XPLUG_moonsun_button span')
+       .removeClass('icon-xplug-moon')
+       .addClass('icon-xplug-sun');
+}
 
 
 
@@ -667,6 +726,27 @@ var Xplug = function() {
 
 
   /****************************************************************************
+   * Install button for daylight / moonlight switch
+   ***************************************************************************/
+   function __install_moonsun_switch()
+   {
+     $('div.a-PageSelect')
+               .before( '<button'
+                      + ' type="button"'
+                      + ' ID="ORATRONIK_XPLUG_moonsun_button"'
+                      + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                      + ' data-action="pd-xplug-toggle-moon-sun-style">'
+                      + ' <span class="a-Icon icon-xplug-moon"></span>'
+                      + '</button>'
+                    );
+
+  } // install_moonsun_switch
+
+
+
+
+
+  /****************************************************************************
    * Install XPLUG custom actions
    ***************************************************************************/
     function __install_actions()
@@ -726,6 +806,32 @@ var Xplug = function() {
                        }
           },
           {
+            name     : "pd-xplug-set-moonlight-style",
+            label    : get_label('TOOLTIPS'),
+            shortcut : "????",
+            action   : function( event, focusElement ) {
+                           return window.pageDesigner.setMoonlightStyle();
+                       }
+          },
+          {
+            name     : "pd-xplug-set-daylight-style",
+            label    : get_label('TOOLTIPS'),
+            shortcut : "????",
+            action   : function( event, focusElement ) {
+                           return window.pageDesigner.setDaylightStyle();
+                       }
+          },
+          {
+            name     : "pd-xplug-toggle-moon-sun-style",
+            label    : get_label('TOOLTIPS'),
+            shortcut : "????",
+            action   : function( event, focusElement ) {
+                          if (xplug.getStorage('STYLE','NO') == 'YES')
+                             return  apex.actions.invoke('pd-xplug-set-daylight-style');
+                          return apex.actions.invoke('pd-xplug-set-moonlight-style');
+                       }
+          },
+          {
             name     : "pd-xplug-pretty-grid",
             label    : get_label('PRETTYGRID'),
             shortcut : "????",
@@ -753,6 +859,20 @@ var Xplug = function() {
     ***************************************************************************/
     function __init()
     {
+
+      function add_css_to_page_header() {
+        // Add custom CSS to page header
+        $('head').append(
+            + l_lf + '<style type="text/css">'
+            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #1EE2B3!important; }'
+            + l_lf + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
+            + l_lf + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
+            + l_lf + '  .a-Icon.icon-xplug-moon ' + get_svg_icon('moon',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-sun  ' + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '</style>'
+        );
+      }
+
        // SVG Lifebuoy icon definition
        var C_svg = '<path class="path1" d="M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512'
                  + ' 512-229.23 512-512-229.23-512-512-512zM320 512c0-106.040 85.96-192 192-192s192 85.96 192 192-85.96 192-192'
@@ -770,15 +890,11 @@ var Xplug = function() {
         var l_data_menu = ' data-menu="XplugMenu"';
         var l_aria      = ' aria-haspopup="true" aria-expanded="false" aria-label ="' + C_version + '" ';
         var l_menu_icon = '<span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>';
+        var l_lf        = "\n";
 
-        // Add custom CSS to page header
-        $('head').append(
-              '<style type="text/css">'
-            + '  button#ORATRONIK_XPLUG:hover        { background-color: #1EE2B3!important; }'
-            + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
-            + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
-            + '</style>'
-        );
+
+        add_css_to_page_header();
+
 
         // Inject the Xplug button in Page Designer (next to Shared Components)
         $('button#menu-shared-components')
@@ -839,8 +955,8 @@ var Xplug = function() {
                               set      : function()
                                          {
                                            xplug.getStorage('STYLE','NO') == 'YES'
-                                              ? window.pageDesigner.removeStyle()
-                                              : window.pageDesigner.setStyle()
+                                              ? apex.actions.invoke('pd-xplug-set-daylight-style')
+                                              : apex.actions.invoke('pd-xplug-set-moonlight-style')
                                          },
                               disabled : function()
                                          {
@@ -936,6 +1052,7 @@ var Xplug = function() {
         });
 
         __install_goto_page();
+        __install_moonsun_switch();
         __install_actions();
 
         if (localStorage === null) {
@@ -987,11 +1104,10 @@ var Xplug = function() {
 
     Xplug.prototype.loadSettings = function ()
     {
-       xplug.getStorage('STYLE','NO')             == 'YES' && window.pageDesigner.setStyle();
+       xplug.getStorage('STYLE','NO')             == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-style');
        xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
        xplug.getStorage('PRETTY_GRID','NO')       == 'YES' && apex.actions.invoke('pd-xplug-pretty-grid');
        xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-
 
        window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
     } // Xplug.prototype.loadSettings
