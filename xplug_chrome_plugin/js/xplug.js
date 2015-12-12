@@ -72,14 +72,14 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    p_height = p_height || 16;
    p_color  = p_color  || '#000000';
 
-   C_icon['moon']  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
-                   + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
-                   + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
-                   + ' 248.5t136.5 204 204 136.5 248.5 51q144 0 273.5-61.5t220.5-171.5zm203-85q-94'
-                   + ' 203-283.5 324.5t-413.5 121.5q-156 0-298-61t-245-164-164-245-61-298q0-153'
-                   + ' 57.5-292.5t156-241.5 235.5-164.5 290-68.5q44-2 61 39 18 41-15 72-86 78-131.5'
-                   + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
-                   + ' 17.5 34t-4.5 38z"/></svg>';
+   C_icon.moon =   '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
+               + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
+               + ' 248.5t136.5 204 204 136.5 248.5 51q144 0 273.5-61.5t220.5-171.5zm203-85q-94'
+               + ' 203-283.5 324.5t-413.5 121.5q-156 0-298-61t-245-164-164-245-61-298q0-153'
+               + ' 57.5-292.5t156-241.5 235.5-164.5 290-68.5q44-2 61 39 18 41-15 72-86 78-131.5'
+               + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
+               + ' 17.5 34t-4.5 38z"/></svg>';
 
    C_icon['sun']   = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
                    + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
@@ -602,6 +602,7 @@ window.pageDesigner.removeStyle = function() {
 
 window.pageDesigner.setMoonlightStyle = function() {
    window.pageDesigner.setStyle();
+   document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
    $('#ORATRONIK_XPLUG_moonsun_button span')
         .removeClass('icon-xplug-sun')
         .addClass('icon-xplug-moon');
@@ -611,6 +612,7 @@ window.pageDesigner.setMoonlightStyle = function() {
 
 window.pageDesigner.setDaylightStyle = function() {
   window.pageDesigner.removeStyle();
+  $('#glv-viewport').css('background-image','none');
   $('#ORATRONIK_XPLUG_moonsun_button span')
        .removeClass('icon-xplug-moon')
        .addClass('icon-xplug-sun');
@@ -647,6 +649,7 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Background image"
                              , "RESTOREGRID" : "Restore grid"
                              , "GRIDLAYOUT"  : "Grid layout"
+                             , "TOGGLELIGHT" : "Press button to toggle between daylight and moonlight mode."
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -665,6 +668,7 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Hintergrundbild"
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
+                             , "TOGGLELIGHT" : "Schaltfläche drücken um zwischen Tageslicht- und Mondlicht Modus zu wechseln."
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -736,7 +740,7 @@ var Xplug = function() {
                       + ' ID="ORATRONIK_XPLUG_moonsun_button"'
                       + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
                       + ' data-action="pd-xplug-toggle-moon-sun-style">'
-                      + ' <span class="a-Icon icon-xplug-moon"></span>'
+                      + ' <span class="a-Icon icon-xplug-sun"></span>'
                       + '</button>'
                     );
 
@@ -806,16 +810,16 @@ var Xplug = function() {
                        }
           },
           {
-            name     : "pd-xplug-set-moonlight-style",
-            label    : get_label('TOOLTIPS'),
+            name     : "pd-xplug-set-moonlight-mode",
+            label    : get_label('TOGGLEMOON'),
             shortcut : "????",
             action   : function( event, focusElement ) {
                            return window.pageDesigner.setMoonlightStyle();
                        }
           },
           {
-            name     : "pd-xplug-set-daylight-style",
-            label    : get_label('TOOLTIPS'),
+            name     : "pd-xplug-set-daylight-mode",
+            label    : get_label('TOGGLEDAY'),
             shortcut : "????",
             action   : function( event, focusElement ) {
                            return window.pageDesigner.setDaylightStyle();
@@ -823,12 +827,13 @@ var Xplug = function() {
           },
           {
             name     : "pd-xplug-toggle-moon-sun-style",
-            label    : get_label('TOOLTIPS'),
+            label    : get_label('TOGGLELIGHT'),
             shortcut : "????",
             action   : function( event, focusElement ) {
                           if (xplug.getStorage('STYLE','NO') == 'YES')
-                             return  apex.actions.invoke('pd-xplug-set-daylight-style');
-                          return apex.actions.invoke('pd-xplug-set-moonlight-style');
+                             return  apex.actions.invoke('pd-xplug-set-daylight-mode');
+
+                          return apex.actions.invoke('pd-xplug-set-moonlight-mode');
                        }
           },
           {
@@ -955,8 +960,8 @@ var Xplug = function() {
                               set      : function()
                                          {
                                            xplug.getStorage('STYLE','NO') == 'YES'
-                                              ? apex.actions.invoke('pd-xplug-set-daylight-style')
-                                              : apex.actions.invoke('pd-xplug-set-moonlight-style')
+                                              ? apex.actions.invoke('pd-xplug-set-daylight-mode')
+                                              : apex.actions.invoke('pd-xplug-set-moonlight-mode')
                                          },
                               disabled : function()
                                          {
@@ -1104,7 +1109,7 @@ var Xplug = function() {
 
     Xplug.prototype.loadSettings = function ()
     {
-       xplug.getStorage('STYLE','NO')             == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-style');
+       xplug.getStorage('STYLE','NO')             == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
        xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
        xplug.getStorage('PRETTY_GRID','NO')       == 'YES' && apex.actions.invoke('pd-xplug-pretty-grid');
        xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
