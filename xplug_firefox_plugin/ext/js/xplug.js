@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Dec 13 2015 16:24:38
+// Built using Gulp. Built date: Sun Dec 13 2015 21:52:56
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -62,6 +62,52 @@
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// util.js
+// 2015-12-13 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
+   var C_icon = {};
+   var l_svg  = '';
+
+   p_width  = p_width  || 16;
+   p_height = p_height || 16;
+   p_color  = p_color  || '#000000';
+
+   C_icon.moon =   '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
+               + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
+               + ' 248.5t136.5 204 204 136.5 248.5 51q144 0 273.5-61.5t220.5-171.5zm203-85q-94'
+               + ' 203-283.5 324.5t-413.5 121.5q-156 0-298-61t-245-164-164-245-61-298q0-153'
+               + ' 57.5-292.5t156-241.5 235.5-164.5 290-68.5q44-2 61 39 18 41-15 72-86 78-131.5'
+               + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
+               + ' 17.5 34t-4.5 38z"/></svg>';
+
+   C_icon['sun']   = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+                   + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
+                   + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
+                   + ' 223.5 45.5 223.5 123 184 184 123 223.5 45.5 223.5-45.5 184-123 123-184'
+                   + ' 45.5-223.5zm276 277q-4 15-20 20l-292 96v306q0 16-13 26-15 10-29 4l-292-94-180'
+                   + ' 248q-10 13-26 13t-26-13l-180-248-292 94q-14'
+                   + ' 6-29-4-13-10-13-26v-306l-292-96q-16-5-20-20-5-17 4-29l180-248-180-248q-9-13-4-29'
+                   + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
+                   + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
+                   + ' 248q9 12 4 29z"/></svg>';
+
+   l_svg = C_icon[p_icon] || '';
+   l_svg = l_svg.replace('%%',p_width);
+   l_svg = l_svg.replace('%%',p_height);
+   l_svg = l_svg.replace('%%',p_color);
+
+   if (p_is_css_background) return '{ background : url(data:image/svg+xml;base64,' + btoa(l_svg) + ') no-repeat; }';
+
+   return l_svg;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -397,43 +443,51 @@ window.pageDesigner.setStyle = function() {
     var l_c3 = '#246396';       // Light-blue
     var l_c4 = '#3c424f';       // Dark-Grey 2
     var l_c5 = '#909090';       // Light-Grey
-
-    var l_txt_c1 = '#a0a0a0';   // Text-color 1
-    var l_txt_c2 = '#ffffff';   // Text-color 2
-    var l_txt_c3 = '#cfe6fa';   // Text-color 3
-    var l_txt_c4 = '#ac761b';   // Text-color 4
+    var l_c6 = '#ac761b';       // Orange
+    var l_c7 = '#ffffff';       // White
+    var l_c8 = '#000000';       // Black
+    var l_c9 = '#cfe6fa';       // light-Cyan
 
     var l_lf     = "\n";
-
-    var p1 = l_c2;
 
 
     //==========================================================================
     // Custom icon for Page Designer select element. Needed due to colours
     //==========================================================================
     var l_icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" enable-background="new 0 0 24 24">'
-               + '<path fill="' + l_c1     + '" d="M0 0h24v24h-24z"/>'                                  // Background color
-               + '<path fill="' + l_c2     + '" d="M0 0h1v24h-1z"/>'                                    // Left vertical line
-               + '<path fill="' + l_txt_c3 + '" d="M16.5 14.293c0 .128-.049.256-.146.354l-4.354 4.353-4.354-4.354c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.647 3.647 3.646-3.646c.195-.195.512-.195.707 0 .098.097.147.225.147.353zM7.5 9.707c0-.128.049-.256.146-.354l4.354-4.353 4.354 4.354c.195.195.195.512 0 .707s-.512.195-.707 0l-3.647-3.647-3.646 3.646c-.195.195-.512.195-.707 0-.098-.097-.147-.225-.147-.353z"/>'
+               + '<path fill="' + l_c1 + '" d="M0 0h24v24h-24z"/>'                                  // Background color
+               + '<path fill="' + l_c2 + '" d="M0 0h1v24h-1z"/>'                                    // Left vertical line
+               + '<path fill="' + l_c9 + '" d="M16.5 14.293c0 .128-.049.256-.146.354l-4.354 4.353-4.354-4.354c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.647 3.647 3.646-3.646c.195-.195.512-.195.707 0 .098.097.147.225.147.353zM7.5 9.707c0-.128.049-.256.146-.354l4.354-4.353 4.354 4.354c.195.195.195.512 0 .707s-.512.195-.707 0l-3.647-3.647-3.646 3.646c-.195.195-.512.195-.707 0-.098-.097-.147-.225-.147-.353z"/>'
                + '</svg>';
-
-
 
 
     //==========================================================================
     // Toolbar, Widgets, tabs
     //==========================================================================
-    l_css =        ' body                          { background-color: ' + l_c2     + '; }'
-          + l_lf + ' div.a-Toolbar-items           { background-color: ' + l_c2     + '; }'   // Toolbar items
-          + l_lf + ' #sp_main a.ui-tabs-anchor     { background-color: ' + l_c5     + '; }'
-          + l_lf + ' .ui-tabs-anchor > span        { color: '            + l_txt_c4 + '; }'   // Icon color tabs (Rendering, ...)
-          + l_lf + ' .a-PageDesigner-treeTitle     { color: '            + l_txt_c2 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
-          + l_lf + ' a.ui-tabs-anchor              { color: '            + l_txt_c2 + '; }'   // Tab label color (Grid Layout, ...)
-          + l_lf + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
-                 + ' .ui-tabs-anchor               { color: ' + l_txt_c1 + '; }'              // Tab label color (Grid Layout, ...)
+    l_css = l_lf + ' body                          { background-color: ' + l_c2     + '; }'
+          + l_lf + ' div.a-Toolbar-items           { background-color: ' + l_c2     + '; }';   // Toolbar items
+
+    //
+    // Tabs at the top of page designer (active)
+    //
+    l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color:' + l_c2 + ' !important; }'
+          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '           + l_c7 +  '!important; }'
+          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '           + l_c7 +  '!important; }'
+          +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:' + l_c6 + '; }';
+
+    //
+    // Tabs at the top of page designer (inactive)
+    //
+    l_css += l_lf + ' .ui-tabs-anchor > span        { color: ' + l_c6 + '; }'   // Icon color tabs (Rendering, ...)
+          + l_lf  + ' .a-PageDesigner-treeTitle     { color: ' + l_c7 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
+          + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
+                  + ' .ui-tabs-anchor { color: ' + l_c2 + '; border-right-color: ' + l_c4 + '; }'
+          + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-state-default { background-color: ' + l_c6 + '; }'
           + l_lf;
 
-
+    //
+    // Border-color between elements
+    //
     l_css +='.body,'
           + '.ui-widget-content,'
           + '.a-Toolbar-pageColumn,'
@@ -441,29 +495,29 @@ window.pageDesigner.setStyle = function() {
           + '.a-PropertyEditor-propertyGroup, '
           + '.a-PropertyEditor-propertyGroup-body, '
           + '.a-PropertyEditor-propertyGroup-header, '
-          + '.ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'         // Border-color between elements
+          + '.ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'
           + l_lf;
 
 
-    //==========================================================================
-    //Buttons
-    //==========================================================================
+    //
+    // Buttons
+    //
     l_css += ' .ui-tabs-nav .ui-tabs-anchor            { border-right-color : ' + l_c4 + '; }'
-          +  l_lf + ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }'            // Buttons
+          +  l_lf + ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }'
           +  l_lf + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
           +  l_lf + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
                   + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
-                  + '    { background-color: ' + l_txt_c3 + ' !important; }'                              // Active Buttons
+                  + '    { background-color: ' + l_c9 + ' !important; }'                              // Active Buttons
 
     l_css += ' div#sp_main .a-Button:hover,'
-           + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_txt_c2 + '!important; }';  // Hover Buttons
+           + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_c7 + '!important; }';  // Hover Buttons
            + l_lf;
 
     //==========================================================================
     // Input fields, select, textarea
     //==========================================================================
     l_css += 'div#sp_main input,select,textarea '
-          +  l_lf + '     { color             : ' + l_txt_c2  + ';'
+          +  l_lf + '     { color             : ' + l_c7  + ';'
           +  l_lf + '       background-color  : ' + l_c4      + '; }'   // Input fields
           +  l_lf;
 
@@ -471,7 +525,6 @@ window.pageDesigner.setStyle = function() {
     // Redefine select icon
     //==========================================================================
      l_css += 'div#sp_main select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }' + l_lf;
-
      l_css += l_lf;
 
     //==========================================================================
@@ -482,15 +535,15 @@ window.pageDesigner.setStyle = function() {
           +  l_lf + ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
           +  l_lf + ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
           +  l_lf + ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
-          +  l_lf + ' span.a-TreeView-label              { color       : ' + l_txt_c1  + '; }'          // Node label text color
-          +  l_lf + ' span.a-TreeView-toggle             { color       : ' + l_txt_c1  + '; }'          // Node collapse/expand icon color
+          +  l_lf + ' span.a-TreeView-label              { color       : ' + l_c5  + '; }'          // Node label text color
+          +  l_lf + ' span.a-TreeView-toggle             { color       : ' + l_c5  + '; }'          // Node collapse/expand icon color
           +  l_lf;
 
     //==========================================================================
     // Properties Editor
     //==========================================================================
     l_css +=        ' .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3     + '; }'  // Group header
-          +  l_lf + ' .a-PropertyEditor-propertyGroup-title  { color            : ' + l_txt_c2 + '; }'  // Group header title
+          +  l_lf + ' .a-PropertyEditor-propertyGroup-title  { color            : ' + l_c7 + '; }'      // Group header title
           +  l_lf + ' div.a-Property-fieldContainer          { background-color : ' + l_c2     + '; }'  // Fieldcontainer
           +  l_lf + ' div.a-Property-labelContainer          { background-color : ' + l_c2     + '; }'  // Labelcontainer
           +  l_lf + ' div.a-Property, div.a-Property:hover,'
@@ -500,22 +553,22 @@ window.pageDesigner.setStyle = function() {
           +  l_lf + ' .a-Property-field:hover,'
                   +  '.a-Property-field:focus                { background-color : ' + l_c2     + '; }'  // Property input field (active)
           +  l_lf + ' .a-Property-field                      { background-color : ' + l_c2     + '; }'  // Property input field
-          +  l_lf + ' .a-Property-field                      { color            : ' + l_txt_c3 + '; }'  // Property input field
-          +  l_lf + ' .a-Property-label             { color : ' + l_txt_c1 + '; text-shadow : none; }'  // Property label
-          +  l_lf + ' .a-PropertyEditor-messageText { color: '  + l_txt_c4 + '; }'                      // Properties editor message
+          +  l_lf + ' .a-Property-field                      { color            : ' + l_c9 + '; }'      // Property input field
+          +  l_lf + ' .a-Property-label             { color : ' + l_c5 + '; text-shadow : none; }'      // Property label
+          +  l_lf + ' .a-PropertyEditor-messageText { color: '  + l_c6     + '; }'                      // Properties editor message
           +  l_lf;
 
-    //==========================================================================
-    // Gallery
-    //==========================================================================
-
-    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'      // Gallery background
-          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                       // Gallery tab row reset
-          + l_lf + ' div#gallery-tabs .ui-tabs-anchor { color            : ' + l_txt_c2 + '; }'  // Gallery tab button color
-          + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_txt_c4 + '; }'  // Gallery tab background color
+    //
+    // Grid Layout - Gallery
+    //
+    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'              // Gallery background
+          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                               // Gallery tab row reset
+          + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_c6 + '; border: 0px solid ' + l_c2 + '; border-radius: 2px;}'
+                                                                                                         // Gallery tab background color
+          + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } ' // Hack for border-radius
           + l_lf + ' ul.a-Gallery                     { background-color : ' + l_c2 + '; }'
           + l_lf + ' ul.ui-widget-header              { background-color : ' + l_c2 + '; }'
-          + l_lf + ' div.resize.u-ScrollingViewport   { background-color : ' + l_c2 + '; }'      // Gallery overlay
+          + l_lf + ' div.resize.u-ScrollingViewport   { background-color : ' + l_c2 + '; }'              // Gallery overlay
           + l_lf;
 
 
@@ -527,7 +580,7 @@ window.pageDesigner.setStyle = function() {
     //
     var l_scroll =        '::-webkit-scrollbar              { width: 10px; height: 10px; }'
                  + l_lf + '::-webkit-scrollbar-button       { width: 0px;  height: 0px;  }'
-                 + l_lf + '::-webkit-scrollbar-thumb        { background: ' + l_c5 + ';  border: 0px solid #ffffff; border-radius: 50px; }'
+                 + l_lf + '::-webkit-scrollbar-thumb        { background: ' + l_c5 + ';  border-radius: 50px; }'
                  + l_lf + '::-webkit-scrollbar-thumb:hover  { background: #ffffff;      }'
                  + l_lf + '::-webkit-scrollbar-thumb:active { background: ' + l_c3 + '; }'
                  + l_lf + '::-webkit-scrollbar-track        { background: #666666; border: 90px none #ffffff; border-radius: 45px; }'
@@ -608,15 +661,15 @@ var Xplug = function() {
 
    var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid on right side"
                              , "DOCKMID"     : "Dock grid in middle"
-                             , "PREVPAGE"    : "Goto previous page"
-                             , "NEXTPAGE"    : "Goto next page"
+                             , "PREVPAGE"    : "Go to previous page"
+                             , "NEXTPAGE"    : "Go to next page"
                              , "SHORTCUTS"   : "Customize shortcuts"
                              , "NOTOOLTIPS"  : "Disable tooltips"
                              , "TOOLTIPS"    : "Enable tooltips"
                              , "PRETTYGRID"  : "Background image"
                              , "RESTOREGRID" : "Restore grid"
                              , "GRIDLAYOUT"  : "Grid layout"
-                             , "TOGGLELIGHT" : "Press button to toggle between daylight and moonlight mode."
+                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode."
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -635,7 +688,7 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Hintergrundbild"
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
-                             , "TOGGLELIGHT" : "Schaltfläche drücken um zwischen Tageslicht- und Mondlicht Modus zu wechseln."
+                             , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -728,7 +781,7 @@ var Xplug = function() {
             name     : "pd-xplug-goto-previous-page",
             label    : get_label('PREVPAGE'),
             title    : get_label('PREVPAGE'),
-            shortcut : "???",
+            shortcut : "Alt+B",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToPrevPage();
                            return true;
@@ -795,7 +848,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-toggle-moon-sun-style",
             label    : get_label('TOGGLELIGHT'),
-            shortcut : "????",
+            shortcut : "alt+9",
             action   : function( event, focusElement ) {
                           if (xplug.getStorage('STYLE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');

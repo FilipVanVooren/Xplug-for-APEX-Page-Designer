@@ -24,15 +24,15 @@ var Xplug = function() {
 
    var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid on right side"
                              , "DOCKMID"     : "Dock grid in middle"
-                             , "PREVPAGE"    : "Goto previous page"
-                             , "NEXTPAGE"    : "Goto next page"
+                             , "PREVPAGE"    : "Go to previous page"
+                             , "NEXTPAGE"    : "Go to next page"
                              , "SHORTCUTS"   : "Customize shortcuts"
                              , "NOTOOLTIPS"  : "Disable tooltips"
                              , "TOOLTIPS"    : "Enable tooltips"
                              , "PRETTYGRID"  : "Background image"
                              , "RESTOREGRID" : "Restore grid"
                              , "GRIDLAYOUT"  : "Grid layout"
-                             , "TOGGLELIGHT" : "Press button to toggle between daylight and moonlight mode."
+                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode."
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -51,7 +51,7 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Hintergrundbild"
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
-                             , "TOGGLELIGHT" : "Schaltfläche drücken um zwischen Tageslicht- und Mondlicht Modus zu wechseln."
+                             , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -144,7 +144,7 @@ var Xplug = function() {
             name     : "pd-xplug-goto-previous-page",
             label    : get_label('PREVPAGE'),
             title    : get_label('PREVPAGE'),
-            shortcut : "???",
+            shortcut : "Alt+B",
             action   : function( event, focusElement ) {
                            window.pageDesigner.goToPrevPage();
                            return true;
@@ -211,7 +211,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-toggle-moon-sun-style",
             label    : get_label('TOGGLELIGHT'),
-            shortcut : "????",
+            shortcut : "alt+9",
             action   : function( event, focusElement ) {
                           if (xplug.getStorage('STYLE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');

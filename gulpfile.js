@@ -7,6 +7,7 @@ gulp.task('Build Xplug', function() {
 
   return gulp.src(
             [ 'source/header.js',
+              'source/util.js',
               'source/page_designer_methods.js',
               'source/xplug_constructor.js',
               'source/main.js'
