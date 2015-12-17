@@ -352,32 +352,28 @@ window.pageDesigner.setStyle = function() {
 
 
     //==========================================================================
-    // Toolbar, Widgets, tabs
+    // Widgets, tabs
     //==========================================================================
-    l_css = l_lf + ' body                          { background-color: ' + l_c2     + '; }'
-          + l_lf + ' div.a-Toolbar-items           { background-color: ' + l_c2     + '; }';   // Toolbar items
+    l_css = l_lf + ' body                                    { background-color: ' + l_c2 + '; }'
 
-    //
     // Tabs at the top of page designer (active)
-    //
-    l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color:' + l_c2 + ' !important; }'
-          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '           + l_c7 +  '!important; }'
-          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '           + l_c7 +  '!important; }';
-          +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:' + l_c6 + '; }';
+    l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color: ' + l_c1 + ' !important; }'
+          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '            + l_c7 +  '!important; }'
+          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '            + l_c7 +  '!important; }';
+          +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:'  + l_c6 + '; }';
 
-    //
     // Tabs at the top of page designer (inactive)
-    //
     l_css += l_lf + ' .ui-tabs-anchor > span        { color: ' + l_c6 + '; }'   // Icon color tabs (Rendering, ...)
           + l_lf  + ' .a-PageDesigner-treeTitle     { color: ' + l_c7 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
           + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
-                  + ' .ui-tabs-anchor { color: ' + l_c2 + '; border-right-color: ' + l_c4 + '; }'
-          + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-state-default { background-color: ' + l_c6 + '; }'
-          + l_lf;
+                  + ' .ui-tabs-anchor { color: ' + l_c1 + '; border-right-color: ' + l_c4 + '; }'
+          + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-state-default { background-color: ' + l_c6 + '; }';
 
-    //
+    // Toolbar below tabs
+    l_css += l_lf  + ' div.a-Toolbar-items           { background-color: ' + l_c1     + '; }';   // Toolbar items
+
+
     // Border-color between elements
-    //
     l_css +='.body,'
           + '.ui-widget-content,'
           + '.a-Toolbar-pageColumn,'
@@ -388,10 +384,7 @@ window.pageDesigner.setStyle = function() {
           + 'div#sp_right .ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'
           + l_lf;
 
-
-    //
     // Buttons
-    //
     l_css += ' .ui-tabs-nav .ui-tabs-anchor            { border-right-color : ' + l_c4 + '; }'
           +  l_lf + ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }'
           +  l_lf + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
@@ -403,19 +396,6 @@ window.pageDesigner.setStyle = function() {
            + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_c7 + '!important; }';  // Hover Buttons
            + l_lf;
 
-    //==========================================================================
-    // Input fields, select, textarea
-    //==========================================================================
-    l_css += 'div#sp_main input,select,textarea '
-          +  l_lf + '     { color             : ' + l_c7  + ';'
-          +  l_lf + '       background-color  : ' + l_c4      + '; }'   // Input fields
-          +  l_lf;
-
-    //==========================================================================
-    // Redefine select icon
-    //==========================================================================
-     l_css += 'div#sp_main select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }' + l_lf;
-     l_css += l_lf;
 
     //==========================================================================
     // Left pane (Tree)
@@ -427,6 +407,8 @@ window.pageDesigner.setStyle = function() {
           +  l_lf + ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
           +  l_lf + ' span.a-TreeView-label              { color            : ' + l_c5 + '; }'          // Node label text color
           +  l_lf + ' span.a-TreeView-toggle             { color            : ' + l_c5 + '; }'          // Node collapse/expand icon color
+          +  l_lf + ' div.resize.u-ScrollingViewport     { background-color : ' + l_c1 + '; }'          // Background color empty space
+          +  l_lf + ' ul.ui-widget-header                { background-color : ' + l_c1 + '; }'          // Background color empty space
           +  l_lf;
 
     //==========================================================================
@@ -438,33 +420,55 @@ window.pageDesigner.setStyle = function() {
           +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  // Labelcontainer
 
           +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                         // Labelcontainer in error
-          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer'                          // Fieldcontainer in error
-          +         ' { background-color: ' + l_cerr + '; }'
+          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                         // Fieldcontainer in error
+          +  l_lf + ' .a-Property.is-error { background-color: ' + l_cerr + '!important; }'
 
-          +  l_lf + ' div#sp_right div.a-Property, div.a-Property:hover,'
+          +  l_lf + ' div#sp_right div.a-Property,'
+                  + ' div#sp_right div.a-Property:hover,'
                   + ' div#sp_right div.a-Property:focus,'
                   + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2     + '; }'            // Property button
           +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1     + ' !important; }' // Property border color
           +  l_lf + ' div#sp_right .a-Property-field:hover,'
-                  + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c2     + '; }'            // Property input field (active)
+                  + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1    + '; }'             // Property input field (active)
           +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2     + '; }'            // Property input field
           +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9     + '; }'            // Property input field
           +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'       // Property label
           +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                           // Properties editor message
+          +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'         // Redefine select icon
+
+          +  l_lf + ' .a-Property-checkbox-label, .a-Property-radio, .a-Property-unit { text-shadow :  none; }'
           +  l_lf;
 
-    //
+    //==========================================================================
     // Grid Layout - Gallery
-    //
+    //==========================================================================
     l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'              // Gallery background
           + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                               // Gallery tab row reset
           + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_c6 + '; border: 0px solid ' + l_c2 + '; border-radius: 2px;}'
                                                                                                          // Gallery tab background color
           + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } ' // Hack for border-radius
-          + l_lf + ' ul.a-Gallery                     { background-color : ' + l_c2 + '; }'
-          + l_lf + ' ul.ui-widget-header              { background-color : ' + l_c2 + '; }'
-          + l_lf + ' div.resize.u-ScrollingViewport   { background-color : ' + l_c2 + '; }'              // Gallery overlay
+          //+ l_lf + ' ul.a-Gallery                     { background-color : ' + l_c2 + '; }'
           + l_lf;
+
+
+
+    //==========================================================================
+    // Messages, Page Search, Help, Alert Badge
+    //==========================================================================
+    l_css +=       ' div#messages, div#search, div#help { background-color  : ' + l_c1 + '; }';
+
+    // Messages
+    l_css +=       ' .a-AlertMessages-message {  color: ' + l_c6 + '; }';
+          + l_lf + ' .a-AlertMessages-message.is-error:hover,'
+                 + ' .a-AlertMessages-message.is-error:focus {  background-color : #ff0000 !important; }';
+
+    // Page Search
+    l_css +=       ' div.a-Form-labelContainer .a-Form-label,'
+          + l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
+          + l_lf + ' { color: ' + l_c7 + '; }';
+
+    // Alert Badge
+    l_css += l_lf + ' span.a-AlertBadge { color : ' + l_c7 + '; }';
 
 
     //==========================================================================
