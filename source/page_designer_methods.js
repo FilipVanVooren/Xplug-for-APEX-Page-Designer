@@ -327,17 +327,18 @@ window.pageDesigner.setWidthOnGrid = function(pSize)
 
 
 window.pageDesigner.setStyle = function() {
-    var l_c1 = '#3f3f3f';       // Dark-Grey
-    var l_c2 = '#505050';       // Light-Grey shade 3
-    var l_c3 = '#246396';       // Light-blue
-    var l_c4 = '#3c424f';       // Dark-Grey 2
-    var l_c5 = '#909090';       // Light-Grey
-    var l_c6 = '#ac761b';       // Orange
-    var l_c7 = '#ffffff';       // White
-    var l_c8 = '#000000';       // Black
-    var l_c9 = '#cfe6fa';       // light-Cyan
+    var l_c1   = '#3f3f3f';       // Dark-Grey
+    var l_c2   = '#505050';       // Light-Grey shade 3
+    var l_c3   = '#246396';       // Light-blue
+    var l_c4   = '#3c424f';       // Dark-Grey 2
+    var l_c5   = '#909090';       // Light-Grey
+    var l_c6   = '#ac761b';       // Orange
+    var l_c7   = '#ffffff';       // White
+    var l_c8   = '#000000';       // Black
+    var l_c9   = '#cfe6fa';       // light-Cyan
 
-    var l_lf     = "\n";
+    var l_cerr = '#FFC3C3';       // Error background color
+    var l_lf   = "\n";
 
 
     //==========================================================================
@@ -361,7 +362,7 @@ window.pageDesigner.setStyle = function() {
     //
     l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color:' + l_c2 + ' !important; }'
           +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '           + l_c7 +  '!important; }'
-          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '           + l_c7 +  '!important; }'
+          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '           + l_c7 +  '!important; }';
           +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:' + l_c6 + '; }';
 
     //
@@ -384,7 +385,7 @@ window.pageDesigner.setStyle = function() {
           + '.a-PropertyEditor-propertyGroup, '
           + '.a-PropertyEditor-propertyGroup-body, '
           + '.a-PropertyEditor-propertyGroup-header, '
-          + '.ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'
+          + 'div#sp_right .ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'
           + l_lf;
 
 
@@ -424,27 +425,32 @@ window.pageDesigner.setStyle = function() {
           +  l_lf + ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
           +  l_lf + ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
           +  l_lf + ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
-          +  l_lf + ' span.a-TreeView-label              { color       : ' + l_c5  + '; }'          // Node label text color
-          +  l_lf + ' span.a-TreeView-toggle             { color       : ' + l_c5  + '; }'          // Node collapse/expand icon color
+          +  l_lf + ' span.a-TreeView-label              { color            : ' + l_c5 + '; }'          // Node label text color
+          +  l_lf + ' span.a-TreeView-toggle             { color            : ' + l_c5 + '; }'          // Node collapse/expand icon color
           +  l_lf;
 
     //==========================================================================
     // Properties Editor
     //==========================================================================
-    l_css +=        ' .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3     + '; }'  // Group header
-          +  l_lf + ' .a-PropertyEditor-propertyGroup-title  { color            : ' + l_c7 + '; }'      // Group header title
-          +  l_lf + ' div.a-Property-fieldContainer          { background-color : ' + l_c2     + '; }'  // Fieldcontainer
-          +  l_lf + ' div.a-Property-labelContainer          { background-color : ' + l_c2     + '; }'  // Labelcontainer
-          +  l_lf + ' div.a-Property, div.a-Property:hover,'
-                  + ' div.a-Property:focus,'
-                  + ' div.a-Property:active                  { background-color : ' + l_c2     + '; }'  // Property button
-          +  l_lf + ' div.a-Property                         { border-color     : ' + l_c1     + ' !important; }'  // Property border color
-          +  l_lf + ' .a-Property-field:hover,'
-                  +  '.a-Property-field:focus                { background-color : ' + l_c2     + '; }'  // Property input field (active)
-          +  l_lf + ' .a-Property-field                      { background-color : ' + l_c2     + '; }'  // Property input field
-          +  l_lf + ' .a-Property-field                      { color            : ' + l_c9 + '; }'      // Property input field
-          +  l_lf + ' .a-Property-label             { color : ' + l_c5 + '; text-shadow : none; }'      // Property label
-          +  l_lf + ' .a-PropertyEditor-messageText { color: '  + l_c6     + '; }'                      // Properties editor message
+    l_css +=        ' div#sp_right .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3  + '; }'  // Group header
+          +  l_lf + ' div#sp_right .a-PropertyEditor-propertyGroup-title  { color            : ' + l_c7  + '; }'  // Group header title
+          +  l_lf + ' div#sp_right div.a-Property-fieldContainer          { background-color : ' + l_c2  + '; }'  // Fieldcontainer
+          +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  // Labelcontainer
+
+          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                         // Labelcontainer in error
+          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer'                          // Fieldcontainer in error
+          +         ' { background-color: ' + l_cerr + '; }'
+
+          +  l_lf + ' div#sp_right div.a-Property, div.a-Property:hover,'
+                  + ' div#sp_right div.a-Property:focus,'
+                  + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2     + '; }'            // Property button
+          +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1     + ' !important; }' // Property border color
+          +  l_lf + ' div#sp_right .a-Property-field:hover,'
+                  + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c2     + '; }'            // Property input field (active)
+          +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2     + '; }'            // Property input field
+          +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9     + '; }'            // Property input field
+          +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'       // Property label
+          +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                           // Properties editor message
           +  l_lf;
 
     //
