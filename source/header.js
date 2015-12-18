@@ -55,6 +55,11 @@
 //         2015-12-06   - Redefine scrollbars on Webkit
 //         2015-12-08   - Bug-fixing CSS colors of page elements
 //
+// v1.2    2015-12-18 * Several changes
+//                      - Refactored. Splitted Xplug code in multiple javascript files and using Gulp task for building Xplug
+//                      - Finalized work on moonlight style
+//                      - Removed setWidthOnGrid() and corresponding menu call
+//                      - Removed submenu 'Grid Layout' and menu option 'Background Image'
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

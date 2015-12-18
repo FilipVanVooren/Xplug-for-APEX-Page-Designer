@@ -5,6 +5,8 @@
 // xplug_constructor.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+
 
 var Xplug = function() {
    var C_version = 'Xplug v1.2 (www.oratronik.de)';
@@ -32,7 +34,8 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Background image"
                              , "RESTOREGRID" : "Restore grid"
                              , "GRIDLAYOUT"  : "Grid layout"
-                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode."
+                             , "MOONLIGHT"   : "Moonlight mode"
+                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -51,6 +54,7 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Hintergrundbild"
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
+                             , "MOONLIGHT"   : "Mondlicht-Modus"
                              , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
@@ -197,7 +201,7 @@ var Xplug = function() {
             label    : get_label('TOGGLEMOON'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           return window.pageDesigner.setMoonlightStyle();
+                           return window.pageDesigner.MoonlightMode();
                        }
           },
           {
@@ -205,7 +209,7 @@ var Xplug = function() {
             label    : get_label('TOGGLEDAY'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           return window.pageDesigner.setDaylightStyle();
+                           return window.pageDesigner.DaylightMode();
                        }
           },
           {
@@ -213,7 +217,7 @@ var Xplug = function() {
             label    : get_label('TOGGLELIGHT'),
             shortcut : "alt+9",
             action   : function( event, focusElement ) {
-                          if (xplug.getStorage('STYLE','NO') == 'YES')
+                          if (xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');
 
                           return apex.actions.invoke('pd-xplug-set-moonlight-mode');
@@ -252,7 +256,7 @@ var Xplug = function() {
         // Add custom CSS to page header
         $('head').append(
             + l_lf + '<style type="text/css">'
-            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #1EE2B3!important; }'
+            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #FFFFFF!important; }'
             + l_lf + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
             + l_lf + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
             + l_lf + '  .a-Icon.icon-xplug-moon ' + get_svg_icon('moon',14,14,null,1)
@@ -317,7 +321,7 @@ var Xplug = function() {
                          },
               set      : function()
                          {
-                            $('div#top_col').prevAll('div#right_col').length == 0
+                            $('div#top_col').prevAll('div#right_col').length === 0
                                ? apex.actions.invoke('pd-xplug-dock-grid-right')
                                : apex.actions.invoke('pd-xplug-dock-grid-middle');
                          },
@@ -328,65 +332,25 @@ var Xplug = function() {
             },
 
 
-            { type    : "subMenu",
-              label   : get_label('GRIDLAYOUT'),
-              menu    : { items :
-                          [
-
-                            {
-                              type     : "toggle",
-                              label    : 'Midnight Theme',
-                              get      : function()
-                                         {
-                                            return xplug.getStorage('STYLE','NO') == 'YES';
-                                         },
-                              set      : function()
-                                         {
-                                           xplug.getStorage('STYLE','NO') == 'YES'
-                                              ? apex.actions.invoke('pd-xplug-set-daylight-mode')
-                                              : apex.actions.invoke('pd-xplug-set-moonlight-mode')
-                                         },
-                              disabled : function()
-                                         {
-                                           return false;
-                                         }
-                            },
-
-                              {
-                                type     : "toggle",
-                                label    : get_label('PRETTYGRID'),
-                                get      : function()
-                                           {
-                                              return xplug.getStorage('PRETTY_GRID','NO') == 'YES';
-                                           },
-                                set      : function()
-                                           {
-                                             xplug.getStorage('PRETTY_GRID','NO') == 'YES'
-                                                ? apex.actions.invoke('pd-xplug-no-pretty-grid')
-                                                : apex.actions.invoke('pd-xplug-pretty-grid');
-                                           },
-                                disabled : function()
-                                           {
-                                             return false;
-                                           }
-                              },
-
-                              {  type     : "radioGroup",
-                                 set      : function(pValue)
-                                            {
-                                              pageDesigner.setWidthOnGrid(pValue);
-                                            },
-                                 get      : function()
-                                            {
-                                              return parseInt(xplug.getStorage('SPACE_ON_GRID',100));
-                                            },
-                                 choices  : [ { label: '60%',  value : 60  },
-                                              { label: '80%',  value : 80  },
-                                              { label: '100%', value : 100 }
-                                            ]
-                              }
-                        ] }
+            {
+              type     : "toggle",
+              label    : get_label('MOONLIGHT'),
+              get      : function()
+                         {
+                            return xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES';
+                         },
+              set      : function()
+                         {
+                           xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES'
+                              ? apex.actions.invoke('pd-xplug-set-daylight-mode')
+                              : apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                         },
+              disabled : function()
+                         {
+                           return false;
+                         }
             },
+
 
             { type     : "separator" },
 
@@ -446,56 +410,55 @@ var Xplug = function() {
         if (localStorage === null) {
            $('#ORATRONIK_XPLUG')
                .on('click', function()
-                 { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ) }
+                 { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
         }
    } // __init
 
    __init();
-} // constructor Xplug
+}; // constructor Xplug
 
 
-    Xplug.prototype.setStorage = function(p_key, p_value)
-        {
-            if (typeof(localStorage) == 'object') {
-               var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
-
-               if (localStorage === null) {
-                  console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
-                  return false;
-               }
-               localStorage.setItem(l_key, p_value);
-               return true;
-            } else {
-               console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
-               return false;
-            }
-        } // Xplug.prototype.setStorage
-
-
-    Xplug.prototype.getStorage = function(p_key, p_default)
-        {
-            if (typeof(localStorage) == 'object') {
-               var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
-
-               if (localStorage === null) {
-                  console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
-                  return p_default;
-               }
-               return localStorage.getItem(l_key) || p_default;
-            } else {
-               console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
-               return p_default;
-           }
-        } // Xplug.prototype.getStorage
-
-
-    Xplug.prototype.loadSettings = function ()
+Xplug.prototype.setStorage = function(p_key, p_value)
     {
-       xplug.getStorage('STYLE','NO')             == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
-       xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-       xplug.getStorage('PRETTY_GRID','NO')       == 'YES' && apex.actions.invoke('pd-xplug-pretty-grid');
-       xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+        if (typeof(localStorage) == 'object') {
+           var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
 
-       window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
-    } // Xplug.prototype.loadSettings
+           if (localStorage === null) {
+              console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
+              return false;
+           }
+           localStorage.setItem(l_key, p_value);
+           return true;
+        } else {
+           console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
+           return false;
+        }
+    }; // Xplug.prototype.setStorage
+
+
+Xplug.prototype.getStorage = function(p_key, p_default)
+    {
+        if (typeof(localStorage) == 'object') {
+           var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
+
+           if (localStorage === null) {
+              console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
+              return p_default;
+           }
+           return localStorage.getItem(l_key) || p_default;
+        } else {
+           console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
+           return p_default;
+       }
+    }; // Xplug.prototype.getStorage
+
+
+Xplug.prototype.loadSettings = function ()
+{
+   xplug.getStorage('MOONLIGHT_MODE','NO')    == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
+   xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+   xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+
+   window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
+}; // Xplug.prototype.loadSettings

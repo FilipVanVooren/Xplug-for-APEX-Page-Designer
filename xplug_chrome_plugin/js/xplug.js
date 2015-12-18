@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Fri Dec 18 2015 00:14:30
+// Built using Gulp. Built date: Fri Dec 18 2015 18:02:06
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -56,6 +56,11 @@
 //         2015-12-06   - Redefine scrollbars on Webkit
 //         2015-12-08   - Bug-fixing CSS colors of page elements
 //
+// v1.2    2015-12-18 * Several changes
+//                      - Refactored. Splitted Xplug code in multiple javascript files and using Gulp task for building Xplug
+//                      - Finalized work on moonlight style
+//                      - Removed setWidthOnGrid() and corresponding menu call
+//                      - Removed submenu 'Grid Layout' and menu option 'Background Image'
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -70,6 +75,7 @@
 // util.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
 
 function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    var C_icon = {};
@@ -88,16 +94,16 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
                + ' 17.5 34t-4.5 38z"/></svg>';
 
-   C_icon['sun']   = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
-                   + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
-                   + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
-                   + ' 223.5 45.5 223.5 123 184 184 123 223.5 45.5 223.5-45.5 184-123 123-184'
-                   + ' 45.5-223.5zm276 277q-4 15-20 20l-292 96v306q0 16-13 26-15 10-29 4l-292-94-180'
-                   + ' 248q-10 13-26 13t-26-13l-180-248-292 94q-14'
-                   + ' 6-29-4-13-10-13-26v-306l-292-96q-16-5-20-20-5-17 4-29l180-248-180-248q-9-13-4-29'
-                   + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
-                   + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
-                   + ' 248q9 12 4 29z"/></svg>';
+   C_icon.sun  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
+               + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
+               + ' 223.5 45.5 223.5 123 184 184 123 223.5 45.5 223.5-45.5 184-123 123-184'
+               + ' 45.5-223.5zm276 277q-4 15-20 20l-292 96v306q0 16-13 26-15 10-29 4l-292-94-180'
+               + ' 248q-10 13-26 13t-26-13l-180-248-292 94q-14'
+               + ' 6-29-4-13-10-13-26v-306l-292-96q-16-5-20-20-5-17 4-29l180-248-180-248q-9-13-4-29'
+               + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
+               + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
+               + ' 248q9 12 4 29z"/></svg>';
 
    l_svg = C_icon[p_icon] || '';
    l_svg = l_svg.replace('%%',p_width);
@@ -107,7 +113,7 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    if (p_is_css_background) return '{ background : url(data:image/svg+xml;base64,' + btoa(l_svg) + ') no-repeat; }';
 
    return l_svg;
-}
+}  // get_svg_icon
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -156,15 +162,14 @@ window.pageDesigner.goToPrevPage = function () {
            function() {
               apex.actions.enable('pd-xplug-goto-previous-page');
               apex.actions.enable('pd-xplug-goto-next-page');
-           }
-           ,500    // Is this a good value?
+           },500    // Is this a good value?
         );
       }
     );
 
     window.pageDesigner.goToPage(l_prev);
   }
-} // window.pageDesigner.goToPrevPage
+}; //  window.pageDesigner.goToPrevPage
 
 
 
@@ -207,15 +212,14 @@ window.pageDesigner.goToNextPage = function () {
             function() {
                apex.actions.enable('pd-xplug-goto-previous-page');
                apex.actions.enable('pd-xplug-goto-next-page');
-            }
-            ,500    // Is this a good value?
+            },500    // Is this a good value?
          );
        }
      );
 
      window.pageDesigner.goToPage(l_next);
   }
-} // window.pageDesigner.goToNextPage
+}; // window.pageDesigner.goToNextPage
 
 
 
@@ -225,7 +229,7 @@ window.pageDesigner.goToNextPage = function () {
  ***************************************************************************/
 window.pageDesigner.dockGridRight = function()
 {
-    'use strict'
+    'use strict';
 
     //
     // Exit if not in APEX Page Designer
@@ -279,7 +283,7 @@ window.pageDesigner.dockGridRight = function()
     xplug.setStorage('PANES_SWITCHED','YES');                                                  // Save option in local database
 
     return 1;
-} // window.pageDesigner.dockGridRight
+}; // window.pageDesigner.dockGridRight
 
 
 
@@ -343,7 +347,7 @@ window.pageDesigner.dockGridMiddle = function()
     xplug.setStorage('PANES_SWITCHED','NO');                                                   // Save option in local database
 
     return 1;
-} // window.pageDesigner.dockGridMiddle
+}; // window.pageDesigner.dockGridMiddle
 
 
 /****************************************************************************
@@ -370,7 +374,7 @@ window.pageDesigner.disableTooltips = function()
       console.error("XPLUG - Tooltips can't be disabled");
       return 0;
    }
-} // window.pageDesigner.disableTooltips
+}; // window.pageDesigner.disableTooltips
 
 
 /****************************************************************************
@@ -393,8 +397,33 @@ window.pageDesigner.enableTooltips = function()
      console.error("XPLUG - Tooltips can't be enabled");
      return 0;
   }
-} // window.pageDesigner.enableTooltips
+}; // window.pageDesigner.enableTooltips
 
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: MoonlightMode
+ ***************************************************************************/
+window.pageDesigner.MoonlightMode = function() {
+   window.pageDesigner.setStyle();
+   document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
+   $('#ORATRONIK_XPLUG_moonsun_button span')
+        .removeClass('icon-xplug-sun')
+        .addClass('icon-xplug-moon');
+};
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: DaylightMode
+ ***************************************************************************/
+window.pageDesigner.DaylightMode = function() {
+  window.pageDesigner.removeStyle();
+  $('#glv-viewport').css('background-image','none');
+  $('#ORATRONIK_XPLUG_moonsun_button span')
+       .removeClass('icon-xplug-moon')
+       .addClass('icon-xplug-sun');
+};
 
 
 /****************************************************************************
@@ -407,7 +436,7 @@ window.pageDesigner.prettyGrid = function()
   xplug.setStorage('PRETTY_GRID','YES');
 
   return 1;
-} // window.pageDesigner.prettyGrid
+}; // window.pageDesigner.prettyGrid
 
 
 /****************************************************************************
@@ -420,35 +449,32 @@ window.pageDesigner.noPrettyGrid = function()
   xplug.setStorage('PRETTY_GRID','NO');
 
   return 1;
-} // window.pageDesigner.noPrettyGrid
+}; // window.pageDesigner.noPrettyGrid
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// page_designer_style.js
+// 2015-12-13 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: setWidthOnGrid
+ * METHOD: setStyle
  ***************************************************************************/
-window.pageDesigner.setWidthOnGrid = function(pSize)
-{
-  if ((pSize >= 0) && (pSize <= 100))
-     $('.a-GridLayout--z100').css('width',pSize + '%');
-     xplug.setStorage('SPACE_ON_GRID',pSize);
-
-     return 1;
-} // window.pageDesigner.setWidthOnGrid
-
-
-window.pageDesigner.setStyle = function() {
-    var l_c1   = '#3f3f3f';       // Dark-Grey
-    var l_c2   = '#505050';       // Light-Grey shade 3
-    var l_c3   = '#246396';       // Light-blue
-    var l_c4   = '#3c424f';       // Dark-Grey 2
-    var l_c5   = '#909090';       // Light-Grey
-    var l_c6   = '#ac761b';       // Orange
-    var l_c7   = '#ffffff';       // White
-    var l_c8   = '#000000';       // Black
-    var l_c9   = '#cfe6fa';       // light-Cyan
-
-    var l_cerr = '#FFC3C3';       // Error background color
+window.pageDesigner.setStyle = function(p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
+    var l_c1   = p1    || '#3f3f3f';       // Dark-Grey
+    var l_c2   = p2    || '#505050';       // Light-Grey shade 3
+    var l_c3   = p3    || '#246396';       // Light-blue
+    var l_c4   = p4    || '#3c424f';       // Dark-Grey 2
+    var l_c5   = p5    || '#909090';       // Light-Grey
+    var l_c6   = p6    || '#ac761b';       // Orange
+    var l_c7   = p7    || '#ffffff';       // White
+    var l_c8   = p8    || '#000000';       // Black
+    var l_c9   = p9    || '#cfe6fa';       // light-Cyan
+    var l_cerr = p_err || '#FFC3C3';       // Error background color
     var l_lf   = "\n";
 
 
@@ -465,12 +491,12 @@ window.pageDesigner.setStyle = function() {
     //==========================================================================
     // Widgets, tabs
     //==========================================================================
-    l_css = l_lf + ' body                                    { background-color: ' + l_c2 + '; }'
+    l_css = l_lf + ' body                                    { background-color: ' + l_c2 + '; }';
 
     // Tabs at the top of page designer (active)
     l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color: ' + l_c1 + ' !important; }'
           +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '            + l_c7 +  '!important; }'
-          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '            + l_c7 +  '!important; }';
+          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '            + l_c7 +  '!important; }'
           +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:'  + l_c6 + '; }';
 
     // Tabs at the top of page designer (inactive)
@@ -501,17 +527,17 @@ window.pageDesigner.setStyle = function() {
           +  l_lf + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
           +  l_lf + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
                   + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
-                  + '    { background-color: ' + l_c9 + ' !important; }'                              // Active Buttons
+                  + '    { background-color: ' + l_c9 + ' !important; }';                             // Active Buttons
 
     l_css += ' div#sp_main .a-Button:hover,'
-           + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_c7 + '!important; }';  // Hover Buttons
+           + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_c7 + '!important; }'   // Hover Buttons
            + l_lf;
 
 
     //==========================================================================
     // Left pane (Tree)
     //==========================================================================
-    l_css +=      + ' .a-PageDesigner-treeWrap           { background-color : ' + l_c1 + '; }'          // Space between tree and surroundings (tab1-tab4)
+    l_css +=        ' .a-PageDesigner-treeWrap           { background-color : ' + l_c1 + '; }'          // Space between tree and surroundings (tab1-tab4)
           +  l_lf + ' div#PDrenderingTree.a-TreeView     { background-color : ' + l_c1 + '; }'          // Rendering - Tree (=tab1)
           +  l_lf + ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
           +  l_lf + ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
@@ -558,7 +584,6 @@ window.pageDesigner.setStyle = function() {
           + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_c6 + '; border: 0px solid ' + l_c2 + '; border-radius: 2px;}'
                                                                                                          // Gallery tab background color
           + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } ' // Hack for border-radius
-          //+ l_lf + ' ul.a-Gallery                     { background-color : ' + l_c2 + '; }'
           + l_lf;
 
 
@@ -566,20 +591,27 @@ window.pageDesigner.setStyle = function() {
     //==========================================================================
     // Messages, Page Search, Help, Alert Badge
     //==========================================================================
-    l_css +=       ' div#messages, div#search, div#help { background-color  : ' + l_c1 + '; }';
+    l_css +=       ' div#messages, div#search, div#help               { background-color : ' + l_c1 + '; }'
+          + l_lf + ' div#help-container                               { background-color : ' + l_c1 + '; }'
+          + l_lf + ' .ui-tabs-helpTab.ui-state-active .ui-tabs-anchor { background-color : ' + l_c1 + ' !important; }'
+          + l_lf + ' div#help-container h3, div#help-container h4     { color : ' + l_c7 + '; }'
+          + l_lf + ' div#help-container dt                            { color : ' + l_c7 + '; }'
+          + l_lf + ' div#help-container a                             { color : ' + l_c3 + '; }'
+          + l_lf + ' div#help-container *                             { color : ' + l_c5 + '; }';
 
     // Messages
-    l_css +=       ' .a-AlertMessages-message {  color: ' + l_c6 + '; }';
-          + l_lf + ' .a-AlertMessages-message.is-error:hover,'
-                 + ' .a-AlertMessages-message.is-error:focus {  background-color : #ff0000 !important; }';
+    l_css += l_lf + ' .a-AlertMessages-message                {  color: ' + l_c6 + '; }'
+          +  l_lf + ' .a-AlertMessages-message.is-error:hover,'
+                  + ' .a-AlertMessages-message.is-error:focus {  background-color : ' + l_c7 + ' !important; }';
 
     // Page Search
-    l_css +=       ' div.a-Form-labelContainer .a-Form-label,'
-          + l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
-          + l_lf + ' { color: ' + l_c7 + '; }';
+    l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label,'
+          +  l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
+          +  l_lf + ' { color: ' + l_c7 + '; }';
 
     // Alert Badge
     l_css += l_lf + ' span.a-AlertBadge { color : ' + l_c7 + '; }';
+
 
 
     //==========================================================================
@@ -607,43 +639,24 @@ window.pageDesigner.setStyle = function() {
                 + l_css
                 + l_scroll
                 + '</style>'                                                    + l_lf;
-    console.log(l_style)
+    console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
-    xplug.setStorage('STYLE','YES');                                            // Save option in local database
+    xplug.setStorage('MOONLIGHT_MODE','YES');                                            // Save option in local database
 
 
     return 1;
-} // window.pageDesigner.setStyle
+}; // window.pageDesigner.setStyle
 
 
 window.pageDesigner.removeStyle = function() {
    $('style#XPLUG_THEME').remove();
 
-   xplug.setStorage('STYLE','NO');                                              // Save option in local database
+   xplug.setStorage('MOONLIGHT_MODE','NO');                                              // Save option in local database
 
    return 1;
-} // window.pageDesigner.removeStyle
-
-
-window.pageDesigner.setMoonlightStyle = function() {
-   window.pageDesigner.setStyle();
-   document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
-   $('#ORATRONIK_XPLUG_moonsun_button span')
-        .removeClass('icon-xplug-sun')
-        .addClass('icon-xplug-moon');
-}
-
-
-
-window.pageDesigner.setDaylightStyle = function() {
-  window.pageDesigner.removeStyle();
-  $('#glv-viewport').css('background-image','none');
-  $('#ORATRONIK_XPLUG_moonsun_button span')
-       .removeClass('icon-xplug-moon')
-       .addClass('icon-xplug-sun');
-}
+}; // window.pageDesigner.removeStyle
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -652,6 +665,8 @@ window.pageDesigner.setDaylightStyle = function() {
 // xplug_constructor.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+
 
 var Xplug = function() {
    var C_version = 'Xplug v1.2 (www.oratronik.de)';
@@ -679,7 +694,8 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Background image"
                              , "RESTOREGRID" : "Restore grid"
                              , "GRIDLAYOUT"  : "Grid layout"
-                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode."
+                             , "MOONLIGHT"   : "Moonlight mode"
+                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -698,6 +714,7 @@ var Xplug = function() {
                              , "PRETTYGRID"  : "Hintergrundbild"
                              , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
+                             , "MOONLIGHT"   : "Mondlicht-Modus"
                              , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
@@ -844,7 +861,7 @@ var Xplug = function() {
             label    : get_label('TOGGLEMOON'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           return window.pageDesigner.setMoonlightStyle();
+                           return window.pageDesigner.MoonlightMode();
                        }
           },
           {
@@ -852,7 +869,7 @@ var Xplug = function() {
             label    : get_label('TOGGLEDAY'),
             shortcut : "????",
             action   : function( event, focusElement ) {
-                           return window.pageDesigner.setDaylightStyle();
+                           return window.pageDesigner.DaylightMode();
                        }
           },
           {
@@ -860,7 +877,7 @@ var Xplug = function() {
             label    : get_label('TOGGLELIGHT'),
             shortcut : "alt+9",
             action   : function( event, focusElement ) {
-                          if (xplug.getStorage('STYLE','NO') == 'YES')
+                          if (xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');
 
                           return apex.actions.invoke('pd-xplug-set-moonlight-mode');
@@ -899,7 +916,7 @@ var Xplug = function() {
         // Add custom CSS to page header
         $('head').append(
             + l_lf + '<style type="text/css">'
-            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #1EE2B3!important; }'
+            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #FFFFFF!important; }'
             + l_lf + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
             + l_lf + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
             + l_lf + '  .a-Icon.icon-xplug-moon ' + get_svg_icon('moon',14,14,null,1)
@@ -964,7 +981,7 @@ var Xplug = function() {
                          },
               set      : function()
                          {
-                            $('div#top_col').prevAll('div#right_col').length == 0
+                            $('div#top_col').prevAll('div#right_col').length === 0
                                ? apex.actions.invoke('pd-xplug-dock-grid-right')
                                : apex.actions.invoke('pd-xplug-dock-grid-middle');
                          },
@@ -975,65 +992,25 @@ var Xplug = function() {
             },
 
 
-            { type    : "subMenu",
-              label   : get_label('GRIDLAYOUT'),
-              menu    : { items :
-                          [
-
-                            {
-                              type     : "toggle",
-                              label    : 'Midnight Theme',
-                              get      : function()
-                                         {
-                                            return xplug.getStorage('STYLE','NO') == 'YES';
-                                         },
-                              set      : function()
-                                         {
-                                           xplug.getStorage('STYLE','NO') == 'YES'
-                                              ? apex.actions.invoke('pd-xplug-set-daylight-mode')
-                                              : apex.actions.invoke('pd-xplug-set-moonlight-mode')
-                                         },
-                              disabled : function()
-                                         {
-                                           return false;
-                                         }
-                            },
-
-                              {
-                                type     : "toggle",
-                                label    : get_label('PRETTYGRID'),
-                                get      : function()
-                                           {
-                                              return xplug.getStorage('PRETTY_GRID','NO') == 'YES';
-                                           },
-                                set      : function()
-                                           {
-                                             xplug.getStorage('PRETTY_GRID','NO') == 'YES'
-                                                ? apex.actions.invoke('pd-xplug-no-pretty-grid')
-                                                : apex.actions.invoke('pd-xplug-pretty-grid');
-                                           },
-                                disabled : function()
-                                           {
-                                             return false;
-                                           }
-                              },
-
-                              {  type     : "radioGroup",
-                                 set      : function(pValue)
-                                            {
-                                              pageDesigner.setWidthOnGrid(pValue);
-                                            },
-                                 get      : function()
-                                            {
-                                              return parseInt(xplug.getStorage('SPACE_ON_GRID',100));
-                                            },
-                                 choices  : [ { label: '60%',  value : 60  },
-                                              { label: '80%',  value : 80  },
-                                              { label: '100%', value : 100 }
-                                            ]
-                              }
-                        ] }
+            {
+              type     : "toggle",
+              label    : get_label('MOONLIGHT'),
+              get      : function()
+                         {
+                            return xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES';
+                         },
+              set      : function()
+                         {
+                           xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES'
+                              ? apex.actions.invoke('pd-xplug-set-daylight-mode')
+                              : apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                         },
+              disabled : function()
+                         {
+                           return false;
+                         }
             },
+
 
             { type     : "separator" },
 
@@ -1093,59 +1070,58 @@ var Xplug = function() {
         if (localStorage === null) {
            $('#ORATRONIK_XPLUG')
                .on('click', function()
-                 { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ) }
+                 { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
         }
    } // __init
 
    __init();
-} // constructor Xplug
+}; // constructor Xplug
 
 
-    Xplug.prototype.setStorage = function(p_key, p_value)
-        {
-            if (typeof(localStorage) == 'object') {
-               var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
-
-               if (localStorage === null) {
-                  console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
-                  return false;
-               }
-               localStorage.setItem(l_key, p_value);
-               return true;
-            } else {
-               console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
-               return false;
-            }
-        } // Xplug.prototype.setStorage
-
-
-    Xplug.prototype.getStorage = function(p_key, p_default)
-        {
-            if (typeof(localStorage) == 'object') {
-               var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
-
-               if (localStorage === null) {
-                  console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
-                  return p_default;
-               }
-               return localStorage.getItem(l_key) || p_default;
-            } else {
-               console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
-               return p_default;
-           }
-        } // Xplug.prototype.getStorage
-
-
-    Xplug.prototype.loadSettings = function ()
+Xplug.prototype.setStorage = function(p_key, p_value)
     {
-       xplug.getStorage('STYLE','NO')             == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
-       xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-       xplug.getStorage('PRETTY_GRID','NO')       == 'YES' && apex.actions.invoke('pd-xplug-pretty-grid');
-       xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+        if (typeof(localStorage) == 'object') {
+           var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
 
-       window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
-    } // Xplug.prototype.loadSettings
+           if (localStorage === null) {
+              console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
+              return false;
+           }
+           localStorage.setItem(l_key, p_value);
+           return true;
+        } else {
+           console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
+           return false;
+        }
+    }; // Xplug.prototype.setStorage
+
+
+Xplug.prototype.getStorage = function(p_key, p_default)
+    {
+        if (typeof(localStorage) == 'object') {
+           var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
+
+           if (localStorage === null) {
+              console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
+              return p_default;
+           }
+           return localStorage.getItem(l_key) || p_default;
+        } else {
+           console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
+           return p_default;
+       }
+    }; // Xplug.prototype.getStorage
+
+
+Xplug.prototype.loadSettings = function ()
+{
+   xplug.getStorage('MOONLIGHT_MODE','NO')    == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
+   xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+   xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+
+   window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
+}; // Xplug.prototype.loadSettings
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
