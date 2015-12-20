@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Fri Dec 18 2015 18:02:06
+// Built using Gulp. Built date: Sun Dec 20 2015 21:30:03
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -122,6 +122,7 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
 // page_designer_methods.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
@@ -451,6 +452,74 @@ window.pageDesigner.noPrettyGrid = function()
   return 1;
 }; // window.pageDesigner.noPrettyGrid
 
+
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: customizeShortcuts
+ ***************************************************************************/
+window.pageDesigner.customizeShortcuts = function(p_title)
+{
+    'use strict';
+
+    //
+    // Exit if not in APEX Page Designer
+    //
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').length === 0
+        && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_SHORTCUTS"></div');
+
+    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS')
+        .lovDialog(
+                { modal             : true,
+                  title             : p_title,
+                  resizable         : true,
+
+                  columnDefinitions : [ { name  : "label",     title : "Action"   },
+                                        { name  : "shortcut",  title : "Shortcut" } ],
+
+                  filterLov         : function( pFilters, pRenderLovEntries ) {
+                                         // To understand where we get our LOV from, just
+                                         // run apex.actions.list() in your javascript console and you'll get the idea.
+                                         //
+                                         // We're not using apex.actions.listShortcuts() because we also want to list
+                                         // actions that do not yet have a shortcut assigned.
+
+                                         var l_arr = apex.actions.list().sort();
+                                         for (var i=0; i<l_arr.length; i++) {
+                                             l_arr[i].shortcut =  apex.actions.lookup(l_arr[i].name).shortcut;
+                                         }
+
+                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
+                                         // To render our LOV, all we need to do is call this function and pass
+                                         // our LOV as an array.
+                                         pRenderLovEntries(l_arr);
+                                      },
+
+                  width             : 700,
+                  height            : 340,
+
+                  close             : // called by widget.lovDialog.js close function
+                                      function(pEvent) {
+                                         $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();
+                                      },
+
+                  multiValue       : false,
+                  valueSelected    : function( pEvent, pData ) {
+                                         alert(pData.label);
+                                         console.log(pData);
+                                     }
+
+                }
+               );
+
+    return 1;
+}; // window.pageDesigner.customizeShortcuts
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -639,7 +708,7 @@ window.pageDesigner.setStyle = function(p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
                 + l_css
                 + l_scroll
                 + '</style>'                                                    + l_lf;
-    console.log(l_style);
+    // console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
@@ -657,6 +726,76 @@ window.pageDesigner.removeStyle = function() {
 
    return 1;
 }; // window.pageDesigner.removeStyle
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: customizeColors
+ ***************************************************************************/
+window.pageDesigner.customizeColors= function(p_title)
+{
+    'use strict';
+
+    //
+    // Exit if not in APEX Page Designer
+    //
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    var l_out = apex.util.htmlBuilder();
+
+    l_out.markup('<div')
+         .attr('id','ORATRONIK_XPLUG_COLOR_DIALOG')
+         .markup('><ul>')
+         .markup('<li><label>Colour 1  <input ID="l_c1"   type="text" width=30>')
+         .markup('<li><label>Colour 2  <input ID="l_c2"   type="text" width=30>')
+         .markup('<li><label>Colour 3  <input ID="l_c3"   type="text" width=30>')
+         .markup('<li><label>Colour 4  <input ID="l_c4"   type="text" width=30>')
+         .markup('<li><label>Colour 5  <input ID="l_c5"   type="text" width=30>')
+         .markup('<li><label>Colour 6  <input ID="l_c6"   type="text" width=30>')
+         .markup('<li><label>Colour 7  <input ID="l_c7"   type="text" width=30>')
+         .markup('<li><label>Colour 8  <input ID="l_c8"   type="text" width=30>')
+         .markup('<li><label>Colour 9  <input ID="l_c9"   type="text" width=30>')
+         .markup('<li><label>Colour 10 <input ID="l_c10"  type="text" width=30>')
+         .markup('</ul></div>');
+
+    $(l_out.html)
+        .dialog(
+                { modal   : false,
+                  title   : p_title,
+                  width   : 500,
+                  height  : 500,
+                  close   : function(pEvent) {
+                               $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
+                            },
+                  open    : function() {
+                               $('l_c1').text('Hallole');
+
+                               this.focus();
+                            },
+                  buttons : [
+                              { text  : window.pageDesigner.msg("SAVE"),
+                                click : function() {
+                                                      var l_c = [];
+                                                      for (var l=1;l<=10;l++) {
+                                                          l_c[l] = $('#l_c' + l).val();
+                                                      }
+                                                      window.pageDesigner.removeStyle();
+                                                      window.pageDesigner.setStyle(l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
+                                                                                   l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]);
+                                                      //$( this ).dialog( "close" );
+                                                   }},
+                              { text  : window.pageDesigner.msg("OK"),
+                                click : function() {
+                                                      $( this ).dialog( "close" );
+                                                  }}
+                            ]
+                }
+       ); // customizeColors
+
+    return 1;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -684,18 +823,19 @@ var Xplug = function() {
 
    var C_lang  = gBuilderLang ? gBuilderLang : 'en';
 
-   var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid on right side"
-                             , "DOCKMID"     : "Dock grid in middle"
-                             , "PREVPAGE"    : "Go to previous page"
-                             , "NEXTPAGE"    : "Go to next page"
-                             , "SHORTCUTS"   : "Customize shortcuts"
-                             , "NOTOOLTIPS"  : "Disable tooltips"
-                             , "TOOLTIPS"    : "Enable tooltips"
-                             , "PRETTYGRID"  : "Background image"
-                             , "RESTOREGRID" : "Restore grid"
-                             , "GRIDLAYOUT"  : "Grid layout"
-                             , "MOONLIGHT"   : "Moonlight mode"
-                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode"
+   var C_label =  { 'en' : {   "DOCKRIGHT"    : "Dock grid on right side"
+                             , "DOCKMID"      : "Dock grid in middle"
+                             , "PREVPAGE"     : "Go to previous page"
+                             , "NEXTPAGE"     : "Go to next page"
+                             , "SHORTCUTS"    : "Customize shortcuts"
+                             , "NOTOOLTIPS"   : "Disable tooltips"
+                             , "TOOLTIPS"     : "Enable tooltips"
+                             , "PRETTYGRID"   : "Background image"
+                             , "RESTOREGRID"  : "Restore grid"
+                             , "GRIDLAYOUT"   : "Grid layout"
+                             , "MOONLIGHT"    : "Moonlight mode"
+                             , "TOGGLELIGHT"  : "Toggle daylight/moonlight mode"
+                             , "CUST_COLORS"  : "Customize Page Designer Colors"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -716,6 +856,7 @@ var Xplug = function() {
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
                              , "MOONLIGHT"   : "Mondlicht-Modus"
                              , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
+                             , "CUST_COLORS" : "Page Designer Farben einstellen"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -875,7 +1016,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-toggle-moon-sun-style",
             label    : get_label('TOGGLELIGHT'),
-            shortcut : "alt+9",
+            shortcut : "Alt+F10",
             action   : function( event, focusElement ) {
                           if (xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');
@@ -1011,6 +1152,21 @@ var Xplug = function() {
                          }
             },
 
+            {
+              type     : "action",
+              label    : get_label('CUST_COLORS'),
+              action   : function()
+                         {
+                            window.pageDesigner.customizeColors(get_label('CUST_COLORS'));
+                         },
+              disabled : function()
+                         {
+                           return $('#ORATRONIK_XPLUG_COLOR_DIALOG').length > 0;
+                         }
+            },
+
+
+
 
             { type     : "separator" },
 
@@ -1120,7 +1276,6 @@ Xplug.prototype.loadSettings = function ()
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
 
-   window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
 }; // Xplug.prototype.loadSettings
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

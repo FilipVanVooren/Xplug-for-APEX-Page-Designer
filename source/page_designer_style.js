@@ -186,7 +186,7 @@ window.pageDesigner.setStyle = function(p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
                 + l_css
                 + l_scroll
                 + '</style>'                                                    + l_lf;
-    console.log(l_style);
+    // console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
@@ -204,3 +204,73 @@ window.pageDesigner.removeStyle = function() {
 
    return 1;
 }; // window.pageDesigner.removeStyle
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: customizeColors
+ ***************************************************************************/
+window.pageDesigner.customizeColors= function(p_title)
+{
+    'use strict';
+
+    //
+    // Exit if not in APEX Page Designer
+    //
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    var l_out = apex.util.htmlBuilder();
+
+    l_out.markup('<div')
+         .attr('id','ORATRONIK_XPLUG_COLOR_DIALOG')
+         .markup('><ul>')
+         .markup('<li><label>Colour 1  <input ID="l_c1"   type="text" width=30>')
+         .markup('<li><label>Colour 2  <input ID="l_c2"   type="text" width=30>')
+         .markup('<li><label>Colour 3  <input ID="l_c3"   type="text" width=30>')
+         .markup('<li><label>Colour 4  <input ID="l_c4"   type="text" width=30>')
+         .markup('<li><label>Colour 5  <input ID="l_c5"   type="text" width=30>')
+         .markup('<li><label>Colour 6  <input ID="l_c6"   type="text" width=30>')
+         .markup('<li><label>Colour 7  <input ID="l_c7"   type="text" width=30>')
+         .markup('<li><label>Colour 8  <input ID="l_c8"   type="text" width=30>')
+         .markup('<li><label>Colour 9  <input ID="l_c9"   type="text" width=30>')
+         .markup('<li><label>Colour 10 <input ID="l_c10"  type="text" width=30>')
+         .markup('</ul></div>');
+
+    $(l_out.html)
+        .dialog(
+                { modal   : false,
+                  title   : p_title,
+                  width   : 500,
+                  height  : 500,
+                  close   : function(pEvent) {
+                               $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
+                            },
+                  open    : function() {
+                               $('l_c1').text('Hallole');
+
+                               this.focus();
+                            },
+                  buttons : [
+                              { text  : window.pageDesigner.msg("SAVE"),
+                                click : function() {
+                                                      var l_c = [];
+                                                      for (var l=1;l<=10;l++) {
+                                                          l_c[l] = $('#l_c' + l).val();
+                                                      }
+                                                      window.pageDesigner.removeStyle();
+                                                      window.pageDesigner.setStyle(l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
+                                                                                   l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]);
+                                                      //$( this ).dialog( "close" );
+                                                   }},
+                              { text  : window.pageDesigner.msg("OK"),
+                                click : function() {
+                                                      $( this ).dialog( "close" );
+                                                  }}
+                            ]
+                }
+       ); // customizeColors
+
+    return 1;
+}

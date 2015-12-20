@@ -5,6 +5,7 @@
 // page_designer_methods.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
@@ -333,3 +334,71 @@ window.pageDesigner.noPrettyGrid = function()
 
   return 1;
 }; // window.pageDesigner.noPrettyGrid
+
+
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: customizeShortcuts
+ ***************************************************************************/
+window.pageDesigner.customizeShortcuts = function(p_title)
+{
+    'use strict';
+
+    //
+    // Exit if not in APEX Page Designer
+    //
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').length === 0
+        && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_SHORTCUTS"></div');
+
+    $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS')
+        .lovDialog(
+                { modal             : true,
+                  title             : p_title,
+                  resizable         : true,
+
+                  columnDefinitions : [ { name  : "label",     title : "Action"   },
+                                        { name  : "shortcut",  title : "Shortcut" } ],
+
+                  filterLov         : function( pFilters, pRenderLovEntries ) {
+                                         // To understand where we get our LOV from, just
+                                         // run apex.actions.list() in your javascript console and you'll get the idea.
+                                         //
+                                         // We're not using apex.actions.listShortcuts() because we also want to list
+                                         // actions that do not yet have a shortcut assigned.
+
+                                         var l_arr = apex.actions.list().sort();
+                                         for (var i=0; i<l_arr.length; i++) {
+                                             l_arr[i].shortcut =  apex.actions.lookup(l_arr[i].name).shortcut;
+                                         }
+
+                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
+                                         // To render our LOV, all we need to do is call this function and pass
+                                         // our LOV as an array.
+                                         pRenderLovEntries(l_arr);
+                                      },
+
+                  width             : 700,
+                  height            : 340,
+
+                  close             : // called by widget.lovDialog.js close function
+                                      function(pEvent) {
+                                         $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();
+                                      },
+
+                  multiValue       : false,
+                  valueSelected    : function( pEvent, pData ) {
+                                         alert(pData.label);
+                                         console.log(pData);
+                                     }
+
+                }
+               );
+
+    return 1;
+}; // window.pageDesigner.customizeShortcuts

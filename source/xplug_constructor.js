@@ -24,18 +24,19 @@ var Xplug = function() {
 
    var C_lang  = gBuilderLang ? gBuilderLang : 'en';
 
-   var C_label =  { 'en' : {   "DOCKRIGHT"   : "Dock grid on right side"
-                             , "DOCKMID"     : "Dock grid in middle"
-                             , "PREVPAGE"    : "Go to previous page"
-                             , "NEXTPAGE"    : "Go to next page"
-                             , "SHORTCUTS"   : "Customize shortcuts"
-                             , "NOTOOLTIPS"  : "Disable tooltips"
-                             , "TOOLTIPS"    : "Enable tooltips"
-                             , "PRETTYGRID"  : "Background image"
-                             , "RESTOREGRID" : "Restore grid"
-                             , "GRIDLAYOUT"  : "Grid layout"
-                             , "MOONLIGHT"   : "Moonlight mode"
-                             , "TOGGLELIGHT" : "Toggle daylight/moonlight mode"
+   var C_label =  { 'en' : {   "DOCKRIGHT"    : "Dock grid on right side"
+                             , "DOCKMID"      : "Dock grid in middle"
+                             , "PREVPAGE"     : "Go to previous page"
+                             , "NEXTPAGE"     : "Go to next page"
+                             , "SHORTCUTS"    : "Customize shortcuts"
+                             , "NOTOOLTIPS"   : "Disable tooltips"
+                             , "TOOLTIPS"     : "Enable tooltips"
+                             , "PRETTYGRID"   : "Background image"
+                             , "RESTOREGRID"  : "Restore grid"
+                             , "GRIDLAYOUT"   : "Grid layout"
+                             , "MOONLIGHT"    : "Moonlight mode"
+                             , "TOGGLELIGHT"  : "Toggle daylight/moonlight mode"
+                             , "CUST_COLORS"  : "Customize Page Designer Colors"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -56,6 +57,7 @@ var Xplug = function() {
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
                              , "MOONLIGHT"   : "Mondlicht-Modus"
                              , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
+                             , "CUST_COLORS" : "Page Designer Farben einstellen"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -215,7 +217,7 @@ var Xplug = function() {
           {
             name     : "pd-xplug-toggle-moon-sun-style",
             label    : get_label('TOGGLELIGHT'),
-            shortcut : "alt+9",
+            shortcut : "Alt+F10",
             action   : function( event, focusElement ) {
                           if (xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');
@@ -351,6 +353,21 @@ var Xplug = function() {
                          }
             },
 
+            {
+              type     : "action",
+              label    : get_label('CUST_COLORS'),
+              action   : function()
+                         {
+                            window.pageDesigner.customizeColors(get_label('CUST_COLORS'));
+                         },
+              disabled : function()
+                         {
+                           return $('#ORATRONIK_XPLUG_COLOR_DIALOG').length > 0;
+                         }
+            },
+
+
+
 
             { type     : "separator" },
 
@@ -460,5 +477,4 @@ Xplug.prototype.loadSettings = function ()
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
 
-   window.pageDesigner.setWidthOnGrid(xplug.getStorage('SPACE_ON_GRID',100));
 }; // Xplug.prototype.loadSettings
