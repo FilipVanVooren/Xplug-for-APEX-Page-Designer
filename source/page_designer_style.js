@@ -212,7 +212,7 @@ window.pageDesigner.removeStyle = function() {
  ***************************************************************************/
 window.pageDesigner.customizeColors= function(p_title)
 {
-    'use strict';
+    //'use strict';
 
     //
     // Exit if not in APEX Page Designer
@@ -221,36 +221,99 @@ window.pageDesigner.customizeColors= function(p_title)
        return 0;
     }
 
+    var l_dialog$;
+
+    var l_dialogPE$;
+    var l_properties = [];
+
     var l_out = apex.util.htmlBuilder();
 
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_COLOR_DIALOG')
-         .markup('><ul>')
-         .markup('<li><label>Colour 1  <input ID="l_c1"   type="text" width=30>')
-         .markup('<li><label>Colour 2  <input ID="l_c2"   type="text" width=30>')
-         .markup('<li><label>Colour 3  <input ID="l_c3"   type="text" width=30>')
-         .markup('<li><label>Colour 4  <input ID="l_c4"   type="text" width=30>')
-         .markup('<li><label>Colour 5  <input ID="l_c5"   type="text" width=30>')
-         .markup('<li><label>Colour 6  <input ID="l_c6"   type="text" width=30>')
-         .markup('<li><label>Colour 7  <input ID="l_c7"   type="text" width=30>')
-         .markup('<li><label>Colour 8  <input ID="l_c8"   type="text" width=30>')
-         .markup('<li><label>Colour 9  <input ID="l_c9"   type="text" width=30>')
-         .markup('<li><label>Colour 10 <input ID="l_c10"  type="text" width=30>')
-         .markup('</ul></div>');
+         .markup('>')
+         .markup('<div')
+         .attr('id','colorDlgPE')
+         .markup('>');
 
-    $(l_out.html)
+
+        //  .markup('<div role="group" class="a-PropertyEditor-propertyGroup is-expanded" data-group-id="TARGET" aria-labelledby="linkDlgPE_g_0_LABEL">')
+        //  .markup('<div tabindex="0" class="a-PropertyEditor-propertyGroup-header" aria-controls="linkDlgPE_g_0" aria-expanded="true" aria-labelledby="linkDlgPE_g_0_LABEL">')
+        //  .markup('<span class="a-Icon icon-down-arrow" aria-hidden="true"></span><h2 class="a-PropertyEditor-propertyGroup-title" id="linkDlgPE_g_0_LABEL">Customize Colors</h2></div>')
+        //  .markup('<div id="linkDlgPE_g_0" class="a-PropertyEditor-propertyGroup-body">')
+        //  .markup('<div class="a-Property"')
+        //    .markup('<span class="a-Icon icon-required" aria-hidden="true"')
+        //    .markup('::before</span>')
+        //    .markup('<span class="u-VisuallyHidden">Required</span>')
+        //    .markup('<div class="a-Property-labelContainer">')
+        //       .markup('<label id="blabla" for="abc" class="a-Property-label">Color 1</label>')
+        //    .markup('</div>')
+        //    .markup('<div class="a-Property-fieldContainer"')
+        //       .markup('<input id="123" type="text" class="a-Property-field a-Property-field--text"')
+        //       .markup('</div>')
+        //   .markup('</div>')
+
+
+        //  .markup('<li><label>Colour 1  <input ID="l_c1"   type="text" width=30>')
+        //  .markup('<li><label>Colour 2  <input ID="l_c2"   type="text" width=30>')
+        //  .markup('<li><label>Colour 3  <input ID="l_c3"   type="text" width=30>')
+        //  .markup('<li><label>Colour 4  <input ID="l_c4"   type="text" width=30>')
+        //  .markup('<li><label>Colour 5  <input ID="l_c5"   type="text" width=30>')
+        //  .markup('<li><label>Colour 6  <input ID="l_c6"   type="text" width=30>')
+        //  .markup('<li><label>Colour 7  <input ID="l_c7"   type="text" width=30>')
+        //  .markup('<li><label>Colour 8  <input ID="l_c8"   type="text" width=30>')
+        //  .markup('<li><label>Colour 9  <input ID="l_c9"   type="text" width=30>')
+        //  .markup('<li><label>Colour 10 <input ID="l_c10"  type="text" width=30>')
+        //  .markup('</ul></div>');
+
+
+    l_dialog$ = $(l_out.html)
         .dialog(
                 { modal   : false,
                   title   : p_title,
                   width   : 500,
                   height  : 500,
                   close   : function(pEvent) {
+                               $('#ColorDlgPE').propertyEditor("destroy");
+                               l_dialog$.dialog("destroy");
                                $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
                             },
                   open    : function() {
-                               $('l_c1').text('Hallole');
+                               l_dialogPE$ = $('#ColorDlgPE');
 
-                               this.focus();
+                               l_properties[ 0 ] = {
+                                   propertyName: "Filip",
+                                   value:        "blabla",
+                                   metaData: {
+                                       type:       $.apex.propertyEditor.PROP_TYPE.TEXT,
+                                       prompt:     "mal schauen",
+                                       isReadOnly: false,
+                                       isRequired: true,
+                                       displayGroupId: "cust_colors"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               console.log(l_properties);
+
+                               $('#ColorDlgPE').propertyEditor( {
+                                 focusPropertyName: "Filip",
+                                 data: {
+                                   propertySet: [
+                                     {
+                                       displayGroupId:    "cust_colors",
+                                       displayGroupTitle: "Customize Colors",
+                                       properties       : l_properties
+                                     }
+                                   ] // propertySet
+                                 }   // data
+                               });   // propertyEditor
+
+                               $( '#ORATRONIK_XPLUG_COLOR_DIALOG' ).dialog({
+                                   position: { 'my': 'center', 'at': 'center' }
+                               });
+
+
                             },
                   buttons : [
                               { text  : window.pageDesigner.msg("SAVE"),
