@@ -36,7 +36,7 @@ var Xplug = function() {
                              , "GRIDLAYOUT"   : "Grid layout"
                              , "MOONLIGHT"    : "Moonlight mode"
                              , "TOGGLELIGHT"  : "Toggle daylight/moonlight mode"
-                             , "CUST_COLORS"  : "Customize Page Designer Colors"
+                             , "CUST_COLORS"  : "Customize Page Designer Style"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -57,7 +57,7 @@ var Xplug = function() {
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
                              , "MOONLIGHT"   : "Mondlicht-Modus"
                              , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
-                             , "CUST_COLORS" : "Page Designer Farben einstellen"
+                             , "CUST_COLORS" : "Page Designer Stil einstellen"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."

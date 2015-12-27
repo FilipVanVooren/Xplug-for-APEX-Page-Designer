@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Dec 22 2015 22:48:15
+// Built using Gulp. Built date: Sun Dec 27 2015 20:57:05
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -56,11 +56,15 @@
 //         2015-12-06   - Redefine scrollbars on Webkit
 //         2015-12-08   - Bug-fixing CSS colors of page elements
 //
-// v1.2    2015-12-18 * Several changes
+// v1.2    2015-12-18 * Multiple changes
 //                      - Refactored. Splitted Xplug code in multiple javascript files and using Gulp task for building Xplug
 //                      - Finalized work on moonlight style
 //                      - Removed setWidthOnGrid() and corresponding menu call
 //                      - Removed submenu 'Grid Layout' and menu option 'Background Image'
+//
+// v1.2    2015-12-27 * Multiple changes
+//                      - Added configuration dialog for custom Page Designer Style. Lots of interesting stuff.
+//                      - Store/restore custom style from local storage
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -533,19 +537,24 @@ window.pageDesigner.customizeShortcuts = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: setStyle
  ***************************************************************************/
-window.pageDesigner.setStyle = function(p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
-    var l_c1   = p1    || '#3f3f3f';       // Dark-Grey
+window.pageDesigner.setStyle = function( p_style_name,
+                                         p_is_dark_style,
+                                         p_show_grid,
+                                         p_custom_css,
+                                         p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
+    var l_c1   = p1    || '#3F3F3F';       // Dark-Grey
     var l_c2   = p2    || '#505050';       // Light-Grey shade 3
     var l_c3   = p3    || '#246396';       // Light-blue
-    var l_c4   = p4    || '#3c424f';       // Dark-Grey 2
+    var l_c4   = p4    || '#3C424F';       // Dark-Grey 2
     var l_c5   = p5    || '#909090';       // Light-Grey
-    var l_c6   = p6    || '#ac761b';       // Orange
-    var l_c7   = p7    || '#ffffff';       // White
+    var l_c6   = p6    || '#AC761B';       // Orange
+    var l_c7   = p7    || '#FFFFFF';       // White
     var l_c8   = p8    || '#000000';       // Black
-    var l_c9   = p9    || '#cfe6fa';       // light-Cyan
+    var l_c9   = p9    || '#CFE6FA';       // light-Cyan
     var l_cerr = p_err || '#FFC3C3';       // Error background color
     var l_lf   = "\n";
 
+    window.pageDesigner.removeStyle();
 
     //==========================================================================
     // Custom icon for Page Designer select element. Needed due to colours
@@ -625,8 +634,8 @@ window.pageDesigner.setStyle = function(p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
           +  l_lf + ' div#sp_right div.a-Property-fieldContainer          { background-color : ' + l_c2  + '; }'  // Fieldcontainer
           +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  // Labelcontainer
 
-          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                         // Labelcontainer in error
-          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                         // Fieldcontainer in error
+          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                           // Labelcontainer in error
+          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                           // Fieldcontainer in error
           +  l_lf + ' .a-Property.is-error { background-color: ' + l_cerr + '!important; }'
 
           +  l_lf + ' div#sp_right div.a-Property,'
@@ -705,17 +714,36 @@ window.pageDesigner.setStyle = function(p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err) {
     // Add CSS style to HTML page head
     //==========================================================================
     var l_style = '<style type="text/css" ID="XPLUG_THEME">'                    + l_lf
-                + l_css
-                + l_scroll
+                + l_css                                                         + l_lf
+                + l_scroll                                                      + l_lf
+                + p_custom_css                                                  + l_lf
                 + '</style>'                                                    + l_lf;
-    // console.log(l_style);
+    console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
     xplug.setStorage('MOONLIGHT_MODE','YES');                                            // Save option in local database
 
 
-    return 1;
+    var l_settings_obj = { "STYLE_NAME" : p_style_name,
+                           "DARK_STYLE" : p_is_dark_style,
+                           "SHOW_GRID"  : p_show_grid,
+                           "C1"         : l_c1,
+                           "C2"         : l_c2,
+                           "C3"         : l_c3,
+                           "C4"         : l_c4,
+                           "C5"         : l_c5,
+                           "C6"         : l_c6,
+                           "C7"         : l_c7,
+                           "C8"         : l_c8,
+                           "C9"         : l_c9,
+                           "C10"        : l_cerr,
+                           "CUSTOM_CSS" : p_custom_css
+                      };
+
+    xplug.setStorage('XPLUG_PD_STYLE', JSON.stringify(l_settings_obj) );                 // Save option in local database
+
+    return JSON.stringify(l_settings_obj);
 }; // window.pageDesigner.setStyle
 
 
@@ -734,7 +762,7 @@ window.pageDesigner.removeStyle = function() {
  ***************************************************************************/
 window.pageDesigner.customizeColors= function(p_title)
 {
-    //'use strict';
+    'use strict';
 
     //
     // Exit if not in APEX Page Designer
@@ -744,88 +772,165 @@ window.pageDesigner.customizeColors= function(p_title)
     }
 
     var l_dialog$;
-
     var l_dialogPE$;
-    var l_properties = [];
-
+    var l_settings_obj, l_imp_obj;
+    var l_properties1 = [], l_properties2 = [], l_properties3 = [];
     var l_out = apex.util.htmlBuilder();
 
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_COLOR_DIALOG')
          .markup('>')
          .markup('<div')
-         .attr('id','colorDlgPE')
+         .attr('id','ColorDlgPE')
          .markup('>');
-
-
-        //  .markup('<div role="group" class="a-PropertyEditor-propertyGroup is-expanded" data-group-id="TARGET" aria-labelledby="linkDlgPE_g_0_LABEL">')
-        //  .markup('<div tabindex="0" class="a-PropertyEditor-propertyGroup-header" aria-controls="linkDlgPE_g_0" aria-expanded="true" aria-labelledby="linkDlgPE_g_0_LABEL">')
-        //  .markup('<span class="a-Icon icon-down-arrow" aria-hidden="true"></span><h2 class="a-PropertyEditor-propertyGroup-title" id="linkDlgPE_g_0_LABEL">Customize Colors</h2></div>')
-        //  .markup('<div id="linkDlgPE_g_0" class="a-PropertyEditor-propertyGroup-body">')
-        //  .markup('<div class="a-Property"')
-        //    .markup('<span class="a-Icon icon-required" aria-hidden="true"')
-        //    .markup('::before</span>')
-        //    .markup('<span class="u-VisuallyHidden">Required</span>')
-        //    .markup('<div class="a-Property-labelContainer">')
-        //       .markup('<label id="blabla" for="abc" class="a-Property-label">Color 1</label>')
-        //    .markup('</div>')
-        //    .markup('<div class="a-Property-fieldContainer"')
-        //       .markup('<input id="123" type="text" class="a-Property-field a-Property-field--text"')
-        //       .markup('</div>')
-        //   .markup('</div>')
-
-
-        //  .markup('<li><label>Colour 1  <input ID="l_c1"   type="text" width=30>')
-        //  .markup('<li><label>Colour 2  <input ID="l_c2"   type="text" width=30>')
-        //  .markup('<li><label>Colour 3  <input ID="l_c3"   type="text" width=30>')
-        //  .markup('<li><label>Colour 4  <input ID="l_c4"   type="text" width=30>')
-        //  .markup('<li><label>Colour 5  <input ID="l_c5"   type="text" width=30>')
-        //  .markup('<li><label>Colour 6  <input ID="l_c6"   type="text" width=30>')
-        //  .markup('<li><label>Colour 7  <input ID="l_c7"   type="text" width=30>')
-        //  .markup('<li><label>Colour 8  <input ID="l_c8"   type="text" width=30>')
-        //  .markup('<li><label>Colour 9  <input ID="l_c9"   type="text" width=30>')
-        //  .markup('<li><label>Colour 10 <input ID="l_c10"  type="text" width=30>')
-        //  .markup('</ul></div>');
 
 
     l_dialog$ = $(l_out.html)
         .dialog(
                 { modal   : false,
                   title   : p_title,
-                  width   : 500,
-                  height  : 500,
+                  width   : 400,
+                  //height  : 520,
                   close   : function(pEvent) {
-                               $('#ColorDlgPE').propertyEditor("destroy");
-                               l_dialog$.dialog("destroy");
                                $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
+                               // l_dialog$.dialog("destroy");
                             },
                   open    : function() {
                                l_dialogPE$ = $('#ColorDlgPE');
 
-                               l_properties[ 0 ] = {
-                                   propertyName: "Filip",
-                                   value:        "blabla",
+                               //
+                               // Get settings
+                               //
+                               try {
+                                  l_imp_obj = JSON.parse(xplug.getStorage('XPLUG_PD_STYLE'));
+                               } catch(e) {
+                                  console.warn("XPLUG: can't fetch XPLUG_PD_STYLE from localStorage. Using defaults.");
+                               }
+                               l_settings_obj = { "STYLE_NAME" : typeof(l_imp_obj.STYLE_NAME) == 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
+                                                  "DARK_STYLE" : typeof(l_imp_obj.DARK_STYLE) == 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
+                                                  "SHOW_GRID"  : typeof(l_imp_obj.SHOW_GRID)  == 'undefined' ? "NO"      : l_imp_obj.SHOW_GRID,
+                                                  "C1"         : l_imp_obj.C1,
+                                                  "C2"         : l_imp_obj.C2,
+                                                  "C3"         : l_imp_obj.C3,
+                                                  "C4"         : l_imp_obj.C4,
+                                                  "C5"         : l_imp_obj.C5,
+                                                  "C6"         : l_imp_obj.C6,
+                                                  "C7"         : l_imp_obj.C7,
+                                                  "C8"         : l_imp_obj.C8,
+                                                  "C9"         : l_imp_obj.C9,
+                                                  "C10"        : l_imp_obj.C10,
+                                                  "CUSTOM_CSS" : typeof(l_imp_obj.CUSTOM_CSS) == 'undefined' ? ""        : l_imp_obj.CUSTOM_CSS
+                                             };
+
+                               //
+                               // Build properties for property group 1 (style options)
+                               //
+                               l_properties1[0] = {
+                                   propertyName: "style_name",
+                                   value:        l_settings_obj.STYLE_NAME,
                                    metaData: {
-                                       type:       $.apex.propertyEditor.PROP_TYPE.TEXT,
-                                       prompt:     "mal schauen",
-                                       isReadOnly: false,
-                                       isRequired: true,
-                                       displayGroupId: "cust_colors"
+                                       type:           $.apex.propertyEditor.PROP_TYPE.TEXT,
+                                       prompt:         "Name",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
                                    },
                                    errors:   [],
                                    warnings: []
                                };
 
-                               console.log(l_properties);
+                               l_properties1[1] = {
+                                   propertyName: "dark_style",
+                                   value:        l_settings_obj.DARK_STYLE,
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                       prompt:         "Dark style",
+                                       noValue:        "NO",
+                                       yesValue:       "YES",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
 
+
+                               //
+                               // Build Properties for property group 2 (Customize Colors)
+                               //
+                               for (var l=1; l<=10; l++) {
+                                   l_properties2[ l - 1] = {
+                                       propertyName: "col_" + l,
+                                       value:        typeof(l_settings_obj["C"+l]) == 'undefined' ? '' : l_settings_obj["C"+l],
+                                       metaData: {
+                                           type:           $.apex.propertyEditor.PROP_TYPE.COLOR,
+                                           prompt:         "Color "  + l,
+                                           isReadOnly:     false,
+                                           isRequired:     true,
+                                           displayGroupId: "cust_colors"
+                                       },
+                                       errors:   [],
+                                       warnings: []
+                                   };
+                               }
+
+                               //
+                               // Build Properties for property group 3 (Advanced)
+                               //
+                               l_properties3[0] = {
+                                   propertyName: "show_grid",
+                                   value:        l_settings_obj.SHOW_GRID,
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                       prompt:         "Show Grid",
+                                       noValue:        "NO",
+                                       yesValue:       "YES",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "advanced"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               l_properties3[1] = {
+                                   propertyName: "custom_css",
+                                   value:        l_settings_obj.CUSTOM_CSS,
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.TEXTAREA,
+                                       prompt:         "Custom CSS",
+                                       isReadOnly:     false,
+                                       isRequired:     false,
+                                       displayGroupId: "advanced"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+
+                               //
+                               // Create Property Editor
+                               //
                                $('#ColorDlgPE').propertyEditor( {
-                                 focusPropertyName: "Filip",
+                                 focusPropertyName: "style_name",
                                  data: {
                                    propertySet: [
                                      {
-                                       displayGroupId:    "cust_colors",
-                                       displayGroupTitle: "Customize Colors",
-                                       properties       : l_properties
+                                       displayGroupId    : "style_id",
+                                       displayGroupTitle : "Identification",
+                                       properties        : l_properties1
+                                     },
+                                     {
+                                       displayGroupId    : "cust_colors",
+                                       displayGroupTitle : "Customize Colors",
+                                       properties        : l_properties2
+                                     },
+                                     {
+                                       displayGroupId    : "advanced",
+                                       displayGroupTitle : "Advanced",
+                                       collapsed         : true,
+                                       properties        : l_properties3
                                      }
                                    ] // propertySet
                                  }   // data
@@ -835,21 +940,42 @@ window.pageDesigner.customizeColors= function(p_title)
                                    position: { 'my': 'center', 'at': 'center' }
                                });
 
+                               //
+                               // Hack: Prevent colorpicker being hidden behind dialog.
+                               // Is this a bug in APEX 5.0 ? Seems as if the APEX dev team
+                               // did not expect a colorpicker to run from  a property editor
+                               // in a dialog ?
+                               //
+                               $("#ORATRONIK_XPLUG_COLOR_DIALOG button[id$='_picker']")
+                                   .click(function()
+                                     {
+                                        $("div.colorpicker").filter(
+                                              function ()
+                                                  {
+                                                    return $(this).css('display') == 'block';
+                                                  }
+                                        ).css('z-index',8000);
+                                     }
+                                   ); // click
 
-                            },
+                            }, // open
                   buttons : [
-                              { text  : window.pageDesigner.msg("SAVE"),
+                              { text  : "Apply",
                                 click : function() {
+                                                      var l_style_name = $('input[data-property-id=style_name]').val();
+
                                                       var l_c = [];
                                                       for (var l=1;l<=10;l++) {
-                                                          l_c[l] = $('#l_c' + l).val();
+                                                          l_c[l] = $('input[data-property-id=col_' + l + ']').val();
                                                       }
-                                                      window.pageDesigner.removeStyle();
-                                                      window.pageDesigner.setStyle(l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
+                                                      window.pageDesigner.setStyle(l_style_name,
+                                                                                   $('input[name=ColorDlgPE_2_name]:checked').val(),
+                                                                                   $('input[name=ColorDlgPE_3_name]:checked').val(),
+                                                                                   $('textarea[data-property-id="custom_css"').val(),
+                                                                                   l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
                                                                                    l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]);
-                                                      //$( this ).dialog( "close" );
                                                    }},
-                              { text  : window.pageDesigner.msg("OK"),
+                              { text  : "Close",
                                 click : function() {
                                                       $( this ).dialog( "close" );
                                                   }}
@@ -858,7 +984,7 @@ window.pageDesigner.customizeColors= function(p_title)
        ); // customizeColors
 
     return 1;
-}
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -898,7 +1024,7 @@ var Xplug = function() {
                              , "GRIDLAYOUT"   : "Grid layout"
                              , "MOONLIGHT"    : "Moonlight mode"
                              , "TOGGLELIGHT"  : "Toggle daylight/moonlight mode"
-                             , "CUST_COLORS"  : "Customize Page Designer Colors"
+                             , "CUST_COLORS"  : "Customize Page Designer Style"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -919,7 +1045,7 @@ var Xplug = function() {
                              , "GRIDLAYOUT"  : "Grid Layout einstellen"
                              , "MOONLIGHT"   : "Mondlicht-Modus"
                              , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
-                             , "CUST_COLORS" : "Page Designer Farben einstellen"
+                             , "CUST_COLORS" : "Page Designer Stil einstellen"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
