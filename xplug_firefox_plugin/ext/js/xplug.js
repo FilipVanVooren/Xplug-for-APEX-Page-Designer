@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Dec 27 2015 20:57:05
+// Built using Gulp. Built date: Sat Jan 02 2016 21:59:06
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -41,28 +41,28 @@
 //                      - Added CSS for adding previous/next icons.
 //                      - Added possibility to prettify grid layout with background image and without 100% stretched regions.
 //
-// v.1.1 - 2015-10-10 * Multiple changes
+// v1.1 - 2015-10-10 * Multiple changes
 //                      - Removed shortcut code for now. Will be included in a later version.
 //
-// v.1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
+// v1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
 //
-// v.1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
+// v1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
 //                      - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
 //                      - Show error message when clicking on Xplug button if localStorage is unavailable.
 //
-// v.1.2 - 2015-12-04 * Implementation of custom midnight style
+// v1.2 - 2015-12-04 * Implementation of custom midnight style
 //
-// v.1.2 - 2015-12-06 * More work on custom midnight style
-//         2015-12-06   - Redefine scrollbars on Webkit
-//         2015-12-08   - Bug-fixing CSS colors of page elements
+// v1.2 - 2015-12-06 * More work on custom midnight style
+//        2015-12-06   - Redefine scrollbars on Webkit
+//        2015-12-08   - Bug-fixing CSS colors of page elements
 //
-// v1.2    2015-12-18 * Multiple changes
+// v.2    2015-12-18 * Multiple changes
 //                      - Refactored. Splitted Xplug code in multiple javascript files and using Gulp task for building Xplug
 //                      - Finalized work on moonlight style
 //                      - Removed setWidthOnGrid() and corresponding menu call
 //                      - Removed submenu 'Grid Layout' and menu option 'Background Image'
 //
-// v1.2    2015-12-27 * Multiple changes
+// v1.2   2015-12-27 * Multiple changes
 //                      - Added configuration dialog for custom Page Designer Style. Lots of interesting stuff.
 //                      - Store/restore custom style from local storage
 // REMARKS
@@ -715,9 +715,13 @@ window.pageDesigner.setStyle = function( p_style_name,
     //==========================================================================
     var l_style = '<style type="text/css" ID="XPLUG_THEME">'                    + l_lf
                 + l_css                                                         + l_lf
-                + l_scroll                                                      + l_lf
-                + p_custom_css                                                  + l_lf
-                + '</style>'                                                    + l_lf;
+                + l_scroll                                                      + l_lf;
+
+    if (typeof(p_custom_css) != 'undefined') {
+       l_style += p_custom_css + l_lf;
+    }
+
+    l_style += '</style>' + l_lf;
     console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
@@ -775,7 +779,7 @@ window.pageDesigner.customizeColors= function(p_title)
     var l_dialogPE$;
     var l_settings_obj, l_imp_obj;
     var l_properties1 = [], l_properties2 = [], l_properties3 = [];
-    var l_out = apex.util.htmlBuilder();
+    var l_out         = apex.util.htmlBuilder();
 
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_COLOR_DIALOG')
@@ -790,7 +794,7 @@ window.pageDesigner.customizeColors= function(p_title)
                 { modal   : false,
                   title   : p_title,
                   width   : 400,
-                  //height  : 520,
+
                   close   : function(pEvent) {
                                $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
                                // l_dialog$.dialog("destroy");
@@ -960,6 +964,33 @@ window.pageDesigner.customizeColors= function(p_title)
 
                             }, // open
                   buttons : [
+                              { text  : "Export",
+                                click : function() {
+                                                      l_out = apex.util.htmlBuilder();
+                                                      l_out.markup('<div')
+                                                           .attr('id','ORATRONIK_XPLUG_EXPORT_DIALOG')
+                                                           .markup('>')
+                                                           .markup('<div><textarea width=80 height=20 style="width: 100%; height: 350px">')
+                                                           .markup('</textarea></div>');
+
+                                                      $(l_out.html).dialog({
+                                                          modal   : true,
+                                                          title   : 'Export Page Designer style',
+                                                          width   : 700,
+                                                          height  : 400,
+                                                          close   : function(pEvent) {
+                                                                       $(this).dialog( "close" );
+                                                                    },
+
+                                                          position: { 'my': 'center', 'at': 'center' }
+                                                      });
+
+                                                      var l_json = JSON.parse(xplug.getStorage('XPLUG_PD_STYLE'));
+
+                                                      $('div#ORATRONIK_XPLUG_EXPORT_DIALOG textarea').val(JSON.stringify(l_json,null,4));
+
+                                                  }},
+
                               { text  : "Apply",
                                 click : function() {
                                                       var l_style_name = $('input[data-property-id=style_name]').val();
@@ -975,6 +1006,7 @@ window.pageDesigner.customizeColors= function(p_title)
                                                                                    l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
                                                                                    l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]);
                                                    }},
+
                               { text  : "Close",
                                 click : function() {
                                                       $( this ).dialog( "close" );

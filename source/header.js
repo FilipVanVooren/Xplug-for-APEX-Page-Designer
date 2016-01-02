@@ -40,30 +40,33 @@
 //                      - Added CSS for adding previous/next icons.
 //                      - Added possibility to prettify grid layout with background image and without 100% stretched regions.
 //
-// v.1.1 - 2015-10-10 * Multiple changes
+// v1.1 - 2015-10-10 * Multiple changes
 //                      - Removed shortcut code for now. Will be included in a later version.
 //
-// v.1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
+// v1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
 //
-// v.1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
+// v1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
 //                      - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
 //                      - Show error message when clicking on Xplug button if localStorage is unavailable.
 //
-// v.1.2 - 2015-12-04 * Implementation of custom midnight style
+// v1.2 - 2015-12-04 * Implementation of custom midnight style
 //
-// v.1.2 - 2015-12-06 * More work on custom midnight style
-//         2015-12-06   - Redefine scrollbars on Webkit
-//         2015-12-08   - Bug-fixing CSS colors of page elements
+// v1.2 - 2015-12-06 * More work on custom midnight style
+//        2015-12-06   - Redefine scrollbars on Webkit
+//        2015-12-08   - Bug-fixing CSS colors of page elements
 //
-// v1.2    2015-12-18 * Multiple changes
+// v.2    2015-12-18 * Multiple changes
 //                      - Refactored. Splitted Xplug code in multiple javascript files and using Gulp task for building Xplug
 //                      - Finalized work on moonlight style
 //                      - Removed setWidthOnGrid() and corresponding menu call
 //                      - Removed submenu 'Grid Layout' and menu option 'Background Image'
 //
-// v1.2    2015-12-27 * Multiple changes
+// v1.2   2015-12-27 * Multiple changes
 //                      - Added configuration dialog for custom Page Designer Style. Lots of interesting stuff.
 //                      - Store/restore custom style from local storage
+//
+// v1.2   2016-01-02 * Added export dialog for custom style
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
