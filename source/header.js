@@ -67,6 +67,13 @@
 //
 // v1.2   2016-01-02 * Added export dialog for custom style
 //
+// v1.2   2016-01-03 * Multiple changes
+//                      - A lot of code refactoring done
+//                      - Added possibility to save and retrieve custom style settings to/from local storage
+//                      - Reworked menu code and added submenu
+//                      - Removed export dialog for now. Will be re-added when the other stuff is working as expected.
+//                        First need to add a dialog for listing available styles
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

@@ -5,5 +5,11 @@
 // main.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-window.xplug = (typeof(window.pageDesigner) == 'object') && new Xplug();
-(typeof(window.xplug) == 'object') && xplug.loadSettings();
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+
+if (typeof(window.pageDesigner) == 'object') {
+   window.xplug = new Xplug();
+   xplug.install_menu();
+   xplug.loadSettings();
+}

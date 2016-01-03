@@ -6,6 +6,7 @@
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
@@ -302,8 +303,7 @@ window.pageDesigner.MoonlightMode = function() {
  * METHOD: DaylightMode
  ***************************************************************************/
 window.pageDesigner.DaylightMode = function() {
-  window.pageDesigner.removeStyle();
-  $('#glv-viewport').css('background-image','none');
+  window.pageDesigner.unsetStyle();
   $('#ORATRONIK_XPLUG_moonsun_button span')
        .removeClass('icon-xplug-moon')
        .addClass('icon-xplug-sun');

@@ -6,7 +6,7 @@
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
-
+/* jshint -W030 */
 
 var Xplug = function() {
    var C_version = 'Xplug v1.2 (www.oratronik.de)';
@@ -21,55 +21,6 @@ var Xplug = function() {
    if (typeof(window.pageDesigner) != 'object') {
       return 0;
    }
-
-   var C_lang  = gBuilderLang ? gBuilderLang : 'en';
-
-   var C_label =  { 'en' : {   "DOCKRIGHT"    : "Dock grid on right side"
-                             , "DOCKMID"      : "Dock grid in middle"
-                             , "PREVPAGE"     : "Go to previous page"
-                             , "NEXTPAGE"     : "Go to next page"
-                             , "SHORTCUTS"    : "Customize shortcuts"
-                             , "NOTOOLTIPS"   : "Disable tooltips"
-                             , "TOOLTIPS"     : "Enable tooltips"
-                             , "PRETTYGRID"   : "Background image"
-                             , "RESTOREGRID"  : "Restore grid"
-                             , "GRIDLAYOUT"   : "Grid layout"
-                             , "MOONLIGHT"    : "Moonlight mode"
-                             , "TOGGLELIGHT"  : "Toggle daylight/moonlight mode"
-                             , "CUST_COLORS"  : "Customize Page Designer Style"
-
-                             , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
-                             , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
-                             , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
-                             , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
-                             , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
-                           },
-
-                    'de' : {   "DOCKRIGHT"   : "Grid rechts außen positionieren"
-                             , "DOCKMID"     : "Grid in der Mitte positionieren"
-                             , "PREVPAGE"    : "Gehe zu vorherige Seite"
-                             , "NEXTPAGE"    : "Gehe zu nächste Seite"
-                             , "SHORTCUTS"   : "Tastenkürzel einrichten"
-                             , "NOTOOLTIPS"  : "Tooltips deaktivieren"
-                             , "TOOLTIPS"    : "Tooltips aktivieren"
-                             , "PRETTYGRID"  : "Hintergrundbild"
-                             , "RESTOREGRID" : "Grid Originalzustand wiederherstellen"
-                             , "GRIDLAYOUT"  : "Grid Layout einstellen"
-                             , "MOONLIGHT"   : "Mondlicht-Modus"
-                             , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
-                             , "CUST_COLORS" : "Page Designer Stil einstellen"
-
-                             , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
-                             , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
-                             , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
-                             , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
-                             , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
-                           },
-                  };
-
-    function get_label(p_index) {
-        return C_label[C_lang][p_index];
-    }
 
   /****************************************************************************
    * Install buttons for going to previous / next page
@@ -136,9 +87,6 @@ var Xplug = function() {
   } // install_moonsun_switch
 
 
-
-
-
   /****************************************************************************
    * Install XPLUG custom actions
    ***************************************************************************/
@@ -151,101 +99,101 @@ var Xplug = function() {
             label    : get_label('PREVPAGE'),
             title    : get_label('PREVPAGE'),
             shortcut : "Alt+B",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            window.pageDesigner.goToPrevPage();
                            return true;
                        }
           },
+
           {
             name     : "pd-xplug-goto-next-page",
             label    : get_label('NEXTPAGE'),
             title    : get_label('NEXTPAGE'),
             shortcut : "Alt+N",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            window.pageDesigner.goToNextPage();
                            return true;
                        }
           },
+
           {
             name     : "pd-xplug-dock-grid-right",
             label    : get_label('DOCKRIGHT'),
             shortcut : "Alt+R",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            return window.pageDesigner.dockGridRight();
                        }
           },
+
           {
             name     : "pd-xplug-dock-grid-middle",
             label    : get_label('DOCKMID'),
             shortcut : "Alt+M",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            return window.pageDesigner.dockGridMiddle();
                        }
           },
+
           {
             name     : "pd-xplug-disable-tooltips",
             label    : get_label('NOTOOLTIPS'),
             shortcut : "????",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            return window.pageDesigner.disableTooltips();
                        }
           },
+
           {
             name     : "pd-xplug-enable-tooltips",
             label    : get_label('TOOLTIPS'),
             shortcut : "????",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            return window.pageDesigner.enableTooltips();
                        }
           },
+
           {
             name     : "pd-xplug-set-moonlight-mode",
             label    : get_label('TOGGLEMOON'),
             shortcut : "????",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            return window.pageDesigner.MoonlightMode();
                        }
           },
+
           {
             name     : "pd-xplug-set-daylight-mode",
             label    : get_label('TOGGLEDAY'),
             shortcut : "????",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                            return window.pageDesigner.DaylightMode();
                        }
           },
+
           {
             name     : "pd-xplug-toggle-moon-sun-style",
             label    : get_label('TOGGLELIGHT'),
             shortcut : "Alt+F10",
-            action   : function( event, focusElement ) {
+            action   : function( event, focusElement )
+                       {
                           if (xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES')
                              return  apex.actions.invoke('pd-xplug-set-daylight-mode');
 
                           return apex.actions.invoke('pd-xplug-set-moonlight-mode');
                        }
           },
-          {
-            name     : "pd-xplug-pretty-grid",
-            label    : get_label('PRETTYGRID'),
-            shortcut : "????",
-            action   : function( event, focusElement ) {
-                           return window.pageDesigner.prettyGrid();
-                       }
-          },
-          {
-            name     : "pd-xplug-no-pretty-grid",
-            label    : get_label('NOPRETTYGRID'),
-            shortcut : "????",
-            action   : function( event, focusElement ) {
-                           return window.pageDesigner.noPrettyGrid();
-                       }
-          },
 
         ]
        );
     } // install_actions
-
 
 
    /****************************************************************************
@@ -304,122 +252,6 @@ var Xplug = function() {
                        + l_menu_icon
                        + '</button>');
 
-
-
-        // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
-        // For details on the APEX popup menu functionality refer to /images/libraries/widget.menu.js
-        var l_menu$ = $("<div id='XplugMenu'></div>");
-        $("body").append(l_menu$);
-
-        l_menu$.menu(
-        {
-          items : [
-            {
-              type     : "toggle",
-              label    : get_label('DOCKRIGHT'),
-              get      : function()
-                         {
-                            return $('div#top_col').prevAll('div#right_col').length == 1;
-                         },
-              set      : function()
-                         {
-                            $('div#top_col').prevAll('div#right_col').length === 0
-                               ? apex.actions.invoke('pd-xplug-dock-grid-right')
-                               : apex.actions.invoke('pd-xplug-dock-grid-middle');
-                         },
-              disabled : function()
-                         {
-                           return false;
-                         }
-            },
-
-
-            {
-              type     : "toggle",
-              label    : get_label('MOONLIGHT'),
-              get      : function()
-                         {
-                            return xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES';
-                         },
-              set      : function()
-                         {
-                           xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES'
-                              ? apex.actions.invoke('pd-xplug-set-daylight-mode')
-                              : apex.actions.invoke('pd-xplug-set-moonlight-mode');
-                         },
-              disabled : function()
-                         {
-                           return false;
-                         }
-            },
-
-            {
-              type     : "action",
-              label    : get_label('CUST_COLORS'),
-              action   : function()
-                         {
-                            window.pageDesigner.customizeColors(get_label('CUST_COLORS'));
-                         },
-              disabled : function()
-                         {
-                           return $('#ORATRONIK_XPLUG_COLOR_DIALOG').length > 0;
-                         }
-            },
-
-
-
-
-            { type     : "separator" },
-
-            {
-              type     : "toggle",
-              label    : get_label('NOTOOLTIPS'),
-              get      : function()
-                         {
-                            return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
-                         },
-
-              set      : function()
-                         {
-                           if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
-
-                              apex.actions.invoke('pd-xplug-enable-tooltips')
-                                 ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
-                                 : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
-
-                           } else {
-
-                               apex.actions.invoke('pd-xplug-disable-tooltips')
-                               ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
-                               : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
-                           }
-
-                           // Remove notification afer 1.5 seconds
-                           window.setTimeout( function() {
-                                                pageDesigner.hideNotification();
-                                              },
-                                              1500
-                                            );
-                         },
-
-              disabled : function()
-                         {
-                           return false;
-                         }
-            },
-
-            { type     : "separator"
-            },
-            {
-              type     : "action",
-              labelKey : C_version,
-              disabled : function() {
-                             return true;
-                         }
-            }
-          ]
-        });
-
         __install_goto_page();
         __install_moonsun_switch();
         __install_actions();
@@ -436,44 +268,15 @@ var Xplug = function() {
 }; // constructor Xplug
 
 
-Xplug.prototype.setStorage = function(p_key, p_value)
-    {
-        if (typeof(localStorage) == 'object') {
-           var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
-
-           if (localStorage === null) {
-              console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
-              return false;
-           }
-           localStorage.setItem(l_key, p_value);
-           return true;
-        } else {
-           console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
-           return false;
-        }
-    }; // Xplug.prototype.setStorage
-
-
-Xplug.prototype.getStorage = function(p_key, p_default)
-    {
-        if (typeof(localStorage) == 'object') {
-           var l_key = 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
-
-           if (localStorage === null) {
-              console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
-              return p_default;
-           }
-           return localStorage.getItem(l_key) || p_default;
-        } else {
-           console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
-           return p_default;
-       }
-    }; // Xplug.prototype.getStorage
 
 
 Xplug.prototype.loadSettings = function ()
 {
-   xplug.getStorage('MOONLIGHT_MODE','NO')    == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
+   if (xplug.getStorage('STYLE_MOONLIGHT','NOT_EXIST',true) == 'NOT_EXIST') {
+      window.pageDesigner.setStyle('MOONLIGHT','SAVE_ONLY');
+   }
+
+   xplug.getStorage('MOONLIGHT_MODE_ON','NO')    == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
 
