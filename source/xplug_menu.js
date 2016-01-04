@@ -12,33 +12,64 @@
 Xplug.prototype.install_menu = function() {
 
     function __install_SubmenuPickStyles() {
-       var l_catalog =  xplug.getStorage('XPLUG_PD_STYLE_CATALOG','#MOONLIGHT#NONE',true);
+       var l_arr_menu_items = [];
+       var l_arr_keys       = [];
 
-       if (l_catalog == '#MOONLIGHT#NONE') {
-           return [
-                    {
-                       type     : "action",
-                       label    : "Moonlight",
-                       action   : function()
+       if (xplug.getStorage('STYLE_Moonlight','NOT_EXIST',true) == 'NOT_EXIST') {
+          window.pageDesigner.setStyle('Moonlight','SAVE_ONLY');
+       }
+
+       l_arr_keys = xplug.getStorageKeys(true);
+
+       for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
+           var l_key = l_arr_keys[i];
+
+           if (l_key.substr(0,6) == 'STYLE_') {
+              var l_style = JSON.parse(xplug.getStorage(l_key,null,true));
+
+              if (l_style !== null) {
+                var l_label = l_style.STYLE_NAME.substr(0,25);
+
+                l_arr_menu_items.push(
+                  { type        : "toggle",
+                    label       : l_label,
+                    xplug_style : l_style.STYLE_NAME,
+                    get         : function()
                                   {
-                                    window.pageDesigner.loadStyle('MOONLIGHT');
+                                    return xplug.getStorage('CURRENT_STYLE',null,true) == this.xplug_style;
+                                  },
+                    set         : function()
+                                  {
+                                    window.pageDesigner.loadStyle(this.xplug_style);
                                   }
+                  }
+                );
+             } // if l_style
+           }   // if l_key
+       }       // for
+
+       l_arr_menu_items.push(
+         {
+            type  : "toggle",
+            label : "Original (none)",
+            get   : function()
+                    {
+                     return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
                     },
+            set   : function()
                     {
-                       type     : "action",
-                       label    : "Original (none)",
-                       action   : function()
-                                  {
-                                    apex.actions.invoke('pd-xplug-set-daylight-mode');
-                                  }
+                      apex.actions.invoke('pd-xplug-set-daylight-mode');
                     }
-                  ];
-        }
+         }
+       );
+       return l_arr_menu_items;
     } // install_SubmenuPickStyles
 
 
+
+
     // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
-    // For details on the APEX popup menu functionality refer to /images/libraries/widget.menu.js
+    // For details on the APEX popup menu functionality refer to /images/libraries/apex/widget.menu.js
     var l_menu$ = $("<div id='XplugMenu'></div>");
     $("body").append(l_menu$);
 
@@ -105,8 +136,7 @@ Xplug.prototype.install_menu = function() {
 
         { type     : "subMenu",
           label    : get_label('PICK_STYLE'),
-          menu     : { items : __install_SubmenuPickStyles()
-                     },
+          menu     : { items : __install_SubmenuPickStyles() },
           disabled : function()
                      {
                        return $('#ORATRONIK_XPLUG_COLOR_DIALOG').length > 0;
@@ -125,7 +155,10 @@ Xplug.prototype.install_menu = function() {
                            label    : get_label('CUST_COLORS'),
                            action   : function()
                                       {
-                                         window.pageDesigner.customizeStyleDialog('MOONLIGHT',get_label('CUST_COLORS'));
+                                         window.pageDesigner.customizeStyleDialog(
+                                            xplug.getStorage('CURRENT_STYLE','NONE',true),
+                                            get_label('CUST_COLORS')
+                                         );
                                       },
                            disabled : function()
                                       {
@@ -140,7 +173,7 @@ Xplug.prototype.install_menu = function() {
         },
         {
           type     : "action",
-          labelKey : "Prototype v1.2",
+          label    : xplug.getVersion(),
           disabled : function() {
                          return true;
                      }

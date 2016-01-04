@@ -304,9 +304,6 @@ window.pageDesigner.MoonlightMode = function() {
  ***************************************************************************/
 window.pageDesigner.DaylightMode = function() {
   window.pageDesigner.unsetStyle();
-  $('#ORATRONIK_XPLUG_moonsun_button span')
-       .removeClass('icon-xplug-moon')
-       .addClass('icon-xplug-sun');
 };
 
 

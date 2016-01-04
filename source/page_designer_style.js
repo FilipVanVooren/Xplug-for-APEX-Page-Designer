@@ -20,6 +20,8 @@ window.pageDesigner.setStyle = function( p_style_name,
                                          p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err
                                        )
 {
+   'use strict';
+
     var l_c1   = p1    || '#3F3F3F';       // Dark-Grey
     var l_c2   = p2    || '#505050';       // Light-Grey shade 3
     var l_c3   = p3    || '#246396';       // Light-blue
@@ -31,14 +33,15 @@ window.pageDesigner.setStyle = function( p_style_name,
     var l_c9   = p9    || '#CFE6FA';       // light-Cyan
     var l_cerr = p_err || '#FFC3C3';       // Error background color
     var l_lf   = "\n";
+    var l_css;
 
 
     //==========================================================================
     // Save style settings if required
     //==========================================================================
     var l_settings_obj = { "STYLE_NAME" : p_style_name,
-                           "DARK_STYLE" : p_is_dark_style,
-                           "SHOW_GRID"  : typeof(p_show_grid) == 'undefined' ? 'YES' : p_show_grid,
+                           "DARK_STYLE" : typeof(p_is_dark_style) == 'undefined' ? 'YES' : p_is_dark_style,
+                           "SHOW_GRID"  : typeof(p_show_grid)     == 'undefined' ? 'YES' : p_show_grid,
                            "C1"         : l_c1,
                            "C2"         : l_c2,
                            "C3"         : l_c3,
@@ -84,14 +87,14 @@ window.pageDesigner.setStyle = function( p_style_name,
           +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:'  + l_c6 + '; }';
 
     // Tabs at the top of page designer (inactive)
-    l_css += l_lf + ' .ui-tabs-anchor > span        { color: ' + l_c6 + '; }'   // Icon color tabs (Rendering, ...)
-          + l_lf  + ' .a-PageDesigner-treeTitle     { color: ' + l_c7 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
+    l_css += l_lf + ' .ui-tabs-anchor > span                 { color: ' + l_c6 + '; }'   // Icon color tabs (Rendering, ...)
+          + l_lf  + ' .a-PageDesigner-treeTitle              { color: ' + l_c7 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
           + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
                   + ' .ui-tabs-anchor { color: ' + l_c1 + '; border-right-color: ' + l_c4 + '; }'
           + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-state-default { background-color: ' + l_c6 + '; }';
 
     // Toolbar below tabs
-    l_css += l_lf  + ' div.a-Toolbar-items           { background-color: ' + l_c1     + '; }';   // Toolbar items
+    l_css += l_lf  + ' div.a-Toolbar-items                   { background-color: ' + l_c1     + '; }';   // Toolbar items
 
 
     // Border-color between elements
@@ -106,30 +109,30 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf;
 
     // Buttons
-    l_css += ' .ui-tabs-nav .ui-tabs-anchor            { border-right-color : ' + l_c4 + '; }'
-          +  l_lf + ' div#sp_main button.a-Button      { background-color   : ' + l_c5 + '; }'
+    l_css += ' .ui-tabs-nav .ui-tabs-anchor                  { border-right-color : ' + l_c4 + '; }'
+          +  l_lf + ' div#sp_main button.a-Button            { background-color   : ' + l_c5 + '; }'
           +  l_lf + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
           +  l_lf + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
                   + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
-                  + '    { background-color: ' + l_c9 + ' !important; }';                             // Active Buttons
+                  + '    { background-color: ' + l_c9 + ' !important; }';                                   // Active Buttons
 
     l_css += ' div#sp_main .a-Button:hover,'
-           + ' div#sp_main .fc-button.ui-state-hover { background-color: ' + l_c7 + '!important; }'   // Hover Buttons
+           + ' div#sp_main .fc-button.ui-state-hover         { background-color: ' + l_c7 + '!important; }' // Hover Buttons
            + l_lf;
 
 
     //==========================================================================
     // Left pane (Tree)
     //==========================================================================
-    l_css +=        ' .a-PageDesigner-treeWrap           { background-color : ' + l_c1 + '; }'          // Space between tree and surroundings (tab1-tab4)
-          +  l_lf + ' div#PDrenderingTree.a-TreeView     { background-color : ' + l_c1 + '; }'          // Rendering - Tree (=tab1)
-          +  l_lf + ' div#PDdynamicActionTree.a-TreeView { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
-          +  l_lf + ' div#PDprocessingTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
-          +  l_lf + ' div#PDsharedCompTree.a-TreeView    { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
-          +  l_lf + ' span.a-TreeView-label              { color            : ' + l_c5 + '; }'          // Node label text color
-          +  l_lf + ' span.a-TreeView-toggle             { color            : ' + l_c5 + '; }'          // Node collapse/expand icon color
-          +  l_lf + ' div.resize.u-ScrollingViewport     { background-color : ' + l_c1 + '; }'          // Background color empty space
-          +  l_lf + ' ul.ui-widget-header                { background-color : ' + l_c1 + '; }'          // Background color empty space
+    l_css +=        ' .a-PageDesigner-treeWrap               { background-color : ' + l_c1 + '; }'          // Space between tree and surroundings (tab1-tab4)
+          +  l_lf + ' div#PDrenderingTree.a-TreeView         { background-color : ' + l_c1 + '; }'          // Rendering - Tree (=tab1)
+          +  l_lf + ' div#PDdynamicActionTree.a-TreeView     { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
+          +  l_lf + ' div#PDprocessingTree.a-TreeView        { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
+          +  l_lf + ' div#PDsharedCompTree.a-TreeView        { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
+          +  l_lf + ' span.a-TreeView-label                  { color            : ' + l_c5 + '; }'          // Node label text color
+          +  l_lf + ' span.a-TreeView-toggle                 { color            : ' + l_c5 + '; }'          // Node collapse/expand icon color
+          +  l_lf + ' div.resize.u-ScrollingViewport         { background-color : ' + l_c1 + '; }'          // Background color empty space
+          +  l_lf + ' ul.ui-widget-header                    { background-color : ' + l_c1 + '; }'          // Background color empty space
           +  l_lf;
 
     //==========================================================================
@@ -140,22 +143,22 @@ window.pageDesigner.setStyle = function( p_style_name,
           +  l_lf + ' div#sp_right div.a-Property-fieldContainer          { background-color : ' + l_c2  + '; }'  // Fieldcontainer
           +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  // Labelcontainer
 
-          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                           // Labelcontainer in error
-          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                           // Fieldcontainer in error
+          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                                     // Labelcontainer in error
+          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                                     // Fieldcontainer in error
           +  l_lf + ' .a-Property.is-error { background-color: ' + l_cerr + '!important; }'
 
           +  l_lf + ' div#sp_right div.a-Property,'
                   + ' div#sp_right div.a-Property:hover,'
                   + ' div#sp_right div.a-Property:focus,'
-                  + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2     + '; }'            // Property button
-          +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1     + ' !important; }' // Property border color
+                  + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2 + '; }'            // Property button
+          +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1 + ' !important; }' // Property border color
           +  l_lf + ' div#sp_right .a-Property-field:hover,'
-                  + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1    + '; }'             // Property input field (active)
-          +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2     + '; }'            // Property input field
-          +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9     + '; }'            // Property input field
-          +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'       // Property label
-          +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                           // Properties editor message
-          +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'         // Redefine select icon
+                  + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1 + '; }'            // Property input field (active)
+          +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2 + '; }'            // Property input field
+          +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9 + '; }'            // Property input field
+          +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'   // Property label
+          +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                       // Properties editor message
+          +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'     // Redefine select icon
 
           +  l_lf + ' .a-Property-checkbox-label, .a-Property-radio, .a-Property-unit { text-shadow :  none; }'
           +  l_lf;
@@ -163,11 +166,11 @@ window.pageDesigner.setStyle = function( p_style_name,
     //==========================================================================
     // Grid Layout - Gallery
     //==========================================================================
-    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'              // Gallery background
-          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                               // Gallery tab row reset
+    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'                       // Gallery background
+          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                                        // Gallery tab row reset
           + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_c6 + '; border: 0px solid ' + l_c2 + '; border-radius: 2px;}'
-                                                                                                         // Gallery tab background color
-          + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } ' // Hack for border-radius
+                                                                                                                  // Gallery tab background color
+          + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          // Hack for border-radius
           + l_lf;
 
 
@@ -178,15 +181,15 @@ window.pageDesigner.setStyle = function( p_style_name,
     l_css +=       ' div#messages, div#search, div#help               { background-color : ' + l_c1 + '; }'
           + l_lf + ' div#help-container                               { background-color : ' + l_c1 + '; }'
           + l_lf + ' .ui-tabs-helpTab.ui-state-active .ui-tabs-anchor { background-color : ' + l_c1 + ' !important; }'
-          + l_lf + ' div#help-container h3, div#help-container h4     { color : ' + l_c7 + '; }'
-          + l_lf + ' div#help-container dt                            { color : ' + l_c7 + '; }'
-          + l_lf + ' div#help-container a                             { color : ' + l_c3 + '; }'
-          + l_lf + ' div#help-container *                             { color : ' + l_c5 + '; }';
+          + l_lf + ' div#help-container h3, div#help-container h4     { color : '            + l_c7 + '; }'
+          + l_lf + ' div#help-container dt                            { color : '            + l_c7 + '; }'
+          + l_lf + ' div#help-container a                             { color : '            + l_c3 + '; }'
+          + l_lf + ' div#help-container *                             { color : '            + l_c5 + '; }';
 
     // Messages
-    l_css += l_lf + ' .a-AlertMessages-message                {  color: ' + l_c6 + '; }'
+    l_css += l_lf + ' .a-AlertMessages-message                        {  color: '            + l_c6 + '; }'
           +  l_lf + ' .a-AlertMessages-message.is-error:hover,'
-                  + ' .a-AlertMessages-message.is-error:focus {  background-color : ' + l_c7 + ' !important; }';
+                  + ' .a-AlertMessages-message.is-error:focus         {  background-color : ' + l_c7 + ' !important; }';
 
     // Page Search
     l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label,'
@@ -221,13 +224,10 @@ window.pageDesigner.setStyle = function( p_style_name,
     //==========================================================================
     var l_style = '<style type="text/css" ID="XPLUG_THEME">'                    + l_lf
                 + l_css                                                         + l_lf
-                + l_scroll                                                      + l_lf;
+                + l_scroll                                                      + l_lf
+                + ((typeof(p_custom_css) == 'undefined') ? l_lf : p_custom_css) + l_lf
+                + '</style>'                                                    + l_lf;
 
-    if (typeof(p_custom_css) != 'undefined') {
-       l_style += p_custom_css + l_lf;
-    }
-
-    l_style += '</style>' + l_lf;
     // console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
@@ -238,7 +238,13 @@ window.pageDesigner.setStyle = function( p_style_name,
        window.pageDesigner.noPrettyGrid();
     }
 
+    $('#ORATRONIK_XPLUG_moonsun_button span')
+         .removeClass( p_is_dark_style == 'YES' ? 'icon-xplug-sun' : 'icon-xplug-moon')
+         .addClass(    p_is_dark_style == 'YES' ? 'icon-xplug-moon': 'icon-xplug-sun');
+
     console.debug('XPLUG - Page Designer Style ' + p_style_name + ' set.');
+
+    xplug.setStorage('CURRENT_STYLE',p_style_name, true);
 
     return JSON.stringify(l_settings_obj);
 }; // window.pageDesigner.setStyle
@@ -252,7 +258,13 @@ window.pageDesigner.unsetStyle = function() {
    $('style#XPLUG_THEME').remove();
    window.pageDesigner.noPrettyGrid();
 
+   $('#ORATRONIK_XPLUG_moonsun_button span')
+        .removeClass('icon-xplug-moon')
+        .addClass('icon-xplug-sun');
+
    console.debug('XPLUG - Current page designer style unset.');
+
+   xplug.setStorage('CURRENT_STYLE','NONE', true);
 
    return 1;
 }; // window.pageDesigner.unsetStyle
@@ -268,6 +280,11 @@ window.pageDesigner.loadStyle = function(p_style_name)
 {
   var l_imp_obj;
 
+  if (p_style_name == 'NONE') {
+     window.pageDesigner.unsetStyle();
+     return;
+  }
+
   //
   // Get settings
   //
@@ -277,7 +294,13 @@ window.pageDesigner.loadStyle = function(p_style_name)
      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
      return 0;
   }
-  console.log(l_imp_obj);
+
+
+  if (l_imp_obj === null) {
+     console.error("XPLUG: could not retrieve Page Designer style. Reverting to NONE.")
+     window.pageDesigner.loadStyle('NONE');
+     return 0;
+  }
 
   window.pageDesigner.setStyle
     (
@@ -578,8 +601,8 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                     (
                                        l_style_name,
                                        'SAVE',
-                                       $('input[name=ColorDlgPE_2_name]:checked').val() == 'YES',
-                                       $('input[name=ColorDlgPE_3_name]:checked').val() == 'YES',
+                                       $('input[name=ColorDlgPE_2_name]:checked').val(),
+                                       $('input[name=ColorDlgPE_3_name]:checked').val(),
                                        $('textarea[data-property-id="custom_css"').val(),
                                        l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
                                        l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]

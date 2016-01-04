@@ -272,12 +272,14 @@ var Xplug = function() {
 
 Xplug.prototype.loadSettings = function ()
 {
-   if (xplug.getStorage('STYLE_MOONLIGHT','NOT_EXIST',true) == 'NOT_EXIST') {
-      window.pageDesigner.setStyle('MOONLIGHT','SAVE_ONLY');
-   }
+   window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
 
-   xplug.getStorage('MOONLIGHT_MODE_ON','NO')    == 'YES' && apex.actions.invoke('pd-xplug-set-moonlight-mode');
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-
 }; // Xplug.prototype.loadSettings
+
+
+Xplug.prototype.getVersion = function ()
+{
+   return xplug.version;
+}; // Xplug.prototype.getVersion

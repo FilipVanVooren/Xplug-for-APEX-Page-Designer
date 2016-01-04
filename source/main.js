@@ -10,6 +10,7 @@
 
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();
+   
    xplug.install_menu();
    xplug.loadSettings();
 }
