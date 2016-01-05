@@ -271,6 +271,29 @@ window.pageDesigner.unsetStyle = function() {
 
 
 
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: getStyles
+ ***************************************************************************/
+window.pageDesigner.getStyles = function() {
+  var l_arr_styles = [];
+  var l_arr_keys   = xplug.getStorageKeys(true);
+
+  for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
+      var l_key = l_arr_keys[i];
+
+      if (l_key.substr(0,6) == 'STYLE_') {
+         var l_style = JSON.parse(xplug.getStorage(l_key,null,true));
+
+         if (l_style !== null) {
+            l_arr_styles.push(l_style);
+         }
+     }
+  }
+
+  return l_arr_styles;
+}; // window.pageDesigner.getStyles
+
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
@@ -297,7 +320,7 @@ window.pageDesigner.loadStyle = function(p_style_name)
 
 
   if (l_imp_obj === null) {
-     console.error("XPLUG: could not retrieve Page Designer style. Reverting to NONE.")
+     console.error("XPLUG: could not retrieve Page Designer style. Reverting to NONE.");
      window.pageDesigner.loadStyle('NONE');
      return 0;
   }
@@ -321,6 +344,65 @@ window.pageDesigner.loadStyle = function(p_style_name)
        l_imp_obj.C10
     );
 }; // window.pageDesigner.loadStyle
+
+
+window.pageDesigner.customizeStyle = function(p_title)
+{
+    'use strict';
+
+    //
+    // Exit if not in APEX Page Designer
+    //
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length === 0
+        && $('body').append('<div ID="ORATRONIK_XPLUG_DIALOG_STYLE_LOV"></div');
+
+    $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV')
+        .lovDialog(
+                { modal             : true,
+                  title             : p_title,
+                  resizable         : true,
+
+                  columnDefinitions : [ { name  : "STYLE_NAME",  title : "Name"        },
+                                        { name  : "DARK_STYLE",  title : "Dark style"  },
+                                        { name  : "is_default",  title : "Is default"  } ],
+
+                  filterLov         : function( pFilters, pRenderLovEntries ) {
+
+                                         var l_arr = window.pageDesigner.getStyles();
+                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
+                                         // For details see /images/apex_ui/js/widget.lovDioalog.js
+                                         //
+                                         // To render our LOV, all we need to do is call this function and pass
+                                         // our LOV as an array.
+                                         pRenderLovEntries(l_arr);
+                                      },
+
+                  width             : 800,
+                  height            : 340,
+
+                  close             : // called by widget.lovDialog.js close function
+                                      function(pEvent) {
+                                         $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').remove();
+                                      },
+
+                  multiValue       :  false,
+
+                  valueSelected    : function( pEvent, pData ) {
+                                         window.pageDesigner.customizeStyleDialog(
+                                            pData.STYLE_NAME,
+                                            get_label('CUST_COLORS')
+                                         );
+                                     }
+                }
+               );
+
+    return 1;
+}; // window.pageDesigner.customizeStyle
+
 
 
 

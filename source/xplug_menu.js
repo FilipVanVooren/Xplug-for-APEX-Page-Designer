@@ -139,7 +139,7 @@ Xplug.prototype.install_menu = function() {
           menu     : { items : __install_SubmenuPickStyles() },
           disabled : function()
                      {
-                       return $('#ORATRONIK_XPLUG_COLOR_DIALOG').length > 0;
+                       return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
                      }
 
         },
@@ -155,14 +155,11 @@ Xplug.prototype.install_menu = function() {
                            label    : get_label('CUST_COLORS'),
                            action   : function()
                                       {
-                                         window.pageDesigner.customizeStyleDialog(
-                                            xplug.getStorage('CURRENT_STYLE','NONE',true),
-                                            get_label('CUST_COLORS')
-                                         );
+                                         window.pageDesigner.customizeStyle('Customize Page Designer Style');
                                       },
                            disabled : function()
                                       {
-                                        return $('#ORATRONIK_XPLUG_COLOR_DIALOG').length > 0;
+                                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
                                       }
                          }
                       ]
