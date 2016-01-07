@@ -62,6 +62,25 @@ Xplug.prototype.install_menu = function() {
                     }
          }
        );
+
+       l_arr_menu_items.push(
+
+         { type   : "separator" },
+
+         {
+            type  : "action",
+            label : get_label('SET_DEFAULTS'),
+            get   : function()
+                    {
+                     return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
+                    },
+            action: function()
+                    {
+                      window.pageDesigner.setDefaultStylesDialog(get_label('SET_DEFAULTS'));
+                    }
+         }
+       );
+
        return l_arr_menu_items;
     } // install_SubmenuPickStyles
 
@@ -152,7 +171,7 @@ Xplug.prototype.install_menu = function() {
                       [
                          {
                            type     : "action",
-                           label    : get_label('CUST_COLORS'),
+                           label    : get_label('LBL-STYLE-CUSTOM'),
                            action   : function()
                                       {
                                          window.pageDesigner.customizeStyle('Customize Page Designer Style');

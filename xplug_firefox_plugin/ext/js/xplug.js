@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Jan 05 2016 16:56:31
+// Built using Gulp. Built date: Thu Jan 07 2016 21:20:30
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -107,13 +107,33 @@
                              , "MOONLIGHT"    : "Moonlight mode"
                              , "TOGGLELIGHT"  : "Toggle daylight/moonlight mode"
                              , "PICK_STYLE"   : "Pick style"
+                             , "SET_DEFAULTS" : "Set defaults"
                              , "CUSTOMIZE"    : "Customize"
-                             , "CUST_COLORS"  : "Page Designer Style"
 
+                             , "BTN-NEW"      : "New"
                              , "BTN-SAVE"     : "Save"
                              , "BTN-APPLY"    : "Apply"
-                             , "BTN-OK"       : "OK"                                                          
+                             , "BTN-OK"       : "OK"
                              , "BTN-CANCEL"   : "Cancel"
+                             , "BTN-DELETE"   : "Delete"
+                             , "BTN-EXPORT"   : "Export"
+                             , "BTN-IMPORT"   : "Import"
+
+                             , "LBL-STYLE-CUSTOM"    : "Customize Page Designer Style"
+                             , "LBL-STYLE-EXPORT"    : "Export Page Designer Style"
+                             , "LBL-NAME"            : "Name"
+                             , "LBL-DARK-STYLE"      : "Dark Style"
+                             , "LBL-CRNTLY-ACTIVE"   : "Currently Active"
+                             , "LBL-PROTECTED"       : "Protected"
+                             , "LBL-SHOW-GRID"       : "Show Grid"
+                             , "LBL-COLOR"           : "Color"
+                             , "LBL-IDENTIFICATION"  : "Identification"
+                             , "LBL-CUST-COLORS"     : "Customize Colors"
+                             , "LBL-CUST-CSS"        : "Custom CSS"
+                             , "LBL-ADVANCED"        : "Advanced"
+                             , "LBL-DAYLIGHT"        : "Daylight"
+                             , "LBL-MOONLIGHT"       : "Moonlight"
+                             , "LBL-DEFAULT-STYLES"  : "Default Styles"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -122,24 +142,44 @@
                              , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
                            },
 
-                    'de' : {   "DOCKRIGHT"   : "Grid rechts außen positionieren"
-                             , "DOCKMID"     : "Grid in der Mitte positionieren"
-                             , "PREVPAGE"    : "Gehe zu vorherige Seite"
-                             , "NEXTPAGE"    : "Gehe zu nächste Seite"
-                             , "SHORTCUTS"   : "Tastenkürzel einrichten"
-                             , "NOTOOLTIPS"  : "Tooltips deaktivieren"
-                             , "TOOLTIPS"    : "Tooltips aktivieren"
-                             , "PRETTYGRID"  : "Hintergrundbild"
-                             , "MOONLIGHT"   : "Mondlicht-Modus"
-                             , "TOGGLELIGHT" : "Tageslicht- / Mondlicht Modus"
-                             , "PICK_STYLE"  : "Stil auswählen"
-                             , "CUSTOMIZE"   : "Anpassen"
-                             , "CUST_COLORS" : "Page Designer Stil anpassen"
+                    'de' : {   "DOCKRIGHT"    : "Grid rechts außen positionieren"
+                             , "DOCKMID"      : "Grid in der Mitte positionieren"
+                             , "PREVPAGE"     : "Gehe zu vorherige Seite"
+                             , "NEXTPAGE"     : "Gehe zu nächste Seite"
+                             , "SHORTCUTS"    : "Tastenkürzel einrichten"
+                             , "NOTOOLTIPS"   : "Tooltips deaktivieren"
+                             , "TOOLTIPS"     : "Tooltips aktivieren"
+                             , "PRETTYGRID"   : "Hintergrundbild"
+                             , "MOONLIGHT"    : "Mondlicht-Modus"
+                             , "TOGGLELIGHT"  : "Tageslicht- / Mondlicht Modus"
+                             , "PICK_STYLE"   : "Stil auswählen"
+                             , "SET_DEFAULTS" : "Defaultwerte setzen"                                                          
+                             , "CUSTOMIZE"    : "Anpassen"
 
+                             , "LBL-STYLE-CUSTOM"    : "Page Designer Stil anpassen"
+                             , "LBL-STYLE-EXPORT"    : "Page Designer Stil exportieren"
+                             , "LBL-NAME"            : "Name"
+                             , "LBL-DARK-STYLE"      : "Dunkler Stil"
+                             , "LBL-CRNTLY-ACTIVE"   : "Ist im Moment aktiv"
+                             , "LBL-PROTECTED"       : "Gesperrt"
+                             , "LBL-SHOW-GRID"       : "Grid anzeigen"
+                             , "LBL-COLOR"           : "Farbe"
+                             , "LBL-IDENTIFICATION"  : "Identifizierung"
+                             , "LBL-CUST-COLORS"     : "Farben anpassen"
+                             , "LBL-CUST-CSS"        : "Eigenes CSS"
+                             , "LBL-ADVANCED"        : "Fortgeschritten"
+                             , "LBL-DAYLIGHT"        : "Tageslicht"
+                             , "LBL-MOONLIGHT"       : "Mondlicht"
+                             , "LBL-DEFAULT-STYLES"  : "Standard Stil"
+
+                             , "BTN-NEW"      : "Neu"
                              , "BTN-SAVE"     : "Speichern"
                              , "BTN-APPLY"    : "Anwenden"
                              , "BTN-OK"       : "OK"
                              , "BTN-CANCEL"   : "Abbrechen"
+                             , "BTN-DELETE"   : "Löschen"
+                             , "BTN-EXPORT"   : "Exportieren"
+                             , "BTN-IMPORT"   : "Importieren"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -640,12 +680,18 @@ window.pageDesigner.setStyle = function( p_style_name,
     var l_css;
 
 
+    function is_protected(p_style_name) {
+      return (p_style_name.toUpperCase() == 'MOONLIGHT') ? 'YES' : 'NO';
+    }
+
+
     //==========================================================================
     // Save style settings if required
     //==========================================================================
     var l_settings_obj = { "STYLE_NAME" : p_style_name,
                            "DARK_STYLE" : typeof(p_is_dark_style) == 'undefined' ? 'YES' : p_is_dark_style,
                            "SHOW_GRID"  : typeof(p_show_grid)     == 'undefined' ? 'YES' : p_show_grid,
+                           "PROTECTED"  : is_protected(p_style_name),
                            "C1"         : l_c1,
                            "C2"         : l_c2,
                            "C3"         : l_c3,
@@ -836,7 +882,7 @@ window.pageDesigner.setStyle = function( p_style_name,
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
-    if (p_show_grid) {
+    if (p_show_grid == 'YES') {
        window.pageDesigner.prettyGrid();
     } else {
        window.pageDesigner.noPrettyGrid();
@@ -872,31 +918,6 @@ window.pageDesigner.unsetStyle = function() {
 
    return 1;
 }; // window.pageDesigner.unsetStyle
-
-
-
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: getStyles
- ***************************************************************************/
-window.pageDesigner.getStyles = function() {
-  var l_arr_styles = [];
-  var l_arr_keys   = xplug.getStorageKeys(true);
-
-  for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
-      var l_key = l_arr_keys[i];
-
-      if (l_key.substr(0,6) == 'STYLE_') {
-         var l_style = JSON.parse(xplug.getStorage(l_key,null,true));
-
-         if (l_style !== null) {
-            l_arr_styles.push(l_style);
-         }
-     }
-  }
-
-  return l_arr_styles;
-}; // window.pageDesigner.getStyles
 
 
 /****************************************************************************
@@ -950,6 +971,37 @@ window.pageDesigner.loadStyle = function(p_style_name)
 }; // window.pageDesigner.loadStyle
 
 
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: getStyles
+ ***************************************************************************/
+window.pageDesigner.getStyles = function() {
+  var l_arr_styles = [];
+  var l_arr_keys   = xplug.getStorageKeys(true);
+
+  for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
+      var l_key = l_arr_keys[i];
+
+      var l_current = xplug.getStorage('CURRENT_STYLE','',true);
+
+      if (l_key.substr(0,6) == 'STYLE_') {
+         var l_style = JSON.parse(xplug.getStorage(l_key,null,true));
+
+         if (l_style.STYLE_NAME == l_current) {
+            l_style.IS_CURRENT = 'YES';
+         }
+
+         if (l_style !== null) {
+            l_arr_styles.push(l_style);
+         }
+     }
+  }
+
+  return l_arr_styles;
+}; // window.pageDesigner.getStyles
+
+
+
 window.pageDesigner.customizeStyle = function(p_title)
 {
     'use strict';
@@ -970,9 +1022,11 @@ window.pageDesigner.customizeStyle = function(p_title)
                   title             : p_title,
                   resizable         : true,
 
-                  columnDefinitions : [ { name  : "STYLE_NAME",  title : "Name"        },
-                                        { name  : "DARK_STYLE",  title : "Dark style"  },
-                                        { name  : "is_default",  title : "Is default"  } ],
+                  columnDefinitions : [ { name  : "STYLE_NAME",  title : get_label('LBL-NAME')          },
+                                        { name  : "DARK_STYLE",  title : get_label('LBL-DARK-STYLE')    },
+                                        { name  : "IS_CURRENT",  title : get_label('LBL-CRNTLY-ACTIVE') },
+                                        { name  : "PROTECTED",   title : get_label("LBL-PROTECTED")     },
+                                       ],
 
                   filterLov         : function( pFilters, pRenderLovEntries ) {
 
@@ -985,7 +1039,7 @@ window.pageDesigner.customizeStyle = function(p_title)
                                          pRenderLovEntries(l_arr);
                                       },
 
-                  width             : 800,
+                  width             : 600,
                   height            : 340,
 
                   close             : // called by widget.lovDialog.js close function
@@ -993,14 +1047,36 @@ window.pageDesigner.customizeStyle = function(p_title)
                                          $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').remove();
                                       },
 
-                  multiValue       :  false,
+                  multiValue       : false,
 
                   valueSelected    : function( pEvent, pData ) {
                                          window.pageDesigner.customizeStyleDialog(
                                             pData.STYLE_NAME,
-                                            get_label('CUST_COLORS')
+                                            get_label('LBL-STYLE-CUSTOM'),
+                                            p_title
                                          );
-                                     }
+                                     },
+
+                   buttons : [
+                               { text  : get_label('BTN-NEW'),
+                                 click : function() {
+                                   window.pageDesigner.setStyle('New custom style','SAVE_ONLY');
+                                   window.pageDesigner.customizeStyleDialog(
+                                      'New custom style',
+                                      get_label('LBL-STYLE-CUSTOM'),
+                                      p_title
+                                   );
+                                   $( this ).lovDialog("close");
+                                 }
+                               },
+
+                               { text  : get_label('BTN-OK'),
+                                 class : 'a-Button--hot',
+                                 click : function() {
+                                   $( this ).lovDialog("close");
+                                 }
+                               }
+                             ]
                 }
                );
 
@@ -1010,11 +1086,14 @@ window.pageDesigner.customizeStyle = function(p_title)
 
 
 
+
+
+
 /****************************************************************************
  * Add custom method to pageDesigner Object
  * METHOD: customizeStyleDialog
  ***************************************************************************/
-window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
+window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV_title)
 {
     'use strict';
 
@@ -1032,6 +1111,17 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
     var l_out             = apex.util.htmlBuilder();
     var l_style_name_orig = p_style_name;
     var l_style_name      = 'STYLE_' + p_style_name;
+
+
+    function is_protected() {
+      try {
+         var l_protected_obj = JSON.parse(xplug.getStorage(l_style_name,null,true));
+
+         return l_protected_obj.PROTECTED == 'YES';
+      } catch(e) {}
+      return false;
+    }
+
 
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_COLOR_DIALOG')
@@ -1077,6 +1167,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                                   "CUSTOM_CSS" : typeof(l_imp_obj.CUSTOM_CSS) == 'undefined' ? ""        : l_imp_obj.CUSTOM_CSS
                                              };
 
+
                                //
                                // Build properties for property group 1 (style options)
                                //
@@ -1085,7 +1176,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                    value:        l_settings_obj.STYLE_NAME,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.TEXT,
-                                       prompt:         "Name",
+                                       prompt:         get_label('LBL-NAME'),
                                        isReadOnly:     false,
                                        isRequired:     true,
                                        displayGroupId: "style_id"
@@ -1099,7 +1190,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                    value:        l_settings_obj.DARK_STYLE,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         "Dark style",
+                                       prompt:         get_label('LBL-DARK-STYLE'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -1115,7 +1206,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                    value:        l_settings_obj.SHOW_GRID,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         "Show Grid",
+                                       prompt:         get_label('LBL-SHOW-GRID'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -1136,7 +1227,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                        value:        typeof(l_settings_obj["C"+l]) == 'undefined' ? '' : l_settings_obj["C"+l],
                                        metaData: {
                                            type:           $.apex.propertyEditor.PROP_TYPE.COLOR,
-                                           prompt:         "Color "  + l,
+                                           prompt:         get_label('LBL-COLOR') + ' ' + l,
                                            isReadOnly:     false,
                                            isRequired:     true,
                                            displayGroupId: "cust_colors"
@@ -1173,17 +1264,17 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                    propertySet: [
                                      {
                                        displayGroupId    : "style_id",
-                                       displayGroupTitle : "Identification",
+                                       displayGroupTitle : get_label('LBL-IDENTIFICATION'),
                                        properties        : l_properties1
                                      },
                                      {
                                        displayGroupId    : "cust_colors",
-                                       displayGroupTitle : "Customize Colors",
+                                       displayGroupTitle : get_label('LBL-CUST-COLORS'),
                                        properties        : l_properties2
                                      },
                                      {
                                        displayGroupId    : "advanced",
-                                       displayGroupTitle : "Advanced",
+                                       displayGroupTitle : get_label('LBL-ADVANCED'),
                                        collapsed         : true,
                                        properties        : l_properties3
                                      }
@@ -1215,63 +1306,86 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
 
                             }, // open
                   buttons : [
-                              // { text  : "Export",
-                              //   click : function() {
-                              //                         l_out = apex.util.htmlBuilder();
-                              //                         l_out.markup('<div')
-                              //                              .attr('id','ORATRONIK_XPLUG_EXPORT_DIALOG')
-                              //                              .markup('>')
-                              //                              .markup('<div><textarea width=80 height=20 style="width: 100%; height: 350px">')
-                              //                              .markup('</textarea></div>');
-                              //
-                              //                         $(l_out.html).dialog({
-                              //                             modal   : true,
-                              //                             title   : 'Export Page Designer style',
-                              //                             width   : 700,
-                              //                             height  : 400,
-                              //                             close   : function(pEvent) {
-                              //                                          $(this).dialog( "close" );
-                              //                                       },
-                              //
-                              //                             position: { 'my': 'center', 'at': 'center' }
-                              //                         });
-                              //
-                              //                         var l_json = JSON.parse(xplug.getStorage('XPLUG_PD_STYLE'));
-                              //
-                              //                         $('div#ORATRONIK_XPLUG_EXPORT_DIALOG textarea').val(JSON.stringify(l_json,null,4));
-                              //                      } // click
-                              // },
+                              { text  : get_label('BTN-EXPORT'),
+                                click : function() {
+                                                      l_out = apex.util.htmlBuilder();
+                                                      l_out.markup('<div')
+                                                           .attr('id','ORATRONIK_XPLUG_EXPORT_DIALOG')
+                                                           .markup('>')
+                                                           .markup('<div><textarea width=80 height=20 style="width: 100%; height: 350px">')
+                                                           .markup('</textarea></div>');
+
+                                                      $(l_out.html).dialog({
+                                                          modal   : true,
+                                                          title   : get_label('LBL-STYLE-EXPORT'),
+                                                          width   : 700,
+                                                          height  : 400,
+                                                          close   : function(pEvent) {
+                                                                       $(this).dialog( "close" );
+                                                                    },
+
+                                                          buttons : [
+                                                                      { text  : get_label('BTN-OK'),
+                                                                        class : 'a-Button--hot',
+                                                                        click : function() {
+                                                                           $(this).dialog( "close" );
+                                                                        },
+                                                                      }
+                                                                    ],
+
+                                                          position: { 'my': 'center', 'at': 'center' }
+                                                      });
+
+                                                      var l_json = JSON.parse(xplug.getStorage('STYLE_' + l_style_name_orig,null,true));
+
+                                                      $('div#ORATRONIK_XPLUG_EXPORT_DIALOG textarea').val(JSON.stringify(l_json,null,4));
+                                                   } // click
+                              },
+
+                              { text  : get_label('BTN-DELETE'),
+                                click : function() {
+                                  xplug.delStorage('STYLE_' + l_style_name_orig,true);
+                                  window.pageDesigner.customizeStyle(p_LOV_title);
+                                  $(this).dialog("close");
+                                },
+                                disabled : is_protected()
+                              },
+
 
                               { text  : get_label('BTN-APPLY'),
                                 click : function() {
-                                    var l_style_name = $('input[data-property-id=style_name]').val();
+                                  var l_style_name = $('input[data-property-id=style_name]').val();
 
-                                    var l_c = [];
-                                    for (var l=1;l<=10;l++) {
-                                        l_c[l] = $('input[data-property-id=col_' + l + ']').val();
-                                    }
-
-                                    window.pageDesigner.setStyle
-                                      (
-                                         l_style_name,
-                                         'DO_NOT_SAVE',
-                                         $('input[name=ColorDlgPE_2_name]:checked').val() == 'YES',
-                                         $('input[name=ColorDlgPE_3_name]:checked').val() == 'YES',
-                                         $('textarea[data-property-id="custom_css"').val(),
-                                         l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
-                                         l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
-                                      );
+                                  var l_c = [];
+                                  for (var l=1;l<=10;l++) {
+                                      l_c[l] = $('input[data-property-id=col_' + l + ']').val();
                                   }
+
+                                  window.pageDesigner.setStyle
+                                    (
+                                       l_style_name,
+                                       'DO_NOT_SAVE',
+                                       $('input[name=ColorDlgPE_2_name]:checked').val() == 'YES',
+                                       $('input[name=ColorDlgPE_3_name]:checked').val() == 'YES',
+                                       $('textarea[data-property-id="custom_css"').val(),
+                                       l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
+                                       l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
+                                    );
+                                },
+                                disabled : is_protected()
                               },
 
                               { text  : get_label('BTN-CANCEL'),
                                 click : function() {
-                                                     window.pageDesigner.loadStyle(l_style_name_orig);
-                                                     $( this ).dialog( "close" );
-                                                   }
+                                  window.pageDesigner.loadStyle(l_style_name_orig);
+                                  window.pageDesigner.customizeStyle(p_LOV_title);
+                                  $( this ).dialog( "close" );
+                                }
                               },
 
-                              { text  : get_label('BTN-OK'),
+
+                              { text  : get_label('BTN-SAVE'),
+                                class : 'a-Button--hot',
                                 click : function() {
                                   //
                                   // Duplicate code!!! Put this in a function!!!!!
@@ -1293,11 +1407,158 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title)
                                        l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
                                        l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
                                     );
-                                   $( this ).dialog( "close" ); }
+
+                                  window.pageDesigner.customizeStyle(p_LOV_title);
+                                  $( this ).dialog( "close" );
+                                },
+                                disabled : is_protected()
                               }
                             ]
                 }
        ); // customizeStyleDialog
+
+    return 1;
+};
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: setDefaultStylesDialog
+ ***************************************************************************/
+window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
+{
+    'use strict';
+
+    //
+    // Exit if not in APEX Page Designer
+    //
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    var l_dialog$;
+    var l_dialogPE$;
+    var l_properties1 = [];
+    var l_out         = apex.util.htmlBuilder();
+
+
+    l_out.markup('<div')
+         .attr('id','ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG')
+         .markup('>')
+         .markup('<div')
+         .attr('id','StyleDefaultsDlgPE')
+         .markup('>');
+
+
+    l_dialog$ = $(l_out.html)
+        .dialog(
+                { modal   : true,
+                  title   : p_title,
+                  width   : 400,
+
+                  close   : function(pEvent) {
+                               $('#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG').remove();
+                            },
+                  open    : function() {
+
+                              function getStyleLOV(p_mode) {
+                                var l_arr_LOV    = [];
+                                var l_arr_styles = window.pageDesigner.getStyles();
+
+                                for (var l in l_arr_styles) {
+                                    if (   (p_mode == 'DAYLIGHT'  && l_arr_styles[l].DARK_STYLE == 'NO')
+                                        || (p_mode == 'MOONLIGHT' && l_arr_styles[l].DARK_STYLE == 'YES') ) {
+
+                                        l_arr_LOV.push({ d: l_arr_styles[l].STYLE_NAME,
+                                                         r: l_arr_styles[l].STYLE_NAME
+                                                       });
+                                    } // if
+                                }     // for
+
+                                if (p_mode == 'DAYLIGHT') {
+                                   l_arr_LOV.push({ d: 'Original (none)', r: 'NONE'});
+                                }
+
+                                return l_arr_LOV;
+                              }
+
+
+                               l_dialogPE$ = $('#StyleDefaultsDlgPE');
+
+                               //
+                               // Build properties for property group 1 (style options)
+                               //
+                               l_properties1[0] = {
+                                   propertyName: "default_daylight_style",
+                                   value:        xplug.getStorage('DEFAULT_BRIGHT_STYLE','Original (none)'),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         get_label('LBL-DAYLIGHT'),
+                                       lovValues:      getStyleLOV('DAYLIGHT'),
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               l_properties1[1] = {
+                                   propertyName: "default_moonlight_style",
+                                   value:        xplug.getStorage('DEFAULT_DARK_STYLE','Moonlight'),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         get_label('LBL-MOONLIGHT'),
+                                       lovValues:      getStyleLOV('MOONLIGHT'),
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+
+
+                               //
+                               // Create Property Editor
+                               //
+                               $('#StyleDefaultsDlgPE').propertyEditor( {
+                                 focusPropertyName: "default_daylight_style",
+                                 data: {
+                                   propertySet: [
+                                     {
+                                       displayGroupId    : "style_id",
+                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
+                                       properties        : l_properties1
+                                     },
+                                   ] // propertySet
+                                 }   // data
+                               });   // propertyEditor
+
+                               $( '#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG' ).dialog({
+                                   position: { 'my': 'center', 'at': 'center' }
+                               });
+
+
+                            }, // open
+
+                  buttons : [
+                              { text  : get_label('BTN-CANCEL'),
+                                click : function() {
+                                  $( this ).dialog( "close" );
+                                }
+                              },
+
+                              { text  : get_label('BTN-SAVE'),
+                                class : 'a-Button--hot',
+                                click : function() {
+                                  $( this ).dialog( "close" );
+                                }
+                              }
+                            ]
+                }
+       ); // setDefaultStylesDialog
 
     return 1;
 };
@@ -1594,9 +1855,9 @@ Xplug.prototype.getVersion = function ()
 //
 // xplug_storage.js
 // 2016-01-03 * Initial version
-// 2016-01-03 * Multiple changes
-//              - Possibility to set/retrieve global keys (meaning not dependant on host url)
+// 2016-01-03 * Possibility to set/retrieve global keys (meaning not dependant on host url)
 // 2016-01-04 * Added getStorageKeys method for retrieving all Xplug keys in localStorage
+// 2016-01-07 * Added delStorage method for deleting entries
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
@@ -1667,6 +1928,29 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
       }
     }; // Xplug.prototype.getStorageKeys
 
+
+    Xplug.prototype.delStorage = function(p_key, p_is_global)
+        {
+          p_is_global = typeof(p_is_global) == 'undefined' ? false
+                                                           : p_is_global === true;
+
+          if (typeof(localStorage) == 'object') {
+             var l_key = p_is_global ? 'APEX_XPLUG#GLOBAL#' + p_key
+                                     : 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
+
+             if (localStorage === null) {
+                console.error('XPLUG - Your browser has localStorage disabled. Cannot delete ' + p_key);
+                return false;
+             }
+
+             localStorage.removeItem(l_key);
+             return true;
+          } else {
+             console.error('XPLUG - Your browser does not support localStorage. Cannot delete ' + p_key);
+             return p_default;
+          }
+        }; // Xplug.prototype.delStorage
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -1731,6 +2015,25 @@ Xplug.prototype.install_menu = function() {
                     }
          }
        );
+
+       l_arr_menu_items.push(
+
+         { type   : "separator" },
+
+         {
+            type  : "action",
+            label : get_label('SET_DEFAULTS'),
+            get   : function()
+                    {
+                     return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
+                    },
+            action: function()
+                    {
+                      window.pageDesigner.setDefaultStylesDialog(get_label('SET_DEFAULTS'));
+                    }
+         }
+       );
+
        return l_arr_menu_items;
     } // install_SubmenuPickStyles
 
@@ -1821,7 +2124,7 @@ Xplug.prototype.install_menu = function() {
                       [
                          {
                            type     : "action",
-                           label    : get_label('CUST_COLORS'),
+                           label    : get_label('LBL-STYLE-CUSTOM'),
                            action   : function()
                                       {
                                          window.pageDesigner.customizeStyle('Customize Page Designer Style');
