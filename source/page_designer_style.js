@@ -93,7 +93,7 @@ window.pageDesigner.setStyle = function( p_style_name,
           +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:'  + l_c6 + '; }';
 
     // Tabs at the top of page designer (inactive)
-    l_css += l_lf + ' .ui-tabs-anchor > span                 { color: ' + l_c6 + '; }'   // Icon color tabs (Rendering, ...)
+    l_css += l_lf + ' .ui-tabs-anchor > span                 { color: ' + l_c6 + '; }'                   // Icon color tabs (Rendering, ...)
           + l_lf  + ' .a-PageDesigner-treeTitle              { color: ' + l_c7 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
           + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
                   + ' .ui-tabs-anchor { color: ' + l_c1 + '; border-right-color: ' + l_c4 + '; }'
@@ -115,15 +115,18 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf;
 
     // Buttons
-    l_css += ' .ui-tabs-nav .ui-tabs-anchor                  { border-right-color : ' + l_c4 + '; }'
+    l_css +=        ' .ui-tabs-nav .ui-tabs-anchor           { border-right-color : ' + l_c4 + '; }'
           +  l_lf + ' div#sp_main button.a-Button            { background-color   : ' + l_c5 + '; }'
-          +  l_lf + ' .a-Button.is-active, .a-Button.is-active:active, .a-MenuButton.is-active,'
-          +  l_lf + ' .fc-button.ui-state-active, .ui-buttonset .ui-button.ui-state-active,'
-                  + ' .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
-                  + '    { background-color: ' + l_c9 + ' !important; }';                                   // Active Buttons
+          +  l_lf + ' div#sp_main .a-Button.is-active,'
+          +  l_lf + ' div#sp_main .a-Button.is-active:active,'
+          +  l_lf + ' div#sp_main .a-MenuButton.is-active,'
+          +  l_lf + ' div#sp_main .fc-button.ui-state-active,'
+          +  l_lf + ' div#sp_main .ui-buttonset .ui-button.ui-state-active,'
+          +  l_lf + ' div#sp_main .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
+          +  l_lf + '                                        { background-color: ' + l_c9 + ' !important; }'; // Active Buttons
 
     l_css += ' div#sp_main .a-Button:hover,'
-           + ' div#sp_main .fc-button.ui-state-hover         { background-color: ' + l_c7 + '!important; }' // Hover Buttons
+           + ' div#sp_main .fc-button.ui-state-hover         { background-color: ' + l_c7 + '!important; }'   // Hover Buttons
            + l_lf;
 
 
@@ -154,15 +157,16 @@ window.pageDesigner.setStyle = function( p_style_name,
           +  l_lf + ' .a-Property.is-error { background-color: ' + l_cerr + '!important; }'
 
           +  l_lf + ' div#sp_right div.a-Property,'
-                  + ' div#sp_right div.a-Property:hover,'
-                  + ' div#sp_right div.a-Property:focus,'
-                  + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2 + '; }'            // Property button
+          +  l_lf + ' div#sp_right div.a-Property:hover,'
+          +  l_lf + ' div#sp_right div.a-Property:focus,'
+          +  l_lf + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2 + '; }'            // Property button
           +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1 + ' !important; }' // Property border color
           +  l_lf + ' div#sp_right .a-Property-field:hover,'
-                  + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1 + '; }'            // Property input field (active)
+          +  l_lf + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1 + '; }'            // Property input field (active)
           +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2 + '; }'            // Property input field
           +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9 + '; }'            // Property input field
           +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'   // Property label
+          +  l_lf + ' div#sp_right .a-Property-checkbox-label             { color : ' + l_c9 + '; text-shadow : none; }'   // Property Checkbox label
           +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                       // Properties editor message
           +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'     // Redefine select icon
 
@@ -362,6 +366,8 @@ window.pageDesigner.customizeStyle = function(p_title)
 {
     'use strict';
 
+    var l_out = apex.util.htmlBuilder();
+
     //
     // Exit if not in APEX Page Designer
     //
@@ -414,6 +420,69 @@ window.pageDesigner.customizeStyle = function(p_title)
                                      },
 
                    buttons : [
+                               { text  : get_label('BTN-IMPORT'),
+                                 click : function() {
+
+                                   l_out = apex.util.htmlBuilder();
+                                   l_out.markup('<div')
+                                        .attr('id','ORATRONIK_XPLUG_IMPORT_DIALOG')
+                                        .markup('>')
+                                        .markup('<div><textarea ID=TXTAREA_JSON width=80 height=20 style="width: 100%; height: 350px">')
+                                        .markup('</textarea></div>');
+
+                                   $(l_out.html).dialog({
+                                       modal   : true,
+                                       title   : get_label('LBL-STYLE-IMPORT'),
+                                       width   : 700,
+                                       height  : 400,
+                                       close   : function(pEvent) {
+                                                    $(this).dialog( "close" );
+                                                 },
+
+                                       buttons : [
+                                                   { text  : get_label('BTN-CANCEL'),
+                                                     click : function() {
+                                                        $(this).dialog( "close" );
+                                                     },
+                                                   },
+
+                                                   { text  : get_label('BTN-OK'),
+                                                     class : 'a-Button--hot',
+                                                     click : function() {
+                                                        var l_imp_obj = JSON.parse($('#TXTAREA_JSON').val());
+                                                        console.log(l_imp_obj);
+
+                                                        window.pageDesigner.setStyle
+                                                          (
+                                                             l_imp_obj.STYLE_NAME,
+                                                             'SAVE_ONLY',
+                                                             l_imp_obj.DARK_STYLE,
+                                                             l_imp_obj.SHOW_GRID,
+                                                             l_imp_obj.CUSTOM_CSS,
+                                                             l_imp_obj.C1,
+                                                             l_imp_obj.C2,
+                                                             l_imp_obj.C3,
+                                                             l_imp_obj.C4,
+                                                             l_imp_obj.C5,
+                                                             l_imp_obj.C6,
+                                                             l_imp_obj.C7,
+                                                             l_imp_obj.C8,
+                                                             l_imp_obj.C9,
+                                                             l_imp_obj.C10
+                                                          );
+
+                                                        $(this).dialog( "close" );
+                                                     },
+                                                   }
+                                                 ],
+
+                                       position: { 'my': 'center', 'at': 'center' }
+                                   });
+
+
+                                } // click
+                               },
+
                                { text  : get_label('BTN-NEW'),
                                  click : function() {
                                    window.pageDesigner.setStyle('New custom style','SAVE_ONLY');
@@ -495,7 +564,16 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
                   close   : function(pEvent) {
                                $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
+
+                               // Remove all colorpicker DIVs and associated quick-picks
+                               // Why isn't this automatically handled by APEX, could this be a bug ?
+                               //
+                               // The problem is that the many DIV's start accumulating which can result in a slow reponse
+                               // as the DOM gets bloated with way too many DIV's.
+                               $('div.colorpicker').remove();
+                               $('div[id^=ColorDlgPE_').remove();
                             },
+
                   open    : function() {
                                l_dialogPE$ = $('#ColorDlgPE');
 
@@ -721,8 +799,8 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                     (
                                        l_style_name,
                                        'DO_NOT_SAVE',
-                                       $('input[name=ColorDlgPE_2_name]:checked').val() == 'YES',
-                                       $('input[name=ColorDlgPE_3_name]:checked').val() == 'YES',
+                                       $('input[name=ColorDlgPE_2_name]:checked').val(),
+                                       $('input[name=ColorDlgPE_3_name]:checked').val(),
                                        $('textarea[data-property-id="custom_css"').val(),
                                        l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
                                        l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
@@ -767,7 +845,9 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                   window.pageDesigner.customizeStyle(p_LOV_title);
                                   $( this ).dialog( "close" );
                                 },
+
                                 disabled : is_protected()
+
                               }
                             ]
                 }
@@ -846,7 +926,7 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
                                //
                                l_properties1[0] = {
                                    propertyName: "default_daylight_style",
-                                   value:        xplug.getStorage('DEFAULT_BRIGHT_STYLE','Original (none)'),
+                                   value:        xplug.getStorage('DEFAULT_STYLE1','Original (none)',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
                                        prompt:         get_label('LBL-DAYLIGHT'),
@@ -861,7 +941,7 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
 
                                l_properties1[1] = {
                                    propertyName: "default_moonlight_style",
-                                   value:        xplug.getStorage('DEFAULT_DARK_STYLE','Moonlight'),
+                                   value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
                                        prompt:         get_label('LBL-MOONLIGHT'),
@@ -909,6 +989,12 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
                               { text  : get_label('BTN-SAVE'),
                                 class : 'a-Button--hot',
                                 click : function() {
+                                  var l_style1 = $('#StyleDefaultsDlgPE_1').val();
+                                  var l_style2 = $('#StyleDefaultsDlgPE_2').val();
+
+                                  xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
+                                  xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
+
                                   $( this ).dialog( "close" );
                                 }
                               }

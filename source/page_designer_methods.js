@@ -287,24 +287,34 @@ window.pageDesigner.enableTooltips = function()
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
+ * METHOD: DaylightMode
+ ***************************************************************************/
+window.pageDesigner.DaylightMode = function() {
+
+  var l_style = xplug.getStorage('DEFAULT_STYLE1','NONE',true);
+  window.pageDesigner.loadStyle(l_style);
+
+  $('#ORATRONIK_XPLUG_moonsun_button span')
+       .removeClass('icon-xplug-moon')
+       .addClass('icon-xplug-sun');
+};
+
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
  * METHOD: MoonlightMode
  ***************************************************************************/
 window.pageDesigner.MoonlightMode = function() {
-   window.pageDesigner.setStyle();
-   document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
+
+   var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
+   window.pageDesigner.loadStyle(l_style);
+
    $('#ORATRONIK_XPLUG_moonsun_button span')
         .removeClass('icon-xplug-sun')
         .addClass('icon-xplug-moon');
 };
 
-
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: DaylightMode
- ***************************************************************************/
-window.pageDesigner.DaylightMode = function() {
-  window.pageDesigner.unsetStyle();
-};
 
 
 /****************************************************************************

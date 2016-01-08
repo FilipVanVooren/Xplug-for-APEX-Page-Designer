@@ -2,6 +2,11 @@
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
+//
+// Music listened to while programming Xplug (in no particular order)
+//   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy, ...
+//
+//
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
 //                       - pd_dock_grid_right() and pd_dock_grid_middle() now also work in non-english
@@ -70,9 +75,31 @@
 // v1.2   2016-01-03 * Multiple changes
 //                      - A lot of code refactoring done
 //                      - Added possibility to save and retrieve custom style settings to/from local storage
-//                      - Reworked menu code and added submenu
+//                      - Reworked menu code and added submenu "Customize"
 //                      - Removed export dialog for now. Will be re-added when the other stuff is working as expected.
 //                        First need to add a dialog for listing available styles
+// v1.2   2016-01-04 * Multiple changes
+//                      - Possibility to set/retrieve global keys (meaning not dependant on host url)
+//                      - Added getStorageKeys method for retrieving all Xplug keys in localStorage
+//                      - Added dialog for listing available styles (Customize submenu)
+//                      - Added new submenu for picking styles
+//
+// v1.2   2016-01-06 * Added a lot of funky stuff
+//
+// v1.2   2016-01-07 * Multiple changes
+//                      - Added delStorage method for deleting entries
+//                      - Added dialog for selecting default styles for daylight / moonlight mode
+//                      - Added/Updated many labels in xplug_language.js
+//                      - ...
+//
+// v1.2   2016-01-08 * Multiple changes
+//                     - Finalized work on dialog for selecting default styles
+//                     - Make toggle buttons work with the default styles
+//                       - Bug-fixes:
+//                       - setStyle method -> Adjusted CSS to fix color on checkox property label to make
+//                                            it play nice with dark styles
+//                       - setStyle method -> Adjusted CSS to prevent button color change in dialog pages
+//
 //
 // REMARKS
 //

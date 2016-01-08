@@ -79,7 +79,7 @@ var Xplug = function() {
                       + ' type="button"'
                       + ' ID="ORATRONIK_XPLUG_moonsun_button"'
                       + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
-                      + ' data-action="pd-xplug-toggle-moon-sun-style">'
+                      + ' data-action="pd-xplug-toggle-daylight-moonlight-mode">'
                       + ' <span class="a-Icon icon-xplug-sun"></span>'
                       + '</button>'
                     );
@@ -160,7 +160,7 @@ var Xplug = function() {
 
           {
             name     : "pd-xplug-set-moonlight-mode",
-            label    : get_label('TOGGLEMOON'),
+            label    : get_label('LBL-MOONLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
@@ -170,7 +170,7 @@ var Xplug = function() {
 
           {
             name     : "pd-xplug-set-daylight-mode",
-            label    : get_label('TOGGLEDAY'),
+            label    : get_label('LBL-DAYLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
@@ -179,17 +179,21 @@ var Xplug = function() {
           },
 
           {
-            name     : "pd-xplug-toggle-moon-sun-style",
-            label    : get_label('TOGGLELIGHT'),
+            name     : "pd-xplug-toggle-daylight-moonlight-mode",
+            label    : get_label('BTN-TGL-DAY-MOON'),
             shortcut : "Alt+F10",
             action   : function( event, focusElement )
                        {
-                          if (xplug.getStorage('MOONLIGHT_MODE','NO') == 'YES')
-                             return  apex.actions.invoke('pd-xplug-set-daylight-mode');
+                          var l_style2_is_on = $('button#ORATRONIK_XPLUG_moonsun_button span')
+                                                     .attr('class').indexOf('icon-xplug-moon') >= 0;
 
-                          return apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                          if (l_style2_is_on === true) {
+                             return  apex.actions.invoke('pd-xplug-set-daylight-mode');
+                          } else {
+                             return  apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                          }
                        }
-          },
+          }
 
         ]
        );
@@ -269,7 +273,6 @@ var Xplug = function() {
 
 
 
-
 Xplug.prototype.loadSettings = function ()
 {
    window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
@@ -277,6 +280,7 @@ Xplug.prototype.loadSettings = function ()
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
 }; // Xplug.prototype.loadSettings
+
 
 
 Xplug.prototype.getVersion = function ()
