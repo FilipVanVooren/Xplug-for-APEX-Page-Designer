@@ -1,12 +1,12 @@
-// Built using Gulp. Built date: Fri Jan 08 2016 22:16:32
+// Built using Gulp. Built date: Sat Jan 09 2016 22:27:28
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
 //
 // Music listened to while programming Xplug (in no particular order)
-//   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy, ...
-//
+//   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
+//   Kenny Logan (Highway to the Dangerzone), ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -101,6 +101,10 @@
 //                                            it play nice with dark styles
 //                       - setStyle method -> Adjusted CSS to prevent button color change in dialog pages
 //
+// v1.2   2016-01-08 * Multiple changes
+//                     - Refactored code. Export and Import Dialogs are now in own functions
+//                     - Added sanity check to style import (JSON)
+//                     - Finalized work on Import dialog
 //
 // REMARKS
 //
@@ -141,10 +145,12 @@
                              , "BTN-OK"              : "OK"
                              , "BTN-CANCEL"          : "Cancel"
                              , "BTN-DELETE"          : "Delete"
+                             , "BTN-CLEAR"           : "Clear"
                              , "BTN-EXPORT"          : "Export"
                              , "BTN-IMPORT"          : "Import"
                              , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
 
+                             , "LBL-STYLE-GALLERY"   : "Page Designer Styles Gallery"
                              , "LBL-STYLE-CUSTOM"    : "Customize Page Designer Style"
                              , "LBL-STYLE-EXPORT"    : "Export Page Designer Style"
                              , "LBL-STYLE-IMPORT"    : "Import Page Designer Style"
@@ -167,6 +173,10 @@
                              , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
                              , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
+                             , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
+                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
+                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
                            },
 
                     'de' : {   "DOCKRIGHT"    : "Grid rechts außen positionieren"
@@ -181,6 +191,7 @@
                              , "SET_DEFAULTS" : "Defaultwerte setzen"
                              , "CUSTOMIZE"    : "Anpassen"
 
+                             , "LBL-STYLE-GALLERY"   : "Page Designer Stil Galerie"
                              , "LBL-STYLE-CUSTOM"    : "Page Designer Stil anpassen"
                              , "LBL-STYLE-EXPORT"    : "Page Designer Stil exportieren"
                              , "LBL-STYLE-IMPORT"    : "Import Page Designer Style"
@@ -204,6 +215,7 @@
                              , "BTN-OK"              : "OK"
                              , "BTN-CANCEL"          : "Abbrechen"
                              , "BTN-DELETE"          : "Löschen"
+                             , "BTN-CLEAR"           : "Leeren"
                              , "BTN-EXPORT"          : "Exportieren"
                              , "BTN-IMPORT"          : "Importieren"
                              , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
@@ -213,6 +225,11 @@
                              , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
                              , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
+                             , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
+                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
+                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatible. Bitte prüfen."
+
                            },
                   };
 
@@ -1047,8 +1064,6 @@ window.pageDesigner.customizeStyle = function(p_title)
 {
     'use strict';
 
-    var l_out = apex.util.htmlBuilder();
-
     //
     // Exit if not in APEX Page Designer
     //
@@ -1062,7 +1077,7 @@ window.pageDesigner.customizeStyle = function(p_title)
     $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV')
         .lovDialog(
                 { modal             : true,
-                  title             : p_title,
+                  title             : get_label('LBL-STYLE-GALLERY'),
                   resizable         : true,
 
                   columnDefinitions : [ { name  : "STYLE_NAME",  title : get_label('LBL-NAME')          },
@@ -1102,66 +1117,10 @@ window.pageDesigner.customizeStyle = function(p_title)
 
                    buttons : [
                                { text  : get_label('BTN-IMPORT'),
-                                 click : function() {
-
-                                   l_out = apex.util.htmlBuilder();
-                                   l_out.markup('<div')
-                                        .attr('id','ORATRONIK_XPLUG_IMPORT_DIALOG')
-                                        .markup('>')
-                                        .markup('<div><textarea ID=TXTAREA_JSON width=80 height=20 style="width: 100%; height: 350px">')
-                                        .markup('</textarea></div>');
-
-                                   $(l_out.html).dialog({
-                                       modal   : true,
-                                       title   : get_label('LBL-STYLE-IMPORT'),
-                                       width   : 700,
-                                       height  : 400,
-                                       close   : function(pEvent) {
-                                                    $(this).dialog( "close" );
-                                                 },
-
-                                       buttons : [
-                                                   { text  : get_label('BTN-CANCEL'),
-                                                     click : function() {
-                                                        $(this).dialog( "close" );
-                                                     },
-                                                   },
-
-                                                   { text  : get_label('BTN-OK'),
-                                                     class : 'a-Button--hot',
-                                                     click : function() {
-                                                        var l_imp_obj = JSON.parse($('#TXTAREA_JSON').val());
-                                                        console.log(l_imp_obj);
-
-                                                        window.pageDesigner.setStyle
-                                                          (
-                                                             l_imp_obj.STYLE_NAME,
-                                                             'SAVE_ONLY',
-                                                             l_imp_obj.DARK_STYLE,
-                                                             l_imp_obj.SHOW_GRID,
-                                                             l_imp_obj.CUSTOM_CSS,
-                                                             l_imp_obj.C1,
-                                                             l_imp_obj.C2,
-                                                             l_imp_obj.C3,
-                                                             l_imp_obj.C4,
-                                                             l_imp_obj.C5,
-                                                             l_imp_obj.C6,
-                                                             l_imp_obj.C7,
-                                                             l_imp_obj.C8,
-                                                             l_imp_obj.C9,
-                                                             l_imp_obj.C10
-                                                          );
-
-                                                        $(this).dialog( "close" );
-                                                     },
-                                                   }
-                                                 ],
-
-                                       position: { 'my': 'center', 'at': 'center' }
-                                   });
-
-
-                                } // click
+                                 click : function(pEvent) {
+                                            $( this ).lovDialog("close");
+                                            window.pageDesigner.importStyleDialog(p_title);
+                                         }
                                },
 
                                { text  : get_label('BTN-NEW'),
@@ -1191,7 +1150,159 @@ window.pageDesigner.customizeStyle = function(p_title)
 
 
 
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: importStyleDialog
+ ***************************************************************************/
+ window.pageDesigner.importStyleDialog = function(p_LOV_title) {
 
+   'use strict';
+
+   var l_out = apex.util.htmlBuilder();
+
+   var C_valid = '#style_name#dark_style#show_grid#protected'
+               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#custom_css';
+
+   function verifyJSON(p_json) {
+     var l_json_obj;
+     var l_is_valid;
+     var l_req = '';
+
+     $(   'div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG1,'
+        + 'div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG2,'
+        + 'div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG3'  ).css('display','none');
+
+     if ((p_json === '') || (p_json === null) || (typeof(p_json) == 'undefined')) {
+        return undefined;
+     }
+
+     try {
+            l_json_obj = JSON.parse(p_json);
+            l_is_valid = true;
+         }
+     catch(e)
+         {
+            l_is_valid = false;
+         }
+
+
+     // Show message
+     if (l_is_valid === true) {
+
+        // Check if required keys are all there
+        for (var l_key in l_json_obj) {
+            l_req += '#' + l_key.toLowerCase();
+        }
+
+        if (l_req == C_valid) {
+           // JSON code is valid and compatible
+           $('div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG1').css('display','block');
+
+        } else {
+           // JSON code is valid but probably incompatible
+           $('div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG3').css('display','block'); }
+
+     } else {
+        // JSON code is invalid
+        $('div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG2').css('display','block');
+     }
+
+     // Enable or disable "OK" button
+     if (l_is_valid === true) {
+        $('button#ORATRONIK_XPLUG_STYLE_IMPORT_JSON')
+             .removeAttr('disabled')
+             .removeClass('disabled ui-button-disabled ui-state-disabled');
+
+        return l_json_obj;
+     } else {
+        $('button#ORATRONIK_XPLUG_STYLE_IMPORT_JSON').attr('disabled','disabled');
+     }
+     return undefined;
+   }
+
+
+    l_out = apex.util.htmlBuilder();
+    l_out.markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG">')
+         .markup('<span>' + get_label('MSG-STYLE-IMPORT') + '</span>')
+         .markup('<div><textarea ID=ORATRONIK_XPLUG_TXTAREA_JSON width=80 height=15 style="width: 100%; height: 250px">')
+         .markup('</textarea>')
+         .markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG_MSG1" style="display:none; background-color:#0a8040;" width=100%>')
+         .markup('<span style="color: #ffffff;">' + get_label('MSG-STYLE-JSON-OK')   + '</span>')
+         .markup('</div>')
+         .markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG_MSG2" style="display:none; background-color:#ff0000;" width=100%>')
+         .markup('<span style="color: #ffffff;">' + get_label('MSG-STYLE-JSON-NOK')  + '</span>')
+         .markup('</div>')
+         .markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG_MSG3" style="display:none; background-color:#ff0000;" width=100%>')
+         .markup('<span style="color: #ffffff;">' + get_label('MSG-STYLE-JSON-FAIL') + '</span>')
+         .markup('</div>')
+         .markup('</div>');
+
+    $(l_out.html).dialog({
+        modal   : true,
+        title   : get_label('LBL-STYLE-IMPORT'),
+        width   : 700,
+        height  : 400,
+        close   : function(pEvent) {
+                     $(this).dialog( "close" );
+                     $('#ORATRONIK_XPLUG_IMPORT_DIALOG').remove();
+                     window.pageDesigner.customizeStyle(p_LOV_title);
+                  },
+
+        buttons : [
+                    { text  : get_label('BTN-CLEAR'),
+                      click : function() {
+                         $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON')
+                             .val('')
+                             .trigger('change');
+                      },
+                    },
+
+                    { text  : get_label('BTN-CANCEL'),
+                      click : function() {
+                         $(this).dialog( "close" );
+                      },
+                    },
+
+                    { text     : get_label('BTN-OK'),
+                      id       : 'ORATRONIK_XPLUG_STYLE_IMPORT_JSON',
+                      class    : 'a-Button--hot',
+                      disabled : true,
+                      click    : function() {
+                         var l_imp_obj = verifyJSON(
+                                 $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON').val()
+                             );
+
+                         window.pageDesigner.setStyle
+                           (
+                              l_imp_obj.STYLE_NAME,
+                              'SAVE_ONLY',
+                              l_imp_obj.DARK_STYLE,
+                              l_imp_obj.SHOW_GRID,
+                              l_imp_obj.CUSTOM_CSS,
+                              l_imp_obj.C1,
+                              l_imp_obj.C2,
+                              l_imp_obj.C3,
+                              l_imp_obj.C4,
+                              l_imp_obj.C5,
+                              l_imp_obj.C6,
+                              l_imp_obj.C7,
+                              l_imp_obj.C8,
+                              l_imp_obj.C9,
+                              l_imp_obj.C10
+                           );
+
+                         $(this).dialog( "close" );
+                      },
+                    }
+                  ],
+
+        position: { 'my': 'center', 'at': 'center' }
+    });
+
+    $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON')
+       .on('change click keydown mouseout', function() { verifyJSON($(this).val()); });
+
+}; // window.pageDesigner.importStyleDialog
 
 
 

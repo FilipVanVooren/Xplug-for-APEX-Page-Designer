@@ -4,8 +4,8 @@
 //
 //
 // Music listened to while programming Xplug (in no particular order)
-//   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy, ...
-//
+//   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
+//   Kenny Logan (Highway to the Dangerzone), ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -100,6 +100,10 @@
 //                                            it play nice with dark styles
 //                       - setStyle method -> Adjusted CSS to prevent button color change in dialog pages
 //
+// v1.2   2016-01-08 * Multiple changes
+//                     - Refactored code. Export and Import Dialogs are now in own functions
+//                     - Added sanity check to style import (JSON)
+//                     - Finalized work on Import dialog
 //
 // REMARKS
 //

@@ -30,10 +30,12 @@
                              , "BTN-OK"              : "OK"
                              , "BTN-CANCEL"          : "Cancel"
                              , "BTN-DELETE"          : "Delete"
+                             , "BTN-CLEAR"           : "Clear"
                              , "BTN-EXPORT"          : "Export"
                              , "BTN-IMPORT"          : "Import"
                              , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
 
+                             , "LBL-STYLE-GALLERY"   : "Page Designer Styles Gallery"
                              , "LBL-STYLE-CUSTOM"    : "Customize Page Designer Style"
                              , "LBL-STYLE-EXPORT"    : "Export Page Designer Style"
                              , "LBL-STYLE-IMPORT"    : "Import Page Designer Style"
@@ -56,6 +58,10 @@
                              , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
                              , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
+                             , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
+                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
+                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
                            },
 
                     'de' : {   "DOCKRIGHT"    : "Grid rechts außen positionieren"
@@ -70,6 +76,7 @@
                              , "SET_DEFAULTS" : "Defaultwerte setzen"
                              , "CUSTOMIZE"    : "Anpassen"
 
+                             , "LBL-STYLE-GALLERY"   : "Page Designer Stil Galerie"
                              , "LBL-STYLE-CUSTOM"    : "Page Designer Stil anpassen"
                              , "LBL-STYLE-EXPORT"    : "Page Designer Stil exportieren"
                              , "LBL-STYLE-IMPORT"    : "Import Page Designer Style"
@@ -93,6 +100,7 @@
                              , "BTN-OK"              : "OK"
                              , "BTN-CANCEL"          : "Abbrechen"
                              , "BTN-DELETE"          : "Löschen"
+                             , "BTN-CLEAR"           : "Leeren"
                              , "BTN-EXPORT"          : "Exportieren"
                              , "BTN-IMPORT"          : "Importieren"
                              , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
@@ -102,6 +110,11 @@
                              , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
                              , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
+                             , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
+                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
+                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatible. Bitte prüfen."
+
                            },
                   };
 
