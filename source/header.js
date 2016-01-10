@@ -5,7 +5,7 @@
 //
 // Music listened to while programming Xplug (in no particular order)
 //   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
-//   Kenny Logan (Highway to the Dangerzone), ...
+//   Birdy, GusGus, Massive Attack, ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -100,10 +100,20 @@
 //                                            it play nice with dark styles
 //                       - setStyle method -> Adjusted CSS to prevent button color change in dialog pages
 //
-// v1.2   2016-01-08 * Multiple changes
-//                     - Refactored code. Export and Import Dialogs are now in own functions
+// v1.2   2016-01-09 * Multiple changes (Styles Gallery / Customize Style dialog)
+//                     - Refactored code. Export and Import Dialogs for styles are now in own functions
 //                     - Added sanity check to style import (JSON)
 //                     - Finalized work on Import dialog
+//
+// v1.2   2016-01-10 * Multiple changes (Styles Gallery / Customize Style dialog)
+//                     - When changing default styles also switch current style
+//                     - Refactored export dialog for Xplug style so that it matches with import dialog
+//                     - Bug-fix: disable style DELETE button if style is default or current style
+//                     - Bug-fix: remove draft style from localStorage when closing dialog without saving
+//                     - Bug-fix: Re-activate correct style when closing dialog without saving
+//                     - Bug-fix: Fixed duplicate value for Daylight mode in Default Styles-Dialog
+//                     - Bug-fix: Update Xplug plugin menu after adding/removing styles, is needed for
+//                                submenu 'Pick Style'
 //
 // REMARKS
 //

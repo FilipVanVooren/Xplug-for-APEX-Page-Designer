@@ -89,7 +89,9 @@ Xplug.prototype.install_menu = function() {
 
     // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
     // For details on the APEX popup menu functionality refer to /images/libraries/apex/widget.menu.js
-    var l_menu$ = $("<div id='XplugMenu'></div>");
+    $('#ORATRONIK_XPLUG_PLUGIN_MENU').remove();
+
+    var l_menu$ = $("<div id='ORATRONIK_XPLUG_PLUGIN_MENU'></div>");
     $("body").append(l_menu$);
 
     l_menu$.menu(

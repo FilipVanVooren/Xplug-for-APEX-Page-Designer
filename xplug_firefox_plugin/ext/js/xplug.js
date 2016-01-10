@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sat Jan 09 2016 22:27:28
+// Built using Gulp. Built date: Sun Jan 10 2016 20:51:37
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -6,7 +6,7 @@
 //
 // Music listened to while programming Xplug (in no particular order)
 //   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
-//   Kenny Logan (Highway to the Dangerzone), ...
+//   Birdy, GusGus, Massive Attack, ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -101,10 +101,20 @@
 //                                            it play nice with dark styles
 //                       - setStyle method -> Adjusted CSS to prevent button color change in dialog pages
 //
-// v1.2   2016-01-08 * Multiple changes
-//                     - Refactored code. Export and Import Dialogs are now in own functions
+// v1.2   2016-01-09 * Multiple changes (Styles Gallery / Customize Style dialog)
+//                     - Refactored code. Export and Import Dialogs for styles are now in own functions
 //                     - Added sanity check to style import (JSON)
 //                     - Finalized work on Import dialog
+//
+// v1.2   2016-01-10 * Multiple changes (Styles Gallery / Customize Style dialog)
+//                     - When changing default styles also switch current style
+//                     - Refactored export dialog for Xplug style so that it matches with import dialog
+//                     - Bug-fix: disable style DELETE button if style is default or current style
+//                     - Bug-fix: remove draft style from localStorage when closing dialog without saving
+//                     - Bug-fix: Re-activate correct style when closing dialog without saving
+//                     - Bug-fix: Fixed duplicate value for Daylight mode in Default Styles-Dialog
+//                     - Bug-fix: Update Xplug plugin menu after adding/removing styles, is needed for
+//                                submenu 'Pick Style'
 //
 // REMARKS
 //
@@ -173,10 +183,13 @@
                              , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
                              , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
+                             , "MSG-STYLE-EXPORT"    : "Please mark, copy and save the Xplug JSON code in a text file and press 'OK'"
                              , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
                              , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
                              , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
                              , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Style can't be saved. Please first change the style name."
+
                            },
 
                     'de' : {   "DOCKRIGHT"    : "Grid rechts außen positionieren"
@@ -225,10 +238,13 @@
                              , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
                              , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
+                             , "MSG-STYLE-EXPORT"    : "Bitte markieren, kopieren und Speichern Sie den Xplug JSON code als Textdatei und drücken Sie danach 'OK'"
                              , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
                              , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
                              , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
                              , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatible. Bitte prüfen."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Stil kann nicht gespeichert werden. Bitte zuerst Stilnamen ändern."
+
 
                            },
                   };
@@ -950,9 +966,13 @@ window.pageDesigner.setStyle = function( p_style_name,
          .removeClass( p_is_dark_style == 'YES' ? 'icon-xplug-sun' : 'icon-xplug-moon')
          .addClass(    p_is_dark_style == 'YES' ? 'icon-xplug-moon': 'icon-xplug-sun');
 
-    console.debug('XPLUG - Page Designer Style ' + p_style_name + ' set.');
 
-    xplug.setStorage('CURRENT_STYLE',p_style_name, true);
+    if ( p_save_style == 'DO_NOT_SAVE') {
+         console.debug('XPLUG - Page Designer style "' + p_style_name + '" (DRAFT mode applied).');
+    } else {
+         console.debug('XPLUG - Page Designer Style "' + p_style_name + '" set.');
+         xplug.setStorage('CURRENT_STYLE',p_style_name, true);
+    }
 
     return JSON.stringify(l_settings_obj);
 }; // window.pageDesigner.setStyle
@@ -1003,7 +1023,7 @@ window.pageDesigner.loadStyle = function(p_style_name)
 
 
   if (l_imp_obj === null) {
-     console.error("XPLUG: could not retrieve Page Designer style. Reverting to NONE.");
+     console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
      window.pageDesigner.loadStyle('NONE');
      return 0;
   }
@@ -1103,6 +1123,9 @@ window.pageDesigner.customizeStyle = function(p_title)
                   close             : // called by widget.lovDialog.js close function
                                       function(pEvent) {
                                          $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').remove();
+
+                                         // Update Xplug plugin menu: sync Styles in submenu "Pick Style"
+                                         xplug.install_menu();
                                       },
 
                   multiValue       : false,
@@ -1147,6 +1170,53 @@ window.pageDesigner.customizeStyle = function(p_title)
 
     return 1;
 }; // window.pageDesigner.customizeStyle
+
+
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: exportStyleDialog
+ ***************************************************************************/
+ window.pageDesigner.exportStyleDialog = function(p_style) {
+
+   'use strict';
+
+   var l_out = apex.util.htmlBuilder();
+
+   l_out.markup('<div ID="ORATRONIK_XPLUG_EXPORT_DIALOG">')
+        .markup('<span>' + get_label('MSG-STYLE-EXPORT') + '</span>')
+        .markup('<div><textarea ID=ORATRONIK_XPLUG_TXTAREA_JSON width=80 height=15 style="width: 100%; height: 250px">')
+        .markup('</textarea>')
+        .markup('</div>');
+
+   $(l_out.html).dialog({
+       modal   : true,
+       title   : get_label('LBL-STYLE-EXPORT'),
+       width   : 700,
+       height  : 400,
+       close   : function(pEvent) {
+                    $(this).dialog( "close" );
+                    $('#ORATRONIK_XPLUG_EXPORT_DIALOG').remove();
+                 },
+
+       buttons : [
+                   { text  : get_label('BTN-OK'),
+                     class : 'a-Button--hot',
+                     click : function() {
+                        $(this).dialog( "close" );
+                     },
+                   }
+                 ],
+
+       position: { 'my': 'center', 'at': 'center' }
+   });
+
+   var l_json = JSON.parse(xplug.getStorage(p_style,null,true));
+
+   $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON').val(JSON.stringify(l_json,null,4));
+
+ }; // exportStyleDalog
 
 
 
@@ -1326,8 +1396,11 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
     var l_settings_obj, l_imp_obj;
     var l_properties1     = [], l_properties2 = [], l_properties3 = [];
     var l_out             = apex.util.htmlBuilder();
-    var l_style_name_orig = p_style_name;
+    var l_style_name_curr = xplug.getStorage('CURRENT_STYLE','NONE',true);
     var l_style_name      = 'STYLE_' + p_style_name;
+    var l_style_name_orig = l_style_name;
+    var l_style_applied   = false;
+    var l_style_saved     = false;
 
 
     function is_protected() {
@@ -1336,8 +1409,48 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
          return l_protected_obj.PROTECTED == 'YES';
       } catch(e) {}
+
       return false;
-    }
+    } // is_protected
+
+
+    function is_default() {
+      var l_style1  = xplug.getStorage('DEFAULT_STYLE1',null,true);
+      var l_style2  = xplug.getStorage('DEFAULT_STYLE2',null,true);
+      var l_current = xplug.getStorage('CURRENT_STYLE',null,true);
+
+      if ((p_style_name == l_style1) || (p_style_name == l_style2) || (p_style_name == l_current)) {
+         return true;
+      }
+
+      return false;
+    } // is_default
+
+
+    function apply_style(p_save_mode) {
+      //
+      // Process new/updated values
+      //
+      var l_style_name = $('input[data-property-id=style_name]').val();
+
+      var l_c = [];
+      for (var l=1;l<=10;l++) {
+          l_c[l] = $('input[data-property-id=col_' + l + ']').val();
+      }
+
+      window.pageDesigner.setStyle
+        (
+           l_style_name,
+           p_save_mode,
+           $('input[name=ColorDlgPE_2_name]:checked').val(),
+           $('input[name=ColorDlgPE_3_name]:checked').val(),
+           $('textarea[data-property-id="custom_css"').val(),
+           l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
+           l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
+        );
+
+      l_style_applied = true;
+    } // apply_style
 
 
     l_out.markup('<div')
@@ -1355,6 +1468,9 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                   width   : 400,
 
                   close   : function(pEvent) {
+                               // Hide any remaining notifications
+                               pageDesigner.hideNotification();
+
                                $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
 
                                // Remove all colorpicker DIVs and associated quick-picks
@@ -1364,6 +1480,17 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                // as the DOM gets bloated with way too many DIV's.
                                $('div.colorpicker').remove();
                                $('div[id^=ColorDlgPE_').remove();
+
+                               // Reactivate current style if we didn't change anything
+                               if ( (l_style_applied === true) && (l_style_saved === false) )  {
+                                  window.pageDesigner.loadStyle(l_style_name_curr);
+                               }
+
+                               // Get rid of remaining draft style, always!
+                               xplug.delStorage('STYLE_New custom style',true);
+
+                               // Back to Style Gallery
+                               window.pageDesigner.customizeStyle(p_LOV_title);
                             },
 
                   open    : function() {
@@ -1534,78 +1661,33 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                   buttons : [
                               { text  : get_label('BTN-EXPORT'),
                                 click : function() {
-                                                      l_out = apex.util.htmlBuilder();
-                                                      l_out.markup('<div')
-                                                           .attr('id','ORATRONIK_XPLUG_EXPORT_DIALOG')
-                                                           .markup('>')
-                                                           .markup('<div><textarea width=80 height=20 style="width: 100%; height: 350px">')
-                                                           .markup('</textarea></div>');
-
-                                                      $(l_out.html).dialog({
-                                                          modal   : true,
-                                                          title   : get_label('LBL-STYLE-EXPORT'),
-                                                          width   : 700,
-                                                          height  : 400,
-                                                          close   : function(pEvent) {
-                                                                       $(this).dialog( "close" );
-                                                                    },
-
-                                                          buttons : [
-                                                                      { text  : get_label('BTN-OK'),
-                                                                        class : 'a-Button--hot',
-                                                                        click : function() {
-                                                                           $(this).dialog( "close" );
-                                                                        },
-                                                                      }
-                                                                    ],
-
-                                                          position: { 'my': 'center', 'at': 'center' }
-                                                      });
-
-                                                      var l_json = JSON.parse(xplug.getStorage('STYLE_' + l_style_name_orig,null,true));
-
-                                                      $('div#ORATRONIK_XPLUG_EXPORT_DIALOG textarea').val(JSON.stringify(l_json,null,4));
-                                                   } // click
+                                            window.pageDesigner.exportStyleDialog(l_style_name);
+                                        }
                               },
 
                               { text  : get_label('BTN-DELETE'),
                                 click : function() {
-                                  xplug.delStorage('STYLE_' + l_style_name_orig,true);
-                                  window.pageDesigner.customizeStyle(p_LOV_title);
+                                  xplug.delStorage(l_style_name_orig,true);
+                                  console.debug('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
                                   $(this).dialog("close");
                                 },
-                                disabled : is_protected()
+                                disabled : is_protected() || is_default()
                               },
 
 
                               { text  : get_label('BTN-APPLY'),
                                 click : function() {
-                                  var l_style_name = $('input[data-property-id=style_name]').val();
-
-                                  var l_c = [];
-                                  for (var l=1;l<=10;l++) {
-                                      l_c[l] = $('input[data-property-id=col_' + l + ']').val();
-                                  }
-
-                                  window.pageDesigner.setStyle
-                                    (
-                                       l_style_name,
-                                       'DO_NOT_SAVE',
-                                       $('input[name=ColorDlgPE_2_name]:checked').val(),
-                                       $('input[name=ColorDlgPE_3_name]:checked').val(),
-                                       $('textarea[data-property-id="custom_css"').val(),
-                                       l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
-                                       l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
-                                    );
+                                  //
+                                  // Apply style but don't save
+                                  //
+                                  apply_style('DO_NOT_SAVE');
                                 },
                                 disabled : is_protected()
                               },
 
                               { text  : get_label('BTN-CANCEL'),
                                 click : function() {
-                                  window.pageDesigner.loadStyle(l_style_name_orig);
-                                  window.pageDesigner.customizeStyle(p_LOV_title);
-                                  $( this ).dialog( "close" );
+                                    $( this ).dialog( "close" );
                                 }
                               },
 
@@ -1613,33 +1695,21 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                               { text  : get_label('BTN-SAVE'),
                                 class : 'a-Button--hot',
                                 click : function() {
-                                  //
-                                  // Duplicate code!!! Put this in a function!!!!!
-                                  //
-                                  var l_style_name = $('input[data-property-id=style_name]').val();
 
-                                  var l_c = [];
-                                  for (var l=1;l<=10;l++) {
-                                      l_c[l] = $('input[data-property-id=col_' + l + ']').val();
+                                  // Prevent saving a draft template
+                                  var l_new_name = $('input[data-property-id=style_name]').val();
+                                  if (l_new_name == 'New custom style') {
+                                     pageDesigner.showError(get_label('MSG-STYLE-IS-DRAFT'));
+                                     return;
                                   }
 
-                                  window.pageDesigner.setStyle
-                                    (
-                                       l_style_name,
-                                       'SAVE',
-                                       $('input[name=ColorDlgPE_2_name]:checked').val(),
-                                       $('input[name=ColorDlgPE_3_name]:checked').val(),
-                                       $('textarea[data-property-id="custom_css"').val(),
-                                       l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
-                                       l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
-                                    );
+                                  // Apply the new style and save in localStorage
+                                  apply_style('SAVE');
+                                  l_style_saved = true;
 
-                                  window.pageDesigner.customizeStyle(p_LOV_title);
                                   $( this ).dialog( "close" );
                                 },
-
                                 disabled : is_protected()
-
                               }
                             ]
                 }
@@ -1718,7 +1788,7 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
                                //
                                l_properties1[0] = {
                                    propertyName: "default_daylight_style",
-                                   value:        xplug.getStorage('DEFAULT_STYLE1','Original (none)',true),
+                                   value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
                                        prompt:         get_label('LBL-DAYLIGHT'),
@@ -1783,9 +1853,15 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
                                 click : function() {
                                   var l_style1 = $('#StyleDefaultsDlgPE_1').val();
                                   var l_style2 = $('#StyleDefaultsDlgPE_2').val();
+                                  var l_class  = $('button#ORATRONIK_XPLUG_moonsun_button span').attr('class');
 
                                   xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
                                   xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
+
+                                  window.pageDesigner.loadStyle(
+                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
+                                                                              : l_style1
+                                  );
 
                                   $( this ).dialog( "close" );
                                 }
@@ -2032,7 +2108,7 @@ var Xplug = function() {
         var l_class     = ' class="a-Button a-Button--noLabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
         var l_style     = ' style="background-color:#C3ECE2; height: 32px" ';
         var l_label     = ' title="' + C_version + '" ';
-        var l_data_menu = ' data-menu="XplugMenu"';
+        var l_data_menu = ' data-menu="ORATRONIK_XPLUG_PLUGIN_MENU"';
         var l_aria      = ' aria-haspopup="true" aria-expanded="false" aria-label ="' + C_version + '" ';
         var l_menu_icon = '<span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>';
         var l_lf        = "\n";
@@ -2280,7 +2356,9 @@ Xplug.prototype.install_menu = function() {
 
     // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
     // For details on the APEX popup menu functionality refer to /images/libraries/apex/widget.menu.js
-    var l_menu$ = $("<div id='XplugMenu'></div>");
+    $('#ORATRONIK_XPLUG_PLUGIN_MENU').remove();
+
+    var l_menu$ = $("<div id='ORATRONIK_XPLUG_PLUGIN_MENU'></div>");
     $("body").append(l_menu$);
 
     l_menu$.menu(

@@ -233,7 +233,7 @@ var Xplug = function() {
         var l_class     = ' class="a-Button a-Button--noLabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
         var l_style     = ' style="background-color:#C3ECE2; height: 32px" ';
         var l_label     = ' title="' + C_version + '" ';
-        var l_data_menu = ' data-menu="XplugMenu"';
+        var l_data_menu = ' data-menu="ORATRONIK_XPLUG_PLUGIN_MENU"';
         var l_aria      = ' aria-haspopup="true" aria-expanded="false" aria-label ="' + C_version + '" ';
         var l_menu_icon = '<span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>';
         var l_lf        = "\n";

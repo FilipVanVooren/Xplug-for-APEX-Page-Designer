@@ -58,10 +58,13 @@
                              , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
                              , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
+                             , "MSG-STYLE-EXPORT"    : "Please mark, copy and save the Xplug JSON code in a text file and press 'OK'"
                              , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
                              , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
                              , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
                              , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Style can't be saved. Please first change the style name."
+
                            },
 
                     'de' : {   "DOCKRIGHT"    : "Grid rechts außen positionieren"
@@ -110,10 +113,13 @@
                              , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
                              , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
                              , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
+                             , "MSG-STYLE-EXPORT"    : "Bitte markieren, kopieren und Speichern Sie den Xplug JSON code als Textdatei und drücken Sie danach 'OK'"
                              , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
                              , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
                              , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
                              , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatible. Bitte prüfen."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Stil kann nicht gespeichert werden. Bitte zuerst Stilnamen ändern."
+
 
                            },
                   };
