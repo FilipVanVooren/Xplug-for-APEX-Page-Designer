@@ -16,6 +16,7 @@ window.pageDesigner.setStyle = function( p_style_name,
                                          p_save_style,
                                          p_is_dark_style,
                                          p_show_grid,
+                                         p_override_css,
                                          p_custom_css,
                                          p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err
                                        )
@@ -33,7 +34,8 @@ window.pageDesigner.setStyle = function( p_style_name,
     var l_c9   = p9    || '#CFE6FA';       // light-Cyan
     var l_cerr = p_err || '#FFC3C3';       // Error background color
     var l_lf   = "\n";
-    var l_css;
+
+    var l_css, l_custom_css;
 
 
     function is_protected(p_style_name) {
@@ -44,21 +46,22 @@ window.pageDesigner.setStyle = function( p_style_name,
     //==========================================================================
     // Save style settings if required
     //==========================================================================
-    var l_settings_obj = { "STYLE_NAME" : p_style_name,
-                           "DARK_STYLE" : typeof(p_is_dark_style) == 'undefined' ? 'YES' : p_is_dark_style,
-                           "SHOW_GRID"  : typeof(p_show_grid)     == 'undefined' ? 'YES' : p_show_grid,
-                           "PROTECTED"  : is_protected(p_style_name),
-                           "C1"         : l_c1,
-                           "C2"         : l_c2,
-                           "C3"         : l_c3,
-                           "C4"         : l_c4,
-                           "C5"         : l_c5,
-                           "C6"         : l_c6,
-                           "C7"         : l_c7,
-                           "C8"         : l_c8,
-                           "C9"         : l_c9,
-                           "C10"        : l_cerr,
-                           "CUSTOM_CSS" : p_custom_css
+    var l_settings_obj = { "STYLE_NAME"   : p_style_name,
+                           "DARK_STYLE"   : typeof(p_is_dark_style) == 'undefined' ? 'YES' : p_is_dark_style,
+                           "SHOW_GRID"    : typeof(p_show_grid)     == 'undefined' ? 'YES' : p_show_grid,
+                           "PROTECTED"    : is_protected(p_style_name),
+                           "C1"           : l_c1,
+                           "C2"           : l_c2,
+                           "C3"           : l_c3,
+                           "C4"           : l_c4,
+                           "C5"           : l_c5,
+                           "C6"           : l_c6,
+                           "C7"           : l_c7,
+                           "C8"           : l_c8,
+                           "C9"           : l_c9,
+                           "C10"          : l_cerr,
+                           "OVERRIDE_CSS" : typeof(p_override_css)  == 'undefined' ? 'NO'  : p_override_css,
+                           "CUSTOM_CSS"   : p_custom_css
                       };
 
     if (p_save_style == 'SAVE' || p_save_style == 'SAVE_ONLY') {
@@ -230,13 +233,34 @@ window.pageDesigner.setStyle = function( p_style_name,
 
 
     //==========================================================================
-    // Add CSS style to HTML page head
+    // Add Xplug CSS style to HTML page head
     //==========================================================================
-    var l_style = '<style type="text/css" ID="XPLUG_THEME">'                    + l_lf
-                + l_css                                                         + l_lf
-                + l_scroll                                                      + l_lf
-                + ((typeof(p_custom_css) == 'undefined') ? l_lf : p_custom_css) + l_lf
-                + '</style>'                                                    + l_lf;
+    var l_style = '<style type="text/css" ID="XPLUG_THEME">' + l_lf;
+
+    if (p_override_css != 'YES') {
+        l_style += l_css    + l_lf;
+        l_style += l_scroll + l_lf;
+    }
+
+    //==========================================================================
+    // Add custom CSS to HTML page head
+    //==========================================================================
+    if (typeof(p_custom_css) != 'undefined') {
+       l_custom_css = p_custom_css;
+       l_custom_css = l_custom_css.replace(/%%C1%%/gi,l_c1);
+       l_custom_css = l_custom_css.replace(/%%C2%%/gi,l_c2);
+       l_custom_css = l_custom_css.replace(/%%C3%%/gi,l_c3);
+       l_custom_css = l_custom_css.replace(/%%C4%%/gi,l_c4);
+       l_custom_css = l_custom_css.replace(/%%C5%%/gi,l_c5);
+       l_custom_css = l_custom_css.replace(/%%C6%%/gi,l_c6);
+       l_custom_css = l_custom_css.replace(/%%C7%%/gi,l_c7);
+       l_custom_css = l_custom_css.replace(/%%C8%%/gi,l_c8);
+       l_custom_css = l_custom_css.replace(/%%C9%%/gi,l_c9);
+       l_custom_css = l_custom_css.replace(/%%C10%%/gi,l_cerr);
+
+       l_style += l_custom_css + l_lf;
+    }
+    l_style += '</style>' + l_lf;
 
     // console.log(l_style);
 
@@ -314,12 +338,14 @@ window.pageDesigner.loadStyle = function(p_style_name)
      return 0;
   }
 
+
   window.pageDesigner.setStyle
     (
        l_imp_obj.STYLE_NAME,
        'LOAD_STYLE',
        l_imp_obj.DARK_STYLE,
        l_imp_obj.SHOW_GRID,
+       l_imp_obj.OVERRIDE_CSS,
        l_imp_obj.CUSTOM_CSS,
        l_imp_obj.C1,
        l_imp_obj.C2,
@@ -634,6 +660,7 @@ window.pageDesigner.customizeStyle = function(p_title)
                               'SAVE_ONLY',
                               l_imp_obj.DARK_STYLE,
                               l_imp_obj.SHOW_GRID,
+                              l_imp_obj.OVERRIDE_CSS,
                               l_imp_obj.CUSTOM_CSS,
                               l_imp_obj.C1,
                               l_imp_obj.C2,
@@ -730,6 +757,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
            p_save_mode,
            $('input[name=ColorDlgPE_2_name]:checked').val(),
            $('input[name=ColorDlgPE_3_name]:checked').val(),
+           $('input[name=ColorDlgPE_14_name]:checked').val(),
            $('textarea[data-property-id="custom_css"').val(),
            l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
            l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
@@ -790,20 +818,21 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                } catch(e) {
                                   console.warn("XPLUG: can't fetch " + l_style_name + " from localStorage. Using defaults.");
                                }
-                               l_settings_obj = { "STYLE_NAME" : typeof(l_imp_obj.STYLE_NAME) == 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
-                                                  "DARK_STYLE" : typeof(l_imp_obj.DARK_STYLE) == 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
-                                                  "SHOW_GRID"  : typeof(l_imp_obj.SHOW_GRID)  == 'undefined' ? "NO"      : l_imp_obj.SHOW_GRID,
-                                                  "C1"         : l_imp_obj.C1,
-                                                  "C2"         : l_imp_obj.C2,
-                                                  "C3"         : l_imp_obj.C3,
-                                                  "C4"         : l_imp_obj.C4,
-                                                  "C5"         : l_imp_obj.C5,
-                                                  "C6"         : l_imp_obj.C6,
-                                                  "C7"         : l_imp_obj.C7,
-                                                  "C8"         : l_imp_obj.C8,
-                                                  "C9"         : l_imp_obj.C9,
-                                                  "C10"        : l_imp_obj.C10,
-                                                  "CUSTOM_CSS" : typeof(l_imp_obj.CUSTOM_CSS) == 'undefined' ? ""        : l_imp_obj.CUSTOM_CSS
+                               l_settings_obj = { "STYLE_NAME"   : typeof(l_imp_obj.STYLE_NAME) == 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
+                                                  "DARK_STYLE"   : typeof(l_imp_obj.DARK_STYLE) == 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
+                                                  "SHOW_GRID"    : typeof(l_imp_obj.SHOW_GRID)  == 'undefined' ? "NO"      : l_imp_obj.SHOW_GRID,
+                                                  "C1"           : l_imp_obj.C1,
+                                                  "C2"           : l_imp_obj.C2,
+                                                  "C3"           : l_imp_obj.C3,
+                                                  "C4"           : l_imp_obj.C4,
+                                                  "C5"           : l_imp_obj.C5,
+                                                  "C6"           : l_imp_obj.C6,
+                                                  "C7"           : l_imp_obj.C7,
+                                                  "C8"           : l_imp_obj.C8,
+                                                  "C9"           : l_imp_obj.C9,
+                                                  "C10"          : l_imp_obj.C10,
+                                                  "OVERRIDE_CSS" : typeof(l_imp_obj.OVERRIDE_CSS) == 'undefined' ? "NO" : l_imp_obj.OVERRIDE_CSS,
+                                                  "CUSTOM_CSS"   : typeof(l_imp_obj.CUSTOM_CSS)   == 'undefined' ? ""   : l_imp_obj.CUSTOM_CSS
                                              };
 
 
@@ -880,6 +909,22 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                // Build Properties for property group 3 (Advanced)
                                //
                                l_properties3[0] = {
+                                   propertyName: "override_css",
+                                   value:        l_settings_obj.OVERRIDE_CSS,
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                       prompt:         get_label('LBL-OVERRIDE-CSS'),
+                                       noValue:        "NO",
+                                       yesValue:       "YES",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "advanced"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               l_properties3[1] = {
                                    propertyName: "custom_css",
                                    value:        l_settings_obj.CUSTOM_CSS,
                                    metaData: {

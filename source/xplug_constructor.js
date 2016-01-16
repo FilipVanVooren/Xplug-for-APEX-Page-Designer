@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.2 (www.oratronik.de)';
+   var C_version = 'Xplug v1.2.1 (www.oratronik.de)';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
