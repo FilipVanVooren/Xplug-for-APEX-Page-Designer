@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sat Jan 16 2016 22:17:52
+// Built using Gulp. Built date: Sun Jan 17 2016 21:02:53
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -116,11 +116,16 @@
 //                     - Bug-fix: Update Xplug plugin menu after adding/removing styles, is needed for
 //                                submenu 'Pick Style'
 //
-//
 // V1.2.1 2016-01-16 * Multiple changes
 //                     - Added possibility to override Xplug CSS code. That is particular useful if you only
 //                       want to tweak the standard Page Designer theme.
 //                     - Can now use placeholders in the format %%C1%% .. %%C10%% in the custom CSS.
+//
+// V1.2.1 2016-01-17 * Multiple changes
+//                     - Bug-fix: Added new JSON property OVERRIDE_CSS to import check
+//                     - Bug-fix: Set height of Custom CSS textarea in configuration dialog AND turn off
+//                                spell-checking for that field.
+//
 //
 // REMARKS
 //
@@ -1265,7 +1270,7 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_out = apex.util.htmlBuilder();
 
    var C_valid = '#style_name#dark_style#show_grid#protected'
-               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#custom_css';
+               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#override_css#custom_css';
 
    function verifyJSON(p_json) {
      var l_json_obj;
@@ -1709,6 +1714,10 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                         ).css('z-index',8000);
                                      }
                                    ); // click
+
+                               // Set height of Custom CSS textarea AND turn off spell-checking
+                               $('#ColorDlgPE_15').css('height','150px')
+                                                  .attr('spellcheck','false');
 
                             }, // open
                   buttons : [

@@ -543,7 +543,7 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_out = apex.util.htmlBuilder();
 
    var C_valid = '#style_name#dark_style#show_grid#protected'
-               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#custom_css';
+               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#override_css#custom_css';
 
    function verifyJSON(p_json) {
      var l_json_obj;
@@ -987,6 +987,10 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                         ).css('z-index',8000);
                                      }
                                    ); // click
+
+                               // Set height of Custom CSS textarea AND turn off spell-checking
+                               $('#ColorDlgPE_15').css('height','150px')
+                                                  .attr('spellcheck','false');
 
                             }, // open
                   buttons : [
