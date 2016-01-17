@@ -115,6 +115,17 @@
 //                     - Bug-fix: Update Xplug plugin menu after adding/removing styles, is needed for
 //                                submenu 'Pick Style'
 //
+// V1.2.1 2016-01-16 * Multiple changes
+//                     - Added possibility to override Xplug CSS code. That is particular useful if you only
+//                       want to tweak the standard Page Designer theme.
+//                     - Can now use placeholders in the format %%C1%% .. %%C10%% in the custom CSS.
+//
+// V1.2.1 2016-01-17 * Multiple changes
+//                     - Bug-fix: Added new JSON property OVERRIDE_CSS to import check
+//                     - Bug-fix: Set height of Custom CSS textarea in configuration dialog AND turn off
+//                                spell-checking for that field.
+//
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
