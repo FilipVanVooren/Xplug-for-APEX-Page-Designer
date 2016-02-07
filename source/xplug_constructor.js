@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.2.1 (www.oratronik.de)';
+   var C_version = 'Xplug v1.2.2 (www.oratronik.de)';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -266,6 +266,12 @@ var Xplug = function() {
                  { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
         }
+
+        $(document).on('modelReady', pageDesigner.setWinTitle);
+
+        pageDesigner.setWinTitle();
+
+
    } // __init
 
    __init();
@@ -279,6 +285,7 @@ Xplug.prototype.loadSettings = function ()
 
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+   xplug.addPowerbox();
 }; // Xplug.prototype.loadSettings
 
 

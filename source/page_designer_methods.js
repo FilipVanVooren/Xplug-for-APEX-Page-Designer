@@ -8,6 +8,29 @@
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
 
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: setWinTitle
+ ***************************************************************************/
+ window.pageDesigner.setWinTitle = function()
+  {
+    var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
+    var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
+    var l_title   = $(document).attr('title');
+
+    l_title  = l_title.replace(/\s\[.*$/,'');
+
+    if ((typeof(l_appid) == 'string') && (typeof(l_page_id) == 'string')) {
+      l_title += ' [' + l_appid + ':' + l_page_id + ']';
+    }
+    $(document).attr('title',l_title);
+
+    return 1;
+  }; // window.pageDeisgner.setWinTitle
+
+
+
 /****************************************************************************
  * Add custom method to pageDesigner Object
  * METHOD: Go to previous page

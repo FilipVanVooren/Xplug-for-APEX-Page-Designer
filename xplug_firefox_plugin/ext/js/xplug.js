@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Jan 17 2016 21:04:55
+// Built using Gulp. Built date: Sun Feb 07 2016 21:25:30
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -126,6 +126,12 @@
 //                     - Bug-fix: Set height of Custom CSS textarea in configuration dialog AND turn off
 //                                spell-checking for that field.
 //
+// v1.2.2 2016-02-06 * Add application ID and page ID to window/browser tab title (setWinTttle method)
+//
+// V1.2.2 2016-02-07 * Multiple changes
+//                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
+//                     - Bug-fix: removed hard code label parameter in xplug_menu.js
+//                     - Renamed submenu 'Customize' in 'Setup'
 //
 // REMARKS
 //
@@ -158,7 +164,7 @@
                              , "PRETTYGRID"   : "Grid background image"
                              , "PICK_STYLE"   : "Pick style"
                              , "SET_DEFAULTS" : "Set defaults"
-                             , "CUSTOMIZE"    : "Customize"
+                             , "SETUP"        : "Setup"
 
                              , "BTN-NEW"             : "New"
                              , "BTN-SAVE"            : "Save"
@@ -214,7 +220,7 @@
                              , "PRETTYGRID"   : "Hintergrundbild"
                              , "PICK_STYLE"   : "Stil auswählen"
                              , "SET_DEFAULTS" : "Defaultwerte setzen"
-                             , "CUSTOMIZE"    : "Anpassen"
+                             , "SETUP"        : "Anpassen"
 
                              , "LBL-STYLE-GALLERY"   : "Page Designer Stil Galerie"
                              , "LBL-STYLE-CUSTOM"    : "Page Designer Stil anpassen"
@@ -228,7 +234,7 @@
                              , "LBL-COLOR"           : "Farbe"
                              , "LBL-IDENTIFICATION"  : "Identifizierung"
                              , "LBL-CUST-COLORS"     : "Farben anpassen"
-                             , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"                             
+                             , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"
                              , "LBL-CUST-CSS"        : "Eigenes CSS"
                              , "LBL-ADVANCED"        : "Fortgeschritten"
                              , "LBL-DAYLIGHT"        : "Tageslicht"
@@ -322,6 +328,29 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: setWinTitle
+ ***************************************************************************/
+ window.pageDesigner.setWinTitle = function()
+  {
+    var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
+    var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
+    var l_title   = $(document).attr('title');
+
+    l_title  = l_title.replace(/\s\[.*$/,'');
+
+    if ((typeof(l_appid) == 'string') && (typeof(l_page_id) == 'string')) {
+      l_title += ' [' + l_appid + ':' + l_page_id + ']';
+    }
+    $(document).attr('title',l_title);
+
+    return 1;
+  }; // window.pageDeisgner.setWinTitle
+
+
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
@@ -1019,7 +1048,10 @@ window.pageDesigner.setStyle = function( p_style_name,
  * Add custom method to pageDesigner Object
  * METHOD: unsetStyle
  ***************************************************************************/
-window.pageDesigner.unsetStyle = function() {
+window.pageDesigner.unsetStyle = function()
+{
+   'use strict';
+
    $('style#XPLUG_THEME').remove();
    window.pageDesigner.noPrettyGrid();
 
@@ -1041,29 +1073,31 @@ window.pageDesigner.unsetStyle = function() {
  ***************************************************************************/
 window.pageDesigner.loadStyle = function(p_style_name)
 {
-  var l_imp_obj;
+   'use strict';
 
-  if (p_style_name == 'NONE') {
-     window.pageDesigner.unsetStyle();
-     return;
-  }
+   var l_imp_obj;
 
-  //
-  // Get settings
-  //
-  try {
-     l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
-  } catch(e) {
-     console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
-     return 0;
-  }
+   if (p_style_name == 'NONE') {
+      window.pageDesigner.unsetStyle();
+      return;
+   }
+
+   //
+   // Get settings
+   //
+   try {
+      l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
+   } catch(e) {
+      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
+      return 0;
+   }
 
 
-  if (l_imp_obj === null) {
-     console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
-     window.pageDesigner.loadStyle('NONE');
-     return 0;
-  }
+   if (l_imp_obj === null) {
+      console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      window.pageDesigner.loadStyle('NONE');
+      return 0;
+   }
 
 
   window.pageDesigner.setStyle
@@ -1092,11 +1126,14 @@ window.pageDesigner.loadStyle = function(p_style_name)
  * Add custom method to pageDesigner Object
  * METHOD: getStyles
  ***************************************************************************/
-window.pageDesigner.getStyles = function() {
-  var l_arr_styles = [];
-  var l_arr_keys   = xplug.getStorageKeys(true);
+window.pageDesigner.getStyles = function()
+{
+   'use strict';
 
-  for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
+   var l_arr_styles = [];
+   var l_arr_keys   = xplug.getStorageKeys(true);
+
+   for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
       var l_key = l_arr_keys[i];
 
       var l_current = xplug.getStorage('CURRENT_STYLE','',true);
@@ -1111,10 +1148,10 @@ window.pageDesigner.getStyles = function() {
          if (l_style !== null) {
             l_arr_styles.push(l_style);
          }
-     }
-  }
+      }
+   }
 
-  return l_arr_styles;
+   return l_arr_styles;
 }; // window.pageDesigner.getStyles
 
 
@@ -1217,8 +1254,8 @@ window.pageDesigner.customizeStyle = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: exportStyleDialog
  ***************************************************************************/
- window.pageDesigner.exportStyleDialog = function(p_style) {
-
+ window.pageDesigner.exportStyleDialog = function(p_style)
+ {
    'use strict';
 
    var l_out = apex.util.htmlBuilder();
@@ -1254,7 +1291,6 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_json = JSON.parse(xplug.getStorage(p_style,null,true));
 
    $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON').val(JSON.stringify(l_json,null,4));
-
  }; // exportStyleDalog
 
 
@@ -1263,8 +1299,8 @@ window.pageDesigner.customizeStyle = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: importStyleDialog
  ***************************************************************************/
- window.pageDesigner.importStyleDialog = function(p_LOV_title) {
-
+ window.pageDesigner.importStyleDialog = function(p_LOV_title)
+ {
    'use strict';
 
    var l_out = apex.util.htmlBuilder();
@@ -1946,7 +1982,7 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.2.1 (www.oratronik.de)';
+   var C_version = 'Xplug v1.2.2 (www.oratronik.de)';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -2203,6 +2239,12 @@ var Xplug = function() {
                  { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
         }
+
+        $(document).on('modelReady', pageDesigner.setWinTitle);
+
+        pageDesigner.setWinTitle();
+
+
    } // __init
 
    __init();
@@ -2216,6 +2258,7 @@ Xplug.prototype.loadSettings = function ()
 
    xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+   xplug.addPowerbox();
 }; // Xplug.prototype.loadSettings
 
 
@@ -2336,7 +2379,7 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
-
+/* jshint -W083 */
 
 Xplug.prototype.install_menu = function() {
 
@@ -2497,7 +2540,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "subMenu",
-          label   : get_label('CUSTOMIZE'),
+          label   : get_label('SETUP'),
           menu    : { items :
                       [
                          {
@@ -2505,7 +2548,7 @@ Xplug.prototype.install_menu = function() {
                            label    : get_label('LBL-STYLE-CUSTOM'),
                            action   : function()
                                       {
-                                         window.pageDesigner.customizeStyle('Customize Page Designer Style');
+                                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
                                       },
                            disabled : function()
                                       {
@@ -2528,6 +2571,153 @@ Xplug.prototype.install_menu = function() {
       ]
     });
 }; // install_menu
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// xplug_powerbox.js
+// 2016-02-07 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+
+
+/***************************************************************************
+* Add custom method to Xplug
+* METHOD: addPowerbox
+***************************************************************************/
+Xplug.prototype.addPowerbox = function()
+{
+    function xplug_pb_resize_handler() {
+       var C_factor   = 0.70;
+       var l_maxwidth = $('#glv-viewport').width();
+       var l_width    = l_maxwidth * C_factor;
+       var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
+
+       $('#gallery-tabs')
+         .css(
+               { width : l_width + 'px' }
+             )
+         .trigger('resize');
+
+        // simulated vertical splitter at left of powerbox
+        $('#xplug_pb_splitter').css(
+            { 'position'          : 'absolute',
+              'top'               : '0px',
+              'left'              :  l_width + 'px',
+              'width'             : '8px',
+              'height'            : '100%',
+              'background-color'  : $('.a-Splitter-barH').css('background-color'),
+              'border-left'       : '1px solid #c0c0c0',
+              'border-right'      : '1px solid #c0c0c0'
+            }
+        );
+
+        // Powerbox container DIV
+        $('#xplug_pb_container').css(
+              { 'position'   : 'absolute',
+                'top'        : '0px',
+                'padding'    : '1px',
+                'left'       : (l_width + 8) + 'px',
+                'width'      : (l_maxwidth - l_width - 8) + 'px',
+                'height'     : l_height + 'px',
+                'display'    : 'block'
+              });
+
+        $('#xplug_pb_tabs').css(
+              { 'height'        : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
+            });
+
+        $('#xplug_pb_msgview').css(
+              {  'overflow-y' : 'scroll',
+                 'height'     : l_height + 'px',
+
+            });
+
+        console.log("got here....");
+    } // xplug_pb_resize_handler
+
+  'use strict';
+
+  //Add (simulated) vertical splitter bar and powerbox DIV to DOM
+  $('#R1157688004078338241').append(
+         '<div ID="xplug_pb_splitter"></div>'
+       + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
+       +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
+       +    '<ul>'
+       +     '<li><a href="#xplug_pb_msgview">Errors</a></li>'
+       +     '<li><a href="#xplug_pb_advisor">Advisor</a></li>'
+       +    '</ul>'
+       +    '<span id="xplug_pb_badge" class="a-AlertBadge"></span>'
+       +   '</div>'
+       +   '<div ID="xplug_pb_msgview"></div>'
+       +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
+       + '</div>'
+  );
+
+  $('div#xplug_pb_tabs').tabs();  // jQuery UI tabs
+  xplug_pb_resize_handler();      // Show powerbox
+
+  // Resize-redraw powerbox when splitter(s) are moved/created
+  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
+
+  // Resize-redraw powerbox when switching tabs (Grid Layout, Messages, ...)
+  // See jQuery UI tabs for details on 'activate' attribute
+  $( "div#editor_tabs, div#R1157688004078338241" )
+    .tabs(
+           { activate: xplug_pb_resize_handler }
+         );
+
+
+  //
+  // Webkit and others continously fire resize events while resizing, which
+  // is a browser performance killer. Should basically only be fired when
+  // resizing has stopped.
+  //
+  // As a workaround only call our event handler if there were no resize events
+  // in the last 300 miliseconds.
+  //
+  // Also added our namespace to the resize event, because later on we only
+  // want to kill our own resize handler, not the original one from Page Designer.
+  //
+  var l_timeout_handler;
+  $(window).on('resize.xplug_namespace',
+                function()
+                      {
+                         clearTimeout(l_timeout_handler);
+                         l_timeout_handler = setTimeout(xplug_pb_resize_handler, 300);
+                      }
+  );
+
+  //
+  $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
+
+}; // Xplug.prototype.addPowerbox
+
+
+/***************************************************************************
+* Add custom method to Xplug
+* METHOD: removePowerbox
+***************************************************************************/
+Xplug.prototype.removePowerbox = function()
+{
+  'use strict';
+
+  // Detach our own resize handler
+  $(window).off('resize.xplug_namespace');
+  $('body').off( "splitterchange.xplug_namespace splittercreate.xplug_namespace");
+  $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
+
+  // Remove powerbox
+  $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
+
+  // Restore original gallery width and trigger redrawing/reposition of icons
+  $('div#gallery-tabs')
+      .css('width', $('div#glv-viewport').css('width') )
+      .trigger('resize');
+
+}; // Xplug.prototype.removePowerbox
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer

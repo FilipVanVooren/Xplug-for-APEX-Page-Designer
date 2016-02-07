@@ -11,10 +11,11 @@ gulp.task('Build Xplug', function() {
               'source/xplug_language.js',
               'source/xplug_util.js',
               'source/page_designer_methods.js',
-              'source/page_designer_style.js',              
+              'source/page_designer_style.js',
               'source/xplug_constructor.js',
               'source/xplug_storage.js',
               'source/xplug_menu.js',
+              'source/xplug_powerbox.js',              
               'source/main.js'
             ])
          .pipe(jshint())

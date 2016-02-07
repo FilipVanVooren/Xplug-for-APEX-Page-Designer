@@ -125,6 +125,13 @@
 //                     - Bug-fix: Set height of Custom CSS textarea in configuration dialog AND turn off
 //                                spell-checking for that field.
 //
+// v1.2.2 2016-02-06 * Add application ID and page ID to window/browser tab title (setWinTttle method)
+//
+// V1.2.2 2016-02-07 * Multiple changes
+//                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
+//                     - Bug-fix: removed hard code label parameter in xplug_menu.js
+//                     - Renamed submenu 'Customize' to 'Setup'
+//                     - Added xplug_powerbox.js for displaying errors and advisor stuff
 //
 // REMARKS
 //

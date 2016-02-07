@@ -292,7 +292,10 @@ window.pageDesigner.setStyle = function( p_style_name,
  * Add custom method to pageDesigner Object
  * METHOD: unsetStyle
  ***************************************************************************/
-window.pageDesigner.unsetStyle = function() {
+window.pageDesigner.unsetStyle = function()
+{
+   'use strict';
+
    $('style#XPLUG_THEME').remove();
    window.pageDesigner.noPrettyGrid();
 
@@ -314,29 +317,31 @@ window.pageDesigner.unsetStyle = function() {
  ***************************************************************************/
 window.pageDesigner.loadStyle = function(p_style_name)
 {
-  var l_imp_obj;
+   'use strict';
 
-  if (p_style_name == 'NONE') {
-     window.pageDesigner.unsetStyle();
-     return;
-  }
+   var l_imp_obj;
 
-  //
-  // Get settings
-  //
-  try {
-     l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
-  } catch(e) {
-     console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
-     return 0;
-  }
+   if (p_style_name == 'NONE') {
+      window.pageDesigner.unsetStyle();
+      return;
+   }
+
+   //
+   // Get settings
+   //
+   try {
+      l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
+   } catch(e) {
+      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
+      return 0;
+   }
 
 
-  if (l_imp_obj === null) {
-     console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
-     window.pageDesigner.loadStyle('NONE');
-     return 0;
-  }
+   if (l_imp_obj === null) {
+      console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      window.pageDesigner.loadStyle('NONE');
+      return 0;
+   }
 
 
   window.pageDesigner.setStyle
@@ -365,11 +370,14 @@ window.pageDesigner.loadStyle = function(p_style_name)
  * Add custom method to pageDesigner Object
  * METHOD: getStyles
  ***************************************************************************/
-window.pageDesigner.getStyles = function() {
-  var l_arr_styles = [];
-  var l_arr_keys   = xplug.getStorageKeys(true);
+window.pageDesigner.getStyles = function()
+{
+   'use strict';
 
-  for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
+   var l_arr_styles = [];
+   var l_arr_keys   = xplug.getStorageKeys(true);
+
+   for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
       var l_key = l_arr_keys[i];
 
       var l_current = xplug.getStorage('CURRENT_STYLE','',true);
@@ -384,10 +392,10 @@ window.pageDesigner.getStyles = function() {
          if (l_style !== null) {
             l_arr_styles.push(l_style);
          }
-     }
-  }
+      }
+   }
 
-  return l_arr_styles;
+   return l_arr_styles;
 }; // window.pageDesigner.getStyles
 
 
@@ -490,8 +498,8 @@ window.pageDesigner.customizeStyle = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: exportStyleDialog
  ***************************************************************************/
- window.pageDesigner.exportStyleDialog = function(p_style) {
-
+ window.pageDesigner.exportStyleDialog = function(p_style)
+ {
    'use strict';
 
    var l_out = apex.util.htmlBuilder();
@@ -527,7 +535,6 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_json = JSON.parse(xplug.getStorage(p_style,null,true));
 
    $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON').val(JSON.stringify(l_json,null,4));
-
  }; // exportStyleDalog
 
 
@@ -536,8 +543,8 @@ window.pageDesigner.customizeStyle = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: importStyleDialog
  ***************************************************************************/
- window.pageDesigner.importStyleDialog = function(p_LOV_title) {
-
+ window.pageDesigner.importStyleDialog = function(p_LOV_title)
+ {
    'use strict';
 
    var l_out = apex.util.htmlBuilder();

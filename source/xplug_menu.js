@@ -7,7 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
-
+/* jshint -W083 */
 
 Xplug.prototype.install_menu = function() {
 
@@ -168,7 +168,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "subMenu",
-          label   : get_label('CUSTOMIZE'),
+          label   : get_label('SETUP'),
           menu    : { items :
                       [
                          {
@@ -176,7 +176,7 @@ Xplug.prototype.install_menu = function() {
                            label    : get_label('LBL-STYLE-CUSTOM'),
                            action   : function()
                                       {
-                                         window.pageDesigner.customizeStyle('Customize Page Designer Style');
+                                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
                                       },
                            disabled : function()
                                       {

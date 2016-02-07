@@ -22,7 +22,7 @@
                              , "PRETTYGRID"   : "Grid background image"
                              , "PICK_STYLE"   : "Pick style"
                              , "SET_DEFAULTS" : "Set defaults"
-                             , "CUSTOMIZE"    : "Customize"
+                             , "SETUP"        : "Setup"
 
                              , "BTN-NEW"             : "New"
                              , "BTN-SAVE"            : "Save"
@@ -78,7 +78,7 @@
                              , "PRETTYGRID"   : "Hintergrundbild"
                              , "PICK_STYLE"   : "Stil auswählen"
                              , "SET_DEFAULTS" : "Defaultwerte setzen"
-                             , "CUSTOMIZE"    : "Anpassen"
+                             , "SETUP"        : "Anpassen"
 
                              , "LBL-STYLE-GALLERY"   : "Page Designer Stil Galerie"
                              , "LBL-STYLE-CUSTOM"    : "Page Designer Stil anpassen"
@@ -92,7 +92,7 @@
                              , "LBL-COLOR"           : "Farbe"
                              , "LBL-IDENTIFICATION"  : "Identifizierung"
                              , "LBL-CUST-COLORS"     : "Farben anpassen"
-                             , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"                             
+                             , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"
                              , "LBL-CUST-CSS"        : "Eigenes CSS"
                              , "LBL-ADVANCED"        : "Fortgeschritten"
                              , "LBL-DAYLIGHT"        : "Tageslicht"
