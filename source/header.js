@@ -133,6 +133,11 @@
 //                     - Renamed submenu 'Customize' to 'Setup'
 //                     - Added xplug_powerbox.js for displaying errors and advisor stuff
 //
+// V1.2.2 2016-02-09 * Multiple changes
+//                     - Bug-fix: Powerbox - Show Alertbadge when error is displayed
+//                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
+//                                           sure that correct height is taken.
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

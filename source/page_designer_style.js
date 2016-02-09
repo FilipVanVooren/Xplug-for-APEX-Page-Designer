@@ -186,6 +186,11 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          // Hack for border-radius
           + l_lf;
 
+    //==========================================================================
+    // Xplug powerbox
+    //==========================================================================
+    l_css += ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_advisor { background-color : ' + l_c2 + '; }' // Powerbox background
+          + l_lf;
 
 
     //==========================================================================

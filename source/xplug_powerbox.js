@@ -52,7 +52,7 @@ Xplug.prototype.addPowerbox = function()
               });
 
         $('#xplug_pb_tabs').css(
-              { 'height'        : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
+              { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
             });
 
         $('#xplug_pb_msgview').css(
@@ -75,7 +75,7 @@ Xplug.prototype.addPowerbox = function()
        +     '<li><a href="#xplug_pb_msgview">Errors</a></li>'
        +     '<li><a href="#xplug_pb_advisor">Advisor</a></li>'
        +    '</ul>'
-       +    '<span id="xplug_pb_badge" class="a-AlertBadge"></span>'
+       +    '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px"></span>'
        +   '</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
@@ -115,9 +115,9 @@ Xplug.prototype.addPowerbox = function()
                       }
   );
 
-  //
   $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
 
+  $('div#gallery-tabs').trigger('resize');
 }; // Xplug.prototype.addPowerbox
 
 

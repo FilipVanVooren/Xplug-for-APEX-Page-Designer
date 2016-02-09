@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Feb 07 2016 21:25:30
+// Built using Gulp. Built date: Tue Feb 09 2016 21:10:17
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -131,7 +131,13 @@
 // V1.2.2 2016-02-07 * Multiple changes
 //                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
 //                     - Bug-fix: removed hard code label parameter in xplug_menu.js
-//                     - Renamed submenu 'Customize' in 'Setup'
+//                     - Renamed submenu 'Customize' to 'Setup'
+//                     - Added xplug_powerbox.js for displaying errors and advisor stuff
+//
+// V1.2.2 2016-02-09 * Multiple changes
+//                     - Bug-fix: Powerbox - Show Alertbadge when error is displayed
+//                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
+//                                           sure that correct height is taken.
 //
 // REMARKS
 //
@@ -942,6 +948,11 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          // Hack for border-radius
           + l_lf;
 
+    //==========================================================================
+    // Xplug powerbox
+    //==========================================================================
+    l_css += ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_advisor { background-color : ' + l_c2 + '; }' // Powerbox background
+          + l_lf;
 
 
     //==========================================================================
@@ -2626,7 +2637,7 @@ Xplug.prototype.addPowerbox = function()
               });
 
         $('#xplug_pb_tabs').css(
-              { 'height'        : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
+              { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
             });
 
         $('#xplug_pb_msgview').css(
@@ -2640,7 +2651,7 @@ Xplug.prototype.addPowerbox = function()
 
   'use strict';
 
-  //Add (simulated) vertical splitter bar and powerbox DIV to DOM
+  // Add (simulated) vertical splitter bar and powerbox DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
@@ -2649,7 +2660,7 @@ Xplug.prototype.addPowerbox = function()
        +     '<li><a href="#xplug_pb_msgview">Errors</a></li>'
        +     '<li><a href="#xplug_pb_advisor">Advisor</a></li>'
        +    '</ul>'
-       +    '<span id="xplug_pb_badge" class="a-AlertBadge"></span>'
+       +    '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px"></span>'
        +   '</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
@@ -2668,7 +2679,6 @@ Xplug.prototype.addPowerbox = function()
     .tabs(
            { activate: xplug_pb_resize_handler }
          );
-
 
   //
   // Webkit and others continously fire resize events while resizing, which
@@ -2690,9 +2700,9 @@ Xplug.prototype.addPowerbox = function()
                       }
   );
 
-  //
   $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
 
+  $('div#gallery-tabs').trigger('resize');
 }; // Xplug.prototype.addPowerbox
 
 
