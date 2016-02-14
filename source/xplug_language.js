@@ -53,6 +53,8 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
+                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor pane"
+                             , "LBL-REMOVE-POWERBOX" : "Hide Error/Advisor pane"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -98,6 +100,8 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
+                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor Konsole"
+                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor Konsole"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"

@@ -60,8 +60,6 @@ Xplug.prototype.addPowerbox = function()
                  'height'     : l_height + 'px',
 
             });
-
-        console.log("got here....");
     } // xplug_pb_resize_handler
 
   'use strict';
@@ -116,8 +114,39 @@ Xplug.prototype.addPowerbox = function()
   );
 
   $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
-
   $('div#gallery-tabs').trigger('resize');
+
+  xplug.setStorage('SHOW_POWERBOX_PANE','YES');
+
+  //
+  // We need to register our own observer, because the original observer in
+  // the peMessagesView widget gets setup the next time when the modelReady event
+  // is fired, which has already happened by the time we get here.
+  //
+  // Take a look at /images/apex_ui/js/widget.peMessagesView.js for Details.
+  //
+  // Therefor logic only starts working if we navigate to another page
+  // (=new modelReady event as JSON page is loaded and processed)
+  //
+
+  // We interact with the running widget instance.
+  // See http://stackoverflow.com/questions/8506621/accessing-widget-instance-from-outside-widget
+  var l_widget = $('div#xplug_pb_msgview').data('apex-peMessagesView');
+
+  // Listen for all events which have an impact on displayed error or warning messages
+  pe.observer(
+      "messages_" + l_widget.uuid, {
+          events: [
+              pe.EVENT.ERRORS,
+              pe.EVENT.NO_ERRORS,
+              pe.EVENT.WARNINGS,
+              pe.EVENT.NO_WARNINGS,
+              pe.EVENT.DELETE,
+              pe.EVENT.REMOVE_PROP ]
+      },
+      function( pNotifications ) {
+          l_widget._update( pNotifications );
+      });
 }; // Xplug.prototype.addPowerbox
 
 
@@ -131,7 +160,7 @@ Xplug.prototype.removePowerbox = function()
 
   // Detach our own resize handler
   $(window).off('resize.xplug_namespace');
-  $('body').off( "splitterchange.xplug_namespace splittercreate.xplug_namespace");
+  $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
   $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
 
   // Remove powerbox
@@ -142,4 +171,5 @@ Xplug.prototype.removePowerbox = function()
       .css('width', $('div#glv-viewport').css('width') )
       .trigger('resize');
 
+  xplug.setStorage('SHOW_POWERBOX_PANE','NO');
 }; // Xplug.prototype.removePowerbox

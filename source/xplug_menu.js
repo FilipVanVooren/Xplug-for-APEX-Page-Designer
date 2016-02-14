@@ -153,6 +153,29 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
+        {
+          type     : "toggle",
+          label    : get_label('LBL-ADD-POWERBOX'),
+          get      : function()
+                     {
+                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                     },
+
+          set      : function()
+                     {
+                       if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
+                          apex.actions.invoke('pd-xplug-remove-powerbox');
+                       } else {
+                          apex.actions.invoke('pd-xplug-add-powerbox');
+                       }
+                     },
+
+          disabled : function()
+                     {
+                       return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                     }
+        },
+
         { type     : "separator" },
 
         { type     : "subMenu",

@@ -138,6 +138,12 @@
 //                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
 //                                           sure that correct height is taken.
 //
+// V1.2.2 2016-02-14 * Multiple changes
+//                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
+//                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
+//                                get tracked  as soon as the powerbox is opened.
+//
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

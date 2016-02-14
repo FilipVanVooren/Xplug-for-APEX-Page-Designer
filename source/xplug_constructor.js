@@ -193,7 +193,30 @@ var Xplug = function() {
                              return  apex.actions.invoke('pd-xplug-set-moonlight-mode');
                           }
                        }
-          }
+          },
+
+          {
+            name     : "pd-xplug-add-powerbox",
+            label    : get_label('LBL-ADD-POWERBOX'),
+            shortcut : "????",
+            action   : function( event, focusElement )
+                       {
+                          return xplug.addPowerbox();
+                       }
+          },
+
+          {
+            name     : "pd-xplug-remove-powerbox",
+            label    : get_label('LBL-REMOVE-POWERBOX'),
+            shortcut : "????",
+            action   : function( event, focusElement )
+                       {
+                          return xplug.removePowerbox();
+                       }
+          },
+
+
+
 
         ]
        );
@@ -283,9 +306,9 @@ Xplug.prototype.loadSettings = function ()
 {
    window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
 
-   xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-   xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-   xplug.addPowerbox();
+   xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+   xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+   xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-powerbox');
 }; // Xplug.prototype.loadSettings
 
 

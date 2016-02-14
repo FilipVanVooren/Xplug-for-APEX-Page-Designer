@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Feb 09 2016 21:10:17
+// Built using Gulp. Built date: Sun Feb 14 2016 22:07:12
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -139,6 +139,12 @@
 //                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
 //                                           sure that correct height is taken.
 //
+// V1.2.2 2016-02-14 * Multiple changes
+//                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
+//                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
+//                                get tracked  as soon as the powerbox is opened.
+//
+//
 // REMARKS
 //
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -201,6 +207,8 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
+                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor pane"
+                             , "LBL-REMOVE-POWERBOX" : "Hide Error/Advisor pane"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -246,6 +254,8 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
+                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor Konsole"
+                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor Konsole"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"
@@ -2177,7 +2187,30 @@ var Xplug = function() {
                              return  apex.actions.invoke('pd-xplug-set-moonlight-mode');
                           }
                        }
-          }
+          },
+
+          {
+            name     : "pd-xplug-add-powerbox",
+            label    : get_label('LBL-ADD-POWERBOX'),
+            shortcut : "????",
+            action   : function( event, focusElement )
+                       {
+                          return xplug.addPowerbox();
+                       }
+          },
+
+          {
+            name     : "pd-xplug-remove-powerbox",
+            label    : get_label('LBL-REMOVE-POWERBOX'),
+            shortcut : "????",
+            action   : function( event, focusElement )
+                       {
+                          return xplug.removePowerbox();
+                       }
+          },
+
+
+
 
         ]
        );
@@ -2267,9 +2300,9 @@ Xplug.prototype.loadSettings = function ()
 {
    window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
 
-   xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-   xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-   xplug.addPowerbox();
+   xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+   xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+   xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-powerbox');
 }; // Xplug.prototype.loadSettings
 
 
@@ -2536,6 +2569,29 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
+        {
+          type     : "toggle",
+          label    : get_label('LBL-ADD-POWERBOX'),
+          get      : function()
+                     {
+                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                     },
+
+          set      : function()
+                     {
+                       if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
+                          apex.actions.invoke('pd-xplug-remove-powerbox');
+                       } else {
+                          apex.actions.invoke('pd-xplug-add-powerbox');
+                       }
+                     },
+
+          disabled : function()
+                     {
+                       return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                     }
+        },
+
         { type     : "separator" },
 
         { type     : "subMenu",
@@ -2645,8 +2701,6 @@ Xplug.prototype.addPowerbox = function()
                  'height'     : l_height + 'px',
 
             });
-
-        console.log("got here....");
     } // xplug_pb_resize_handler
 
   'use strict';
@@ -2701,8 +2755,39 @@ Xplug.prototype.addPowerbox = function()
   );
 
   $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
-
   $('div#gallery-tabs').trigger('resize');
+
+  xplug.setStorage('SHOW_POWERBOX_PANE','YES');
+
+  //
+  // We need to register our own observer, because the original observer in
+  // the peMessagesView widget gets setup the next time when the modelReady event
+  // is fired, which has already happened by the time we get here.
+  //
+  // Take a look at /images/apex_ui/js/widget.peMessagesView.js for Details.
+  //
+  // Therefor logic only starts working if we navigate to another page
+  // (=new modelReady event as JSON page is loaded and processed)
+  //
+
+  // We interact with the running widget instance.
+  // See http://stackoverflow.com/questions/8506621/accessing-widget-instance-from-outside-widget
+  var l_widget = $('div#xplug_pb_msgview').data('apex-peMessagesView');
+
+  // Listen for all events which have an impact on displayed error or warning messages
+  pe.observer(
+      "messages_" + l_widget.uuid, {
+          events: [
+              pe.EVENT.ERRORS,
+              pe.EVENT.NO_ERRORS,
+              pe.EVENT.WARNINGS,
+              pe.EVENT.NO_WARNINGS,
+              pe.EVENT.DELETE,
+              pe.EVENT.REMOVE_PROP ]
+      },
+      function( pNotifications ) {
+          l_widget._update( pNotifications );
+      });
 }; // Xplug.prototype.addPowerbox
 
 
@@ -2716,7 +2801,7 @@ Xplug.prototype.removePowerbox = function()
 
   // Detach our own resize handler
   $(window).off('resize.xplug_namespace');
-  $('body').off( "splitterchange.xplug_namespace splittercreate.xplug_namespace");
+  $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
   $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
 
   // Remove powerbox
@@ -2727,6 +2812,7 @@ Xplug.prototype.removePowerbox = function()
       .css('width', $('div#glv-viewport').css('width') )
       .trigger('resize');
 
+  xplug.setStorage('SHOW_POWERBOX_PANE','NO');
 }; // Xplug.prototype.removePowerbox
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
