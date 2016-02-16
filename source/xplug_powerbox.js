@@ -16,7 +16,7 @@
 Xplug.prototype.addPowerbox = function()
 {
     function xplug_pb_resize_handler() {
-       var C_factor   = 0.70;
+       var C_factor   = 0.70;                                                       // Todo: 0.3 is also a good value
        var l_maxwidth = $('#glv-viewport').width();
        var l_width    = l_maxwidth * C_factor;
        var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons

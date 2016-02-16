@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Feb 16 2016 21:10:37
+// Built using Gulp. Built date: Tue Feb 16 2016 21:40:51
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -2668,7 +2668,7 @@ Xplug.prototype.install_menu = function() {
 Xplug.prototype.addPowerbox = function()
 {
     function xplug_pb_resize_handler() {
-       var C_factor   = 0.70;
+       var C_factor   = 0.70;                                                       // Todo: 0.3 is also a good value
        var l_maxwidth = $('#glv-viewport').width();
        var l_width    = l_maxwidth * C_factor;
        var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
