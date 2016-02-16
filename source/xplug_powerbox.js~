@@ -70,15 +70,16 @@ Xplug.prototype.addPowerbox = function()
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
-       +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
-       +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
-       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
+       +       '<li><a href="#xplug_pb_msgview">Errors</a></li>'
+       +       '<li><a href="#xplug_pb_advisor">Advisor</a></li>'
+       +       '<li><a href="#xplug_pb_advisor">Console</a></li>'
        +     '</ul>'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;"></span>'
        +   '</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
        +   '<div ID="xplug_pb_console">My console</div>'
+
        + '</div>'
   );
 

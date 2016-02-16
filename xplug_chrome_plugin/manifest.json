@@ -23,8 +23,8 @@
 
   "content_scripts": [
     {
-      "matches": [ "*://*/*f?p=4000:*"    ],
-      "js"     : [ "src/inject/inject.js" ]
+      "matches": [ "*://*/*f?p=4000:4500:*" ],
+      "js"     : [ "src/inject/inject.js"   ]
     }
   ]
 }

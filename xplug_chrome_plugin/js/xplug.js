@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Feb 14 2016 22:07:12
+// Built using Gulp. Built date: Tue Feb 16 2016 21:10:37
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -142,11 +142,17 @@
 // V1.2.2 2016-02-14 * Multiple changes
 //                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
 //                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
-//                                get tracked  as soon as the powerbox is opened.
+//                                get tracked as soon as the powerbox is opened.
 //
+// V1.2.2 2016-02-17 * Multiple changes
+//                     - Bug-fix: djusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
+//                                We only want the Xplug plugin to be activated when dealing with
+//                                page 4500 (Page Designer)
+//                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
+//                                ordering. Is now resolved.
+//                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
 //
 // REMARKS
-//
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
 //
@@ -189,6 +195,10 @@
                              , "BTN-IMPORT"          : "Import"
                              , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
 
+                             , "TAB-PB-ERRORS"       : "Errors"
+                             , "TAB-PB-ADVISOR"      : "Advisor"
+                             , "TAB-PB-CONSOLE"      : "Console"
+
                              , "LBL-STYLE-GALLERY"   : "Page Designer Styles Gallery"
                              , "LBL-STYLE-CUSTOM"    : "Customize Page Designer Style"
                              , "LBL-STYLE-EXPORT"    : "Export Page Designer Style"
@@ -207,8 +217,8 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
-                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor pane"
-                             , "LBL-REMOVE-POWERBOX" : "Hide Error/Advisor pane"
+                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor/Console"
+                             , "LBL-REMOVE-POWERBOX" : "Hide Errors/Advisor/Console"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -254,8 +264,8 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
-                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor Konsole"
-                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor Konsole"
+                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor/Konsole"
+                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor/Konsole"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"
@@ -267,6 +277,10 @@
                              , "BTN-EXPORT"          : "Exportieren"
                              , "BTN-IMPORT"          : "Importieren"
                              , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
+
+                             , "TAB-PB-ERRORS"       : "Fehler"
+                             , "TAB-PB-ADVISOR"      : "Berater"
+                             , "TAB-PB-CONSOLE"      : "Konsole"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
@@ -2207,10 +2221,7 @@ var Xplug = function() {
                        {
                           return xplug.removePowerbox();
                        }
-          },
-
-
-
+          }
 
         ]
        );
@@ -2710,22 +2721,32 @@ Xplug.prototype.addPowerbox = function()
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
-       +    '<ul>'
-       +     '<li><a href="#xplug_pb_msgview">Errors</a></li>'
-       +     '<li><a href="#xplug_pb_advisor">Advisor</a></li>'
-       +    '</ul>'
-       +    '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px"></span>'
+       +     '<ul>'
+       +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
+       +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
+       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
+       +     '</ul>'
+       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;"></span>'
        +   '</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
+       +   '<div ID="xplug_pb_console">My console</div>'
        + '</div>'
   );
 
-  $('div#xplug_pb_tabs').tabs();  // jQuery UI tabs
-  xplug_pb_resize_handler();      // Show powerbox
+
+  // Create new tabs
+  $('div#xplug_pb_container').tabs();   // jQuery UI tabs
+  xplug_pb_resize_handler();            // Show powerbox
+
+
+  // Activate standard "Messages" tab if our own badge is clicked.
+  $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
+
 
   // Resize-redraw powerbox when splitter(s) are moved/created
   $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
+
 
   // Resize-redraw powerbox when switching tabs (Grid Layout, Messages, ...)
   // See jQuery UI tabs for details on 'activate' attribute
@@ -2764,12 +2785,14 @@ Xplug.prototype.addPowerbox = function()
   // the peMessagesView widget gets setup the next time when the modelReady event
   // is fired, which has already happened by the time we get here.
   //
+  // Due to this the logic would only start working if we navigate to another page
+  // (=new modelReady event as JSON page is loaded and processed)
   // Take a look at /images/apex_ui/js/widget.peMessagesView.js for Details.
   //
-  // Therefor logic only starts working if we navigate to another page
-  // (=new modelReady event as JSON page is loaded and processed)
   //
-
+  // Nice benefit of having an own observer is that we can also automatically
+  // switch to our "Errors"-tab if an error is detected
+  //
   // We interact with the running widget instance.
   // See http://stackoverflow.com/questions/8506621/accessing-widget-instance-from-outside-widget
   var l_widget = $('div#xplug_pb_msgview').data('apex-peMessagesView');
@@ -2786,6 +2809,7 @@ Xplug.prototype.addPowerbox = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
+          $('div#xplug_pb_container').tabs( "option", "active", 0);
           l_widget._update( pNotifications );
       });
 }; // Xplug.prototype.addPowerbox

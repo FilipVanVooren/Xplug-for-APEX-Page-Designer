@@ -35,6 +35,10 @@
                              , "BTN-IMPORT"          : "Import"
                              , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
 
+                             , "TAB-PB-ERRORS"       : "Errors"
+                             , "TAB-PB-ADVISOR"      : "Advisor"
+                             , "TAB-PB-CONSOLE"      : "Console"
+
                              , "LBL-STYLE-GALLERY"   : "Page Designer Styles Gallery"
                              , "LBL-STYLE-CUSTOM"    : "Customize Page Designer Style"
                              , "LBL-STYLE-EXPORT"    : "Export Page Designer Style"
@@ -53,8 +57,8 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
-                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor pane"
-                             , "LBL-REMOVE-POWERBOX" : "Hide Error/Advisor pane"
+                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor/Console"
+                             , "LBL-REMOVE-POWERBOX" : "Hide Errors/Advisor/Console"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -100,8 +104,8 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
-                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor Konsole"
-                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor Konsole"
+                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor/Konsole"
+                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor/Konsole"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"
@@ -113,6 +117,10 @@
                              , "BTN-EXPORT"          : "Exportieren"
                              , "BTN-IMPORT"          : "Importieren"
                              , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
+
+                             , "TAB-PB-ERRORS"       : "Fehler"
+                             , "TAB-PB-ADVISOR"      : "Berater"
+                             , "TAB-PB-CONSOLE"      : "Konsole"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."

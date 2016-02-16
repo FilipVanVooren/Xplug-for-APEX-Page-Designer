@@ -141,11 +141,17 @@
 // V1.2.2 2016-02-14 * Multiple changes
 //                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
 //                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
-//                                get tracked  as soon as the powerbox is opened.
+//                                get tracked as soon as the powerbox is opened.
 //
+// V1.2.2 2016-02-17 * Multiple changes
+//                     - Bug-fix: djusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
+//                                We only want the Xplug plugin to be activated when dealing with
+//                                page 4500 (Page Designer)
+//                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
+//                                ordering. Is now resolved.
+//                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
 //
 // REMARKS
-//
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
 //

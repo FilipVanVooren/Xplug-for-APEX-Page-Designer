@@ -213,10 +213,7 @@ var Xplug = function() {
                        {
                           return xplug.removePowerbox();
                        }
-          },
-
-
-
+          }
 
         ]
        );
