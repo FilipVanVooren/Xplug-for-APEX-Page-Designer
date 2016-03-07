@@ -151,6 +151,10 @@
 //                                ordering. Is now resolved.
 //                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
 //
+// V1.2.2 2016-03-07 * Multiple Changes
+//                     - Removed Advisor/Console tabs in powerbox pane for now
+//                     - Added possibility to horizontally expand/restore size of powerbox pane
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

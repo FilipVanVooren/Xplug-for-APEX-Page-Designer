@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Feb 16 2016 21:40:51
+// Built using Gulp. Built date: Mon Mar 07 2016 21:48:16
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -152,6 +152,10 @@
 //                                ordering. Is now resolved.
 //                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
 //
+// V1.2.2 2016-03-07 * Multiple Changes
+//                     - Removed Advisor/Console tabs in powerbox pane for now
+//                     - Added possibility to horizontally expand/restore size of powerbox pane
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -217,8 +221,8 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
-                             , "LBL-ADD-POWERBOX"    : "Show Errors/Advisor/Console"
-                             , "LBL-REMOVE-POWERBOX" : "Hide Errors/Advisor/Console"
+                             , "LBL-ADD-POWERBOX"    : "Show Errors pane"
+                             , "LBL-REMOVE-POWERBOX" : "Close Errors pane"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -264,8 +268,8 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
-                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler/Advisor/Konsole"
-                             , "LBL-REMOVE-POWERBOX" : "Verbirge Fehler/Advisor/Konsole"
+                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler-Reiter "
+                             , "LBL-REMOVE-POWERBOX" : "Schliesse Fehler-Reiter"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"
@@ -338,6 +342,15 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
                + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
                + ' 248q9 12 4 29z"/></svg>';
+
+
+   C_icon.arrows_h
+               = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path d="M1792 896q0 26-19 45l-256 256q-19'
+               + ' 19-45 19t-45-19-19-45v-128h-1024v128q0 26-19'
+               + ' 45t-45 19-45-19l-256-256q-19-19-19-45t19-45l256-256q19-19 45-19t45 19 19'
+               + ' 45v128h1024v-128q0-26 19-45t45-19 45 19l256 256q19 19 19 45z"/></svg>';
+
 
    l_svg = C_icon[p_icon] || '';
    l_svg = l_svg.replace('%%',p_width);
@@ -2238,11 +2251,12 @@ var Xplug = function() {
         // Add custom CSS to page header
         $('head').append(
             + l_lf + '<style type="text/css">'
-            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #FFFFFF!important; }'
-            + l_lf + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
-            + l_lf + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
-            + l_lf + '  .a-Icon.icon-xplug-moon ' + get_svg_icon('moon',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-sun  ' + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  button#ORATRONIK_XPLUG:hover            { background-color: #FFFFFF!important; }'
+            + l_lf + '  .a-Icon.icon-xplug-previous::before     { content: "\\e029" }'
+            + l_lf + '  .a-Icon.icon-xplug-next::before         { content: "\\e028" }'
+            + l_lf + '  .a-Icon.icon-xplug-arrows-h ' + get_svg_icon('arrows_h',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-moon '     + get_svg_icon('moon',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-sun  '     + get_svg_icon('sun',14,14,null,1)
             + l_lf + '</style>'
         );
       }
@@ -2667,10 +2681,13 @@ Xplug.prototype.install_menu = function() {
 ***************************************************************************/
 Xplug.prototype.addPowerbox = function()
 {
+    'use strict';
+
+    var l_factor = 0.65;                                                            // Scaling factor
+
     function xplug_pb_resize_handler() {
-       var C_factor   = 0.70;                                                       // Todo: 0.3 is also a good value
        var l_maxwidth = $('#glv-viewport').width();
-       var l_width    = l_maxwidth * C_factor;
+       var l_width    = l_maxwidth * l_factor;
        var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
 
        $('#gallery-tabs')
@@ -2714,24 +2731,48 @@ Xplug.prototype.addPowerbox = function()
             });
     } // xplug_pb_resize_handler
 
-  'use strict';
+
 
   // Add (simulated) vertical splitter bar and powerbox DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
+       +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
-       +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
-       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
+//     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
+//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +     '</ul>'
+       +   '<div class="a-Toolbar-items a-Toolbar-items--right"> '
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;"></span>'
        +   '</div>'
+       +   '</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
-       +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
-       +   '<div ID="xplug_pb_console">My console</div>'
+//     +   '<div ID="xplug_pb_advisor">This is the Advisor pane. No functionality yet</div>'
+//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        + '</div>'
+  );
+
+  // Add pane resize button
+  $('div#xplug_pb_resize')
+            .html( '<button'
+                   + ' type="button"'
+                   + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart">'
+                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                   + '</button>'
+                 )
+            .css('width','48px');
+
+
+  // Add button handler for resizing pane
+  $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
+         function()
+          {
+            l_factor = l_factor == 0.65 ? 0.3 : 0.65;
+            xplug_pb_resize_handler();
+          }
   );
 
 

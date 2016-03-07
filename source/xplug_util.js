@@ -36,6 +36,15 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
                + ' 248q9 12 4 29z"/></svg>';
 
+
+   C_icon.arrows_h
+               = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path d="M1792 896q0 26-19 45l-256 256q-19'
+               + ' 19-45 19t-45-19-19-45v-128h-1024v128q0 26-19'
+               + ' 45t-45 19-45-19l-256-256q-19-19-19-45t19-45l256-256q19-19 45-19t45 19 19'
+               + ' 45v128h1024v-128q0-26 19-45t45-19 45 19l256 256q19 19 19 45z"/></svg>';
+
+
    l_svg = C_icon[p_icon] || '';
    l_svg = l_svg.replace('%%',p_width);
    l_svg = l_svg.replace('%%',p_height);

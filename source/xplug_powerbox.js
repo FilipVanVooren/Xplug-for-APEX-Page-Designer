@@ -15,10 +15,13 @@
 ***************************************************************************/
 Xplug.prototype.addPowerbox = function()
 {
+    'use strict';
+
+    var l_factor = 0.65;                                                            // Scaling factor
+
     function xplug_pb_resize_handler() {
-       var C_factor   = 0.70;                                                       // Todo: 0.3 is also a good value
        var l_maxwidth = $('#glv-viewport').width();
-       var l_width    = l_maxwidth * C_factor;
+       var l_width    = l_maxwidth * l_factor;
        var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
 
        $('#gallery-tabs')
@@ -62,24 +65,48 @@ Xplug.prototype.addPowerbox = function()
             });
     } // xplug_pb_resize_handler
 
-  'use strict';
+
 
   // Add (simulated) vertical splitter bar and powerbox DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
+       +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
-       +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
-       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
+//     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
+//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +     '</ul>'
+       +   '<div class="a-Toolbar-items a-Toolbar-items--right"> '
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;"></span>'
        +   '</div>'
+       +   '</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
-       +   '<div ID="xplug_pb_advisor">HALLOLE</div>'
-       +   '<div ID="xplug_pb_console">My console</div>'
+//     +   '<div ID="xplug_pb_advisor">This is the Advisor pane. No functionality yet</div>'
+//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        + '</div>'
+  );
+
+  // Add pane resize button
+  $('div#xplug_pb_resize')
+            .html( '<button'
+                   + ' type="button"'
+                   + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart">'
+                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                   + '</button>'
+                 )
+            .css('width','48px');
+
+
+  // Add button handler for resizing pane
+  $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
+         function()
+          {
+            l_factor = l_factor == 0.65 ? 0.3 : 0.65;
+            xplug_pb_resize_handler();
+          }
   );
 
 

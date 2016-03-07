@@ -230,11 +230,12 @@ var Xplug = function() {
         // Add custom CSS to page header
         $('head').append(
             + l_lf + '<style type="text/css">'
-            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #FFFFFF!important; }'
-            + l_lf + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
-            + l_lf + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
-            + l_lf + '  .a-Icon.icon-xplug-moon ' + get_svg_icon('moon',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-sun  ' + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  button#ORATRONIK_XPLUG:hover            { background-color: #FFFFFF!important; }'
+            + l_lf + '  .a-Icon.icon-xplug-previous::before     { content: "\\e029" }'
+            + l_lf + '  .a-Icon.icon-xplug-next::before         { content: "\\e028" }'
+            + l_lf + '  .a-Icon.icon-xplug-arrows-h ' + get_svg_icon('arrows_h',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-moon '     + get_svg_icon('moon',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-sun  '     + get_svg_icon('sun',14,14,null,1)
             + l_lf + '</style>'
         );
       }
