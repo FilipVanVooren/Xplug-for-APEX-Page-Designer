@@ -155,6 +155,11 @@
 //                     - Removed Advisor/Console tabs in powerbox pane for now
 //                     - Added possibility to horizontally expand/restore size of powerbox pane
 //
+// V1.2.2 2016-04-10 * Some minor Changes
+//                     - Introduced new button for swapping grid pane from middle<->right
+//                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
+//
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

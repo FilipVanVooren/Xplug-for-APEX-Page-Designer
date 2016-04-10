@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Mar 07 2016 21:48:16
+// Built using Gulp. Built date: Sun Apr 10 2016 21:18:53
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -156,6 +156,11 @@
 //                     - Removed Advisor/Console tabs in powerbox pane for now
 //                     - Added possibility to horizontally expand/restore size of powerbox pane
 //
+// V1.2.2 2016-04-10 * Some minor Changes
+//                     - Introduced new button for swapping grid pane from middle<->right
+//                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
+//
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -198,6 +203,7 @@
                              , "BTN-EXPORT"          : "Export"
                              , "BTN-IMPORT"          : "Import"
                              , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
+                             , "BTN-SWAP-GRID-PANE"  : "Swap grid pane"
 
                              , "TAB-PB-ERRORS"       : "Errors"
                              , "TAB-PB-ADVISOR"      : "Advisor"
@@ -222,7 +228,7 @@
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
                              , "LBL-ADD-POWERBOX"    : "Show Errors pane"
-                             , "LBL-REMOVE-POWERBOX" : "Close Errors pane"
+                             , "LBL-CLOSE"           : "Close"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -269,7 +275,7 @@
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
                              , "LBL-ADD-POWERBOX"    : "Zeige Fehler-Reiter "
-                             , "LBL-REMOVE-POWERBOX" : "Schliesse Fehler-Reiter"
+                             , "LBL-CLOSE"           : "Schliessen"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"
@@ -281,6 +287,7 @@
                              , "BTN-EXPORT"          : "Exportieren"
                              , "BTN-IMPORT"          : "Importieren"
                              , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
+                             , "BTN-SWAP-GRID-PANE"  : "Ansicht umschalten"
 
                              , "TAB-PB-ERRORS"       : "Fehler"
                              , "TAB-PB-ADVISOR"      : "Berater"
@@ -343,14 +350,37 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
                + ' 248q9 12 4 29z"/></svg>';
 
-
    C_icon.arrows_h
-               = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
-               + ' xmlns="http://www.w3.org/2000/svg"><path d="M1792 896q0 26-19 45l-256 256q-19'
-               + ' 19-45 19t-45-19-19-45v-128h-1024v128q0 26-19'
-               + ' 45t-45 19-45-19l-256-256q-19-19-19-45t19-45l256-256q19-19 45-19t45 19 19'
-               + ' 45v128h1024v-128q0-26 19-45t45-19 45 19l256 256q19 19 19 45z"/></svg>';
+               = '<svg version="1.1" viewBox="0 0 477.427 477.427" style="enable-background:new 0 0 477.427 477.427;"'
+               + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"'
+               + ' xml:space="preserve">'
+               + '<g>'
+               + '<polygon points="101.82,187.52 57.673,143.372 476.213,143.372 476.213,113.372 57.181,113.372 101.82,68.733 80.607,47.519 '
+               + '0,128.126 80.607,208.733 	"/>'
+               + '<polygon points="396.82,268.694 375.607,289.907 420,334.301 1.213,334.301 1.213,364.301 420,364.301 375.607,408.694 '
+               + ' 396.82,429.907 477.427,349.301 	"/>'
+               + '</g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>'
+               + '</svg>';
 
+
+   C_icon.arrow_left
+               = '<svg width="%%" height="%%" viewBox="0 0 792 792"'
+               + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"'
+               + ' style="enable-background:new 0 0 792 792;" xml:space="preserve"><rect id="backgroundrect" width="100%" height="100%" x="0" y="0" fill="none" stroke="none"/>'
+               + '<g class="currentLayer">'
+               + '<g id="svg_1" class="" transform="rotate(90,396,396) ">'
+               + '<g id="svg_2">'
+               + ' <path d="M371.671,649.763c6.019,6.849,14.499,11.316,24.29,11.316c0.081,0,0.188-0.08,0.294-0.08c0.08,0,0.187,0.08,0.294,0.08 '
+               + '   c8.373,0,16.746-3.184,23.14-9.577l270.537-270.563c12.787-12.76,12.787-33.493,0-46.253c-12.787-12.787-33.467-12.787-46.254,0 '
+               + '   L428.679,550.008V32.69c0-18.083-14.634-32.69-32.717-32.69c-18.084,0-32.717,14.606-32.717,32.69v516.408L147.977,334.686 '
+               + '   c-12.814-12.787-33.52-12.573-46.28,0.134c-12.76,12.787-12.68,33.466,0.107,46.253L371.671,649.763z" id="svg_3"/>'
+               + ' <path d="M667.086,726.593H124.89c-18.084,0-32.717,14.553-32.717,32.69c0,18.004,14.633,32.717,32.717,32.717h542.223 '
+               + '   c18.084,0,32.717-14.713,32.717-32.717C699.803,741.146,685.17,726.593,667.086,726.593z" id="svg_4"/>'
+               + '</g></g></g>'
+               + '</svg>';
+
+   C_icon.arrow_right = C_icon.arrow_left;
+   C_icon.arrow_right = C_icon.arrow_right.replace('rotate(90','rotate(270');
 
    l_svg = C_icon[p_icon] || '';
    l_svg = l_svg.replace('%%',p_width);
@@ -379,11 +409,12 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
  ***************************************************************************/
  window.pageDesigner.setWinTitle = function()
   {
+    console.log("got here.....");
     var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
     var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
     var l_title   = $(document).attr('title');
 
-    l_title  = l_title.replace(/\s\[.*$/,'');
+    l_title  = l_title.replace(/\s\[.*$/,'');                                   // Remnove old [xxx:xxx] value
 
     if ((typeof(l_appid) == 'string') && (typeof(l_page_id) == 'string')) {
       l_title += ' [' + l_appid + ':' + l_page_id + ']';
@@ -2160,6 +2191,20 @@ var Xplug = function() {
           },
 
           {
+            name     : "pd-xplug-swap-grid-pane",
+            label    : get_label('BTN-SWAP-GRID-PANE'),
+            action   : function( event, focusElement )
+                       {
+                         var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
+                         if (l_switched == 'NO') {
+                            return window.pageDesigner.dockGridRight();
+                         } else {
+                            return window.pageDesigner.dockGridMiddle();
+                         }
+                       }
+          },
+
+          {
             name     : "pd-xplug-disable-tooltips",
             label    : get_label('NOTOOLTIPS'),
             shortcut : "????",
@@ -2254,9 +2299,11 @@ var Xplug = function() {
             + l_lf + '  button#ORATRONIK_XPLUG:hover            { background-color: #FFFFFF!important; }'
             + l_lf + '  .a-Icon.icon-xplug-previous::before     { content: "\\e029" }'
             + l_lf + '  .a-Icon.icon-xplug-next::before         { content: "\\e028" }'
-            + l_lf + '  .a-Icon.icon-xplug-arrows-h ' + get_svg_icon('arrows_h',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-moon '     + get_svg_icon('moon',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-sun  '     + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-arrows-h '    + get_svg_icon('arrows_h',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-arrow-left '  + get_svg_icon('arrow_left',14,14,null,1)            
+            + l_lf + '  .a-Icon.icon-xplug-arrow-right ' + get_svg_icon('arrow_right',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-moon '        + get_svg_icon('moon',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-sun  '        + get_svg_icon('sun',14,14,null,1)
             + l_lf + '</style>'
         );
       }
@@ -2298,6 +2345,18 @@ var Xplug = function() {
                        + l_menu_icon
                        + '</button>');
 
+
+        // Inject swap grid pane button
+        $('button#glvExpandRestoreBtn')
+                 .after( '<button'
+                       + ' type="button"'
+                       + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
+                       + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                       + ' data-action="pd-xplug-swap-grid-pane">'
+                       + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                       + '</button>'
+                 );
+
         __install_goto_page();
         __install_moonsun_switch();
         __install_actions();
@@ -2312,7 +2371,6 @@ var Xplug = function() {
         $(document).on('modelReady', pageDesigner.setWinTitle);
 
         pageDesigner.setWinTitle();
-
 
    } // __init
 
@@ -2675,6 +2733,40 @@ Xplug.prototype.install_menu = function() {
 /* jshint -W030 */
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Initialisation code
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$('#ORATRONIK_XPLUG_POWERBOX_MENU').remove();
+
+var l_menu$ = $("<div id='ORATRONIK_XPLUG_POWERBOX_MENU'></div>");
+$("body").append(l_menu$);
+
+l_menu$.menu(
+{
+  items : [
+    {
+      type     : "toggle",
+      label    : get_label('LBL-CLOSE'),
+      get      : function()
+                 {
+                    return 0;
+                 },
+      set      : function()
+                 {
+                    apex.actions.invoke('pd-xplug-remove-powerbox');
+                 },
+      disabled : function()
+                 {
+                   return false;
+                 }
+    }
+  ]
+});
+
+
+
 /***************************************************************************
 * Add custom method to Xplug
 * METHOD: addPowerbox
@@ -2740,17 +2832,17 @@ Xplug.prototype.addPowerbox = function()
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
+       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
 //     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
-//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +     '</ul>'
-       +   '<div class="a-Toolbar-items a-Toolbar-items--right"> '
-       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;"></span>'
+       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
+       +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
+       +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
 //     +   '<div ID="xplug_pb_advisor">This is the Advisor pane. No functionality yet</div>'
-//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        + '</div>'
   );
 
@@ -2759,8 +2851,8 @@ Xplug.prototype.addPowerbox = function()
             .html( '<button'
                    + ' type="button"'
                    + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
-                   + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart">'
-                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon">'
+                   + ' <span class="a-Icon icon-xplug-arrow-left" aria-hidden="true"></span>'
                    + '</button>'
                  )
             .css('width','48px');
@@ -2770,10 +2862,29 @@ Xplug.prototype.addPowerbox = function()
   $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
          function()
           {
-            l_factor = l_factor == 0.65 ? 0.3 : 0.65;
+            if (l_factor == 0.65) {
+               l_factor = 0.3;
+               $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-left','icon-xplug-arrow-right');
+            } else{
+               l_factor = 0.65;
+               $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-right','icon-xplug-arrow-left');
+            }
             xplug_pb_resize_handler();
           }
   );
+
+  // Add hamburger menu
+  $('div#xplug_pb_right')
+            .append( '<button'
+                   + ' type="button"'
+                   + ' ID="ORATRONIK_XPLUG_powercontrol_button2"'
+                   + ' data-menu="ORATRONIK_XPLUG_POWERBOX_MENU"'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon js-menuButton">'
+                   + ' <span class="a-Icon icon-menu" aria-hidden="true"></span>'
+                   + ' <span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>'
+                   + '</button>'
+                 )
+            .css('width','48px');
 
 
   // Create new tabs
@@ -2850,7 +2961,7 @@ Xplug.prototype.addPowerbox = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 0);
+          $('div#xplug_pb_container').tabs( "option", "active", 1);
           l_widget._update( pNotifications );
       });
 }; // Xplug.prototype.addPowerbox

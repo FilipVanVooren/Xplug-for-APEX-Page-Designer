@@ -9,6 +9,40 @@
 /* jshint -W030 */
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Initialisation code
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$('#ORATRONIK_XPLUG_POWERBOX_MENU').remove();
+
+var l_menu$ = $("<div id='ORATRONIK_XPLUG_POWERBOX_MENU'></div>");
+$("body").append(l_menu$);
+
+l_menu$.menu(
+{
+  items : [
+    {
+      type     : "toggle",
+      label    : get_label('LBL-CLOSE'),
+      get      : function()
+                 {
+                    return 0;
+                 },
+      set      : function()
+                 {
+                    apex.actions.invoke('pd-xplug-remove-powerbox');
+                 },
+      disabled : function()
+                 {
+                   return false;
+                 }
+    }
+  ]
+});
+
+
+
 /***************************************************************************
 * Add custom method to Xplug
 * METHOD: addPowerbox
@@ -74,17 +108,17 @@ Xplug.prototype.addPowerbox = function()
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
+       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
 //     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
-//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +     '</ul>'
-       +   '<div class="a-Toolbar-items a-Toolbar-items--right"> '
-       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;"></span>'
+       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
+       +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
+       +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
 //     +   '<div ID="xplug_pb_advisor">This is the Advisor pane. No functionality yet</div>'
-//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        + '</div>'
   );
 
@@ -93,8 +127,8 @@ Xplug.prototype.addPowerbox = function()
             .html( '<button'
                    + ' type="button"'
                    + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
-                   + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart">'
-                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon">'
+                   + ' <span class="a-Icon icon-xplug-arrow-left" aria-hidden="true"></span>'
                    + '</button>'
                  )
             .css('width','48px');
@@ -104,10 +138,29 @@ Xplug.prototype.addPowerbox = function()
   $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
          function()
           {
-            l_factor = l_factor == 0.65 ? 0.3 : 0.65;
+            if (l_factor == 0.65) {
+               l_factor = 0.3;
+               $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-left','icon-xplug-arrow-right');
+            } else{
+               l_factor = 0.65;
+               $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-right','icon-xplug-arrow-left');
+            }
             xplug_pb_resize_handler();
           }
   );
+
+  // Add hamburger menu
+  $('div#xplug_pb_right')
+            .append( '<button'
+                   + ' type="button"'
+                   + ' ID="ORATRONIK_XPLUG_powercontrol_button2"'
+                   + ' data-menu="ORATRONIK_XPLUG_POWERBOX_MENU"'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon js-menuButton">'
+                   + ' <span class="a-Icon icon-menu" aria-hidden="true"></span>'
+                   + ' <span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>'
+                   + '</button>'
+                 )
+            .css('width','48px');
 
 
   // Create new tabs
@@ -184,7 +237,7 @@ Xplug.prototype.addPowerbox = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 0);
+          $('div#xplug_pb_container').tabs( "option", "active", 1);
           l_widget._update( pNotifications );
       });
 }; // Xplug.prototype.addPowerbox

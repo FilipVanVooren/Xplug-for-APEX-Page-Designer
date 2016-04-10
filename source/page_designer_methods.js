@@ -15,11 +15,12 @@
  ***************************************************************************/
  window.pageDesigner.setWinTitle = function()
   {
+    console.log("got here.....");
     var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
     var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
     var l_title   = $(document).attr('title');
 
-    l_title  = l_title.replace(/\s\[.*$/,'');
+    l_title  = l_title.replace(/\s\[.*$/,'');                                   // Remnove old [xxx:xxx] value
 
     if ((typeof(l_appid) == 'string') && (typeof(l_page_id) == 'string')) {
       l_title += ' [' + l_appid + ':' + l_page_id + ']';

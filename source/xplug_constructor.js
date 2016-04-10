@@ -139,6 +139,20 @@ var Xplug = function() {
           },
 
           {
+            name     : "pd-xplug-swap-grid-pane",
+            label    : get_label('BTN-SWAP-GRID-PANE'),
+            action   : function( event, focusElement )
+                       {
+                         var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
+                         if (l_switched == 'NO') {
+                            return window.pageDesigner.dockGridRight();
+                         } else {
+                            return window.pageDesigner.dockGridMiddle();
+                         }
+                       }
+          },
+
+          {
             name     : "pd-xplug-disable-tooltips",
             label    : get_label('NOTOOLTIPS'),
             shortcut : "????",
@@ -233,9 +247,11 @@ var Xplug = function() {
             + l_lf + '  button#ORATRONIK_XPLUG:hover            { background-color: #FFFFFF!important; }'
             + l_lf + '  .a-Icon.icon-xplug-previous::before     { content: "\\e029" }'
             + l_lf + '  .a-Icon.icon-xplug-next::before         { content: "\\e028" }'
-            + l_lf + '  .a-Icon.icon-xplug-arrows-h ' + get_svg_icon('arrows_h',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-moon '     + get_svg_icon('moon',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-sun  '     + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-arrows-h '    + get_svg_icon('arrows_h',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-arrow-left '  + get_svg_icon('arrow_left',14,14,null,1)            
+            + l_lf + '  .a-Icon.icon-xplug-arrow-right ' + get_svg_icon('arrow_right',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-moon '        + get_svg_icon('moon',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-sun  '        + get_svg_icon('sun',14,14,null,1)
             + l_lf + '</style>'
         );
       }
@@ -277,6 +293,18 @@ var Xplug = function() {
                        + l_menu_icon
                        + '</button>');
 
+
+        // Inject swap grid pane button
+        $('button#glvExpandRestoreBtn')
+                 .after( '<button'
+                       + ' type="button"'
+                       + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
+                       + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                       + ' data-action="pd-xplug-swap-grid-pane">'
+                       + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                       + '</button>'
+                 );
+
         __install_goto_page();
         __install_moonsun_switch();
         __install_actions();
@@ -291,7 +319,6 @@ var Xplug = function() {
         $(document).on('modelReady', pageDesigner.setWinTitle);
 
         pageDesigner.setWinTitle();
-
 
    } // __init
 

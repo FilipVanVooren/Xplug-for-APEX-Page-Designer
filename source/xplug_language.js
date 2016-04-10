@@ -34,6 +34,7 @@
                              , "BTN-EXPORT"          : "Export"
                              , "BTN-IMPORT"          : "Import"
                              , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
+                             , "BTN-SWAP-GRID-PANE"  : "Swap grid pane"
 
                              , "TAB-PB-ERRORS"       : "Errors"
                              , "TAB-PB-ADVISOR"      : "Advisor"
@@ -58,7 +59,7 @@
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
                              , "LBL-ADD-POWERBOX"    : "Show Errors pane"
-                             , "LBL-REMOVE-POWERBOX" : "Close Errors pane"
+                             , "LBL-CLOSE"           : "Close"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -105,7 +106,7 @@
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
                              , "LBL-ADD-POWERBOX"    : "Zeige Fehler-Reiter "
-                             , "LBL-REMOVE-POWERBOX" : "Schliesse Fehler-Reiter"
+                             , "LBL-CLOSE"           : "Schliessen"
 
                              , "BTN-NEW"             : "Neu"
                              , "BTN-SAVE"            : "Speichern"
@@ -117,6 +118,7 @@
                              , "BTN-EXPORT"          : "Exportieren"
                              , "BTN-IMPORT"          : "Importieren"
                              , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
+                             , "BTN-SWAP-GRID-PANE"  : "Ansicht umschalten"
 
                              , "TAB-PB-ERRORS"       : "Fehler"
                              , "TAB-PB-ADVISOR"      : "Berater"
