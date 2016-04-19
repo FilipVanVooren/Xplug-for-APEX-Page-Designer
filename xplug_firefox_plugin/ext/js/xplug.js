@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Apr 10 2016 21:18:53
+// Built using Gulp. Built date: Tue Apr 19 2016 21:50:33
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -160,6 +160,11 @@
 //                     - Introduced new button for swapping grid pane from middle<->right
 //                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
 //
+// V1.2.2 2016-04-19 * Bug-Fixes
+//                     - Fixed wrong background color for buttons in powerbox, was particulary noticeable in
+//                       Moonlight mode.
+//                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
+//                       gets too small.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -227,7 +232,7 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
-                             , "LBL-ADD-POWERBOX"    : "Show Errors pane"
+                             , "LBL-ADD-POWERBOX"    : "Show powerbox pane"
                              , "LBL-CLOSE"           : "Close"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
@@ -274,7 +279,7 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
-                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler-Reiter "
+                             , "LBL-ADD-POWERBOX"    : "Zeige Bereich"
                              , "LBL-CLOSE"           : "Schliessen"
 
                              , "BTN-NEW"             : "Neu"
@@ -330,6 +335,8 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    p_height = p_height || 16;
    p_color  = p_color  || '#000000';
 
+
+   // Moon
    C_icon.moon =   '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
                + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
                + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
@@ -339,6 +346,7 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
                + ' 17.5 34t-4.5 38z"/></svg>';
 
+   // Sun
    C_icon.sun  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
                + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
                + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
@@ -350,6 +358,7 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
                + ' 248q9 12 4 29z"/></svg>';
 
+   // Horizontal arrows
    C_icon.arrows_h
                = '<svg version="1.1" viewBox="0 0 477.427 477.427" style="enable-background:new 0 0 477.427 477.427;"'
                + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"'
@@ -363,6 +372,7 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + '</svg>';
 
 
+   // Arrow left
    C_icon.arrow_left
                = '<svg width="%%" height="%%" viewBox="0 0 792 792"'
                + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"'
@@ -379,9 +389,14 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + '</g></g></g>'
                + '</svg>';
 
+
+
+   // Arrow right
    C_icon.arrow_right = C_icon.arrow_left;
    C_icon.arrow_right = C_icon.arrow_right.replace('rotate(90','rotate(270');
 
+
+   // Determine width, height & color
    l_svg = C_icon[p_icon] || '';
    l_svg = l_svg.replace('%%',p_width);
    l_svg = l_svg.replace('%%',p_height);
@@ -725,10 +740,10 @@ window.pageDesigner.DaylightMode = function() {
  ***************************************************************************/
 window.pageDesigner.MoonlightMode = function() {
 
-   var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
-   window.pageDesigner.loadStyle(l_style);
+  var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
+  window.pageDesigner.loadStyle(l_style);
 
-   $('#ORATRONIK_XPLUG_moonsun_button span')
+  $('#ORATRONIK_XPLUG_moonsun_button span')
         .removeClass('icon-xplug-sun')
         .addClass('icon-xplug-moon');
 };
@@ -1019,9 +1034,8 @@ window.pageDesigner.setStyle = function( p_style_name,
     //==========================================================================
     // Xplug powerbox
     //==========================================================================
-    l_css += ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_advisor { background-color : ' + l_c2 + '; }' // Powerbox background
-          + l_lf;
-
+    l_css +=        ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_advisor { background-color : ' + l_c2 + '; }' // Powerbox background
+          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';                      // Buttons backlground
 
     //==========================================================================
     // Messages, Page Search, Help, Alert Badge
@@ -2832,7 +2846,7 @@ Xplug.prototype.addPowerbox = function()
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
-       +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
+//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE') + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-ERRORS')  + '</a></li>'
 //     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR') + '</a></li>'
        +     '</ul>'
@@ -2840,9 +2854,9 @@ Xplug.prototype.addPowerbox = function()
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-       +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
+//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
-//     +   '<div ID="xplug_pb_advisor">This is the Advisor pane. No functionality yet</div>'
+//     +   '<div ID="xplug_pb_advisor">This is the Advisor pane.</div>'
        + '</div>'
   );
 
@@ -2851,7 +2865,7 @@ Xplug.prototype.addPowerbox = function()
             .html( '<button'
                    + ' type="button"'
                    + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
-                   + ' class="a-Button a-Button--noLabel a-Button--withIcon">'
+                   + ' class="a-Button a-Button--noLabel a-Button--iconTextButton">'
                    + ' <span class="a-Icon icon-xplug-arrow-left" aria-hidden="true"></span>'
                    + '</button>'
                  )
@@ -2863,7 +2877,7 @@ Xplug.prototype.addPowerbox = function()
          function()
           {
             if (l_factor == 0.65) {
-               l_factor = 0.3;
+               l_factor = 0.45;
                $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-left','icon-xplug-arrow-right');
             } else{
                l_factor = 0.65;

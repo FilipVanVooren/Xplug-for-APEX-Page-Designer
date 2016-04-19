@@ -159,6 +159,11 @@
 //                     - Introduced new button for swapping grid pane from middle<->right
 //                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
 //
+// V1.2.2 2016-04-19 * Bug-Fixes
+//                     - Fixed wrong background color for buttons in powerbox, was particulary noticeable in
+//                       Moonlight mode.
+//                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
+//                       gets too small.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

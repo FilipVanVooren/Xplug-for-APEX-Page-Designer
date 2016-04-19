@@ -189,9 +189,8 @@ window.pageDesigner.setStyle = function( p_style_name,
     //==========================================================================
     // Xplug powerbox
     //==========================================================================
-    l_css += ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_advisor { background-color : ' + l_c2 + '; }' // Powerbox background
-          + l_lf;
-
+    l_css +=        ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_advisor { background-color : ' + l_c2 + '; }' // Powerbox background
+          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';                      // Buttons backlground
 
     //==========================================================================
     // Messages, Page Search, Help, Alert Badge

@@ -58,7 +58,7 @@
                              , "LBL-DAYLIGHT"        : "Daylight"
                              , "LBL-MOONLIGHT"       : "Moonlight"
                              , "LBL-DEFAULT-STYLES"  : "Default Styles"
-                             , "LBL-ADD-POWERBOX"    : "Show Errors pane"
+                             , "LBL-ADD-POWERBOX"    : "Show powerbox pane"
                              , "LBL-CLOSE"           : "Close"
 
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
@@ -105,7 +105,7 @@
                              , "LBL-DAYLIGHT"        : "Tageslicht"
                              , "LBL-MOONLIGHT"       : "Mondlicht"
                              , "LBL-DEFAULT-STYLES"  : "Standard Stil"
-                             , "LBL-ADD-POWERBOX"    : "Zeige Fehler-Reiter "
+                             , "LBL-ADD-POWERBOX"    : "Zeige Bereich"
                              , "LBL-CLOSE"           : "Schliessen"
 
                              , "BTN-NEW"             : "Neu"
