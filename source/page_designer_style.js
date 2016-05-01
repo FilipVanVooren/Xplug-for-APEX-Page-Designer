@@ -1180,6 +1180,16 @@ window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
                                  }   // data
                                });   // propertyEditor
 
+
+                               $('div#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG div.a-Property-labelContainer label')
+                                      .first()
+                                      .append('&nbsp; &nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+
+                               $('div#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG div.a-Property-labelContainer label')
+                                      .last()
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
+
+
                                $( '#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG' ).dialog({
                                    position: { 'my': 'center', 'at': 'center' }
                                });

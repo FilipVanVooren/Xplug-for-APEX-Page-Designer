@@ -165,6 +165,11 @@
 //                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
 //                       gets too small.
 //
+// V1.3.0 2016-05-02 * Preliminiary work on new version
+//                     - Reworked menu system (new labels, icons, ...)
+//                     - Show daylight/moonlight icons in Default style dialog
+//                     - Introduced new Xplug settings dialog
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

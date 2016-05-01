@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.2.2 (www.oratronik.de)';
+   var C_version = 'Xplug v1.3.0';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -248,7 +248,7 @@ var Xplug = function() {
             + l_lf + '  .a-Icon.icon-xplug-previous::before     { content: "\\e029" }'
             + l_lf + '  .a-Icon.icon-xplug-next::before         { content: "\\e028" }'
             + l_lf + '  .a-Icon.icon-xplug-arrows-h '    + get_svg_icon('arrows_h',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-arrow-left '  + get_svg_icon('arrow_left',14,14,null,1)            
+            + l_lf + '  .a-Icon.icon-xplug-arrow-left '  + get_svg_icon('arrow_left',14,14,null,1)
             + l_lf + '  .a-Icon.icon-xplug-arrow-right ' + get_svg_icon('arrow_right',14,14,null,1)
             + l_lf + '  .a-Icon.icon-xplug-moon '        + get_svg_icon('moon',14,14,null,1)
             + l_lf + '  .a-Icon.icon-xplug-sun  '        + get_svg_icon('sun',14,14,null,1)

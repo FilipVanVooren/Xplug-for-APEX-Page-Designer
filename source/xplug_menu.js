@@ -69,15 +69,30 @@ Xplug.prototype.install_menu = function() {
 
          {
             type  : "action",
-            label : get_label('SET_DEFAULTS'),
+            label : get_label('LBL-DEFAULT-STYLES'),
             get   : function()
                     {
                      return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
                     },
             action: function()
                     {
-                      window.pageDesigner.setDefaultStylesDialog(get_label('SET_DEFAULTS'));
+                      window.pageDesigner.setDefaultStylesDialog(get_label('LBL-STYLE'));
                     }
+         },
+
+         { type   : "separator" },
+
+         {
+           type     : "action",
+           label    : get_label('CUSTOMIZE'),
+           action   : function()
+                      {
+                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
+                      },
+           disabled : function()
+                      {
+                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
+                      }
          }
        );
 
@@ -85,6 +100,40 @@ Xplug.prototype.install_menu = function() {
     } // install_SubmenuPickStyles
 
 
+    function install_SubmenuDockGrid() {
+       var l_arr_menu_items = [];
+
+       l_arr_menu_items.push(
+         {
+            type  : "radioGroup",
+
+            get : function () {
+                    return $('div#top_col').prevAll('div#right_col').length == 1
+                              ? "RIGHT"
+                              : "MIDDLE";
+                  },
+
+            set : function(l_radio_value) {
+                      switch(l_radio_value) {
+                          case "LEFT"   : apex.actions.invoke('pd-xplug-dock-grid-left');
+                                          break;
+                          case "MIDDLE" : apex.actions.invoke('pd-xplug-dock-grid-middle');
+                                          break;
+                          case "RIGHT"  : apex.actions.invoke('pd-xplug-dock-grid-right');
+                                          break;
+                      }
+                   },
+
+            choices : [
+                {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
+                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
+                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
+            ]
+         }
+       );
+
+       return l_arr_menu_items;
+    } // install_SubmenuDockGrid
 
 
     // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
@@ -98,23 +147,17 @@ Xplug.prototype.install_menu = function() {
     {
       items : [
         {
-          type     : "toggle",
-          label    : get_label('DOCKRIGHT'),
-          get      : function()
-                     {
-                        return $('div#top_col').prevAll('div#right_col').length == 1;
+
+          type     : "subMenu",
+          label    : get_label('DOCK-GRID'),
+          icon     : "icon-region-native-sql-report",
+          menu     : { items : install_SubmenuDockGrid() },
+          disabled : function() {
+                        return false;
                      },
-          set      : function()
-                     {
-                        $('div#top_col').prevAll('div#right_col').length === 0
-                           ? apex.actions.invoke('pd-xplug-dock-grid-right')
-                           : apex.actions.invoke('pd-xplug-dock-grid-middle');
-                     },
-          disabled : function()
-                     {
-                       return false;
-                     }
         },
+
+        { type   : "separator" },
 
         {
           type     : "toggle",
@@ -179,7 +222,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type     : "subMenu",
-          label    : get_label('PICK_STYLE'),
+          label    : get_label('LBL-STYLE'),
           menu     : { items : __install_SubmenuPickStyles() },
           disabled : function()
                      {
@@ -191,23 +234,21 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "subMenu",
-          label   : get_label('SETUP'),
+          label   : get_label('CONFIGURE'),
+          icon    : "icon-tools",
           menu    : { items :
                       [
                          {
                            type     : "action",
-                           label    : get_label('LBL-STYLE-CUSTOM'),
-                           action   : function()
-                                      {
-                                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
-                                      },
+                           label    : get_label('LBL-XPLUG'),
+                           action   : xplug.configureDialog,
                            disabled : function()
                                       {
-                                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
+                                        return 0;
                                       }
                          }
                       ]
-                    }
+                    },
         },
 
         { type     : "separator"

@@ -15,7 +15,8 @@ gulp.task('Build Xplug', function() {
               'source/xplug_constructor.js',
               'source/xplug_storage.js',
               'source/xplug_menu.js',
-              'source/xplug_powerbox.js',              
+              'source/xplug_powerbox.js',
+              'source/xplug_configure.js',              
               'source/main.js'
             ])
          .pipe(jshint())
