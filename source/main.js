@@ -10,7 +10,15 @@
 
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();
-   
+
+   //__install_moonsun_switch();
+   //__install_goto_page();
+
+
+   $(document).on('modelReady', pageDesigner.setWinTitle);
+
+   pageDesigner.setWinTitle();
+
    xplug.install_menu();
    xplug.loadSettings();
 }

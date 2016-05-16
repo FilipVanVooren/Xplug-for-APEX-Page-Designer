@@ -240,7 +240,7 @@ Xplug.prototype.install_menu = function() {
                       [
                          {
                            type     : "action",
-                           label    : get_label('LBL-XPLUG'),
+                           label    : get_label('LBL-XPLUG-SETTINGS'),
                            action   : xplug.configureDialog,
                            disabled : function()
                                       {

@@ -56,10 +56,10 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[0] = {
                                    propertyName: "show_prevnext_buttons",
-                                   value:        "YES",
+                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','YES'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         'Show',
+                                       prompt:         '',
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -72,10 +72,10 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[1] = {
                                    propertyName: "show_moonlight_toggle",
-                                   value:        "YES",
+                                   value:        xplug.getStorage('BTN-THEME-SWITCH','YES'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         'Show',
+                                       prompt:         '',
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -88,10 +88,10 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[2] = {
                                    propertyName: "show_swap_gridpane",
-                                   value:        "YES",
+                                   value:        xplug.getStorage('BTN-SWAP-GRID-PANE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         'Show',
+                                       prompt:         '',
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -152,7 +152,7 @@ Xplug.prototype.configureDialog = function()
                                    propertySet: [
                                      {
                                        displayGroupId    : "buttons",
-                                       displayGroupTitle : get_label('LBL-BUTTONS'),
+                                       displayGroupTitle : get_label('LBL-SHOW-BUTTONS'),
                                        properties        : l_properties1
                                      },
                                      {
@@ -199,10 +199,17 @@ Xplug.prototype.configureDialog = function()
 
                               { text  : get_label('BTN-APPLY'),
                                 click : function() {
-                                  //
-                                  // Apply style but don't save
-                                  //
-                                  apply_style('DO_NOT_SAVE');
+
+                                  if ($('input[name=ConfigDlgPE_1_name]:checked').val() == 'YES')  { xplug.installGotoPage();   }
+                                                                                             else  { xplug.deinstallGotoPage(); }
+
+                                  if ($('input[name=ConfigDlgPE_2_name]:checked').val() == 'YES')  { xplug.installThemeSwitch();   }
+                                                                                             else  { xplug.deinstallThemeSwitch(); }
+
+                                  if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
+                                                                                             else  { xplug.deinstallSwapGrid(); }
+
+                                  $( this ).dialog( "close" );
                                 },
                                 disabled : false
                               }

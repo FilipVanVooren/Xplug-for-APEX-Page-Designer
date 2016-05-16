@@ -164,11 +164,17 @@
 //                       Moonlight mode.
 //                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
 //                       gets too small.
+//                     - This version is not officially released, functionality will be part of upcoming v1.3
 //
 // V1.3.0 2016-05-02 * Preliminiary work on new version
 //                     - Reworked menu system (new labels, icons, ...)
 //                     - Show daylight/moonlight icons in Default style dialog
 //                     - Introduced new Xplug settings dialog
+//
+// V1.3.0 2016-05-16 * Multiple changes
+//                     - Code refactoring in xplug_constructor.js
+//                       Is required due to new possibility of turning most features on/off.
+//                     - Possibility to toggle all Xplug buttons on/off from Xplug settings dialog
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
