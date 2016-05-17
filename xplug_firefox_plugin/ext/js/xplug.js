@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon May 16 2016 21:45:30
+// Built using Gulp. Built date: Tue May 17 2016 21:12:35
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -175,6 +175,11 @@
 // V1.3.0 2016-05-16 * Multiple changes
 //                     - Code refactoring in xplug_constructor.js
 //                       Is required due to new possibility of turning most features on/off.
+//                     - Possibility to toggle all Xplug buttons on/off from Xplug settings dialog
+//
+// V1.3.0 2016-05-16 * Change
+//                     Configure default Page Designer Styles as part of Xplug settings dialog, instead of
+//                     having own dialog. Removed corresponding submenu entry and refactored code.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -245,9 +250,9 @@
                              , "LBL-ADVANCED"        : "Advanced"
                              , "LBL-EXPERIMENTAL"    : "Experimental features"
                              , "LBL-SHOW-BUTTONS"    : "Show Buttons"
-                             , "LBL-DAYLIGHT"        : "Daylight"
-                             , "LBL-MOONLIGHT"       : "Moonlight"
-                             , "LBL-DEFAULT-STYLES"  : "Default Styles"
+                             , "LBL-DAYLIGHT"        : "Daylight mode"
+                             , "LBL-MOONLIGHT"       : "Moonlight mode"
+                             , "LBL-DEFAULT-STYLES"  : "Page Designer Styles"
                              , "LBL-ADD-POWERBOX"    : "Show powerbox pane"
                              , "LBL-CLOSE"           : "Close"
 
@@ -305,9 +310,9 @@
                              , "LBL-ADVANCED"        : "Fortgeschritten"
                              , "LBL-EXPERIMENTAL"    : "Experimentelle Optionen"
                              , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
-                             , "LBL-DAYLIGHT"        : "Tageslicht"
-                             , "LBL-MOONLIGHT"       : "Mondlicht"
-                             , "LBL-DEFAULT-STYLES"  : "Standard Stil"
+                             , "LBL-DAYLIGHT"        : "Tageslicht Modus"
+                             , "LBL-MOONLIGHT"       : "Mondlicht Modus"
+                             , "LBL-DEFAULT-STYLES"  : "Page Designer Stile"
                              , "LBL-ADD-POWERBOX"    : "Zeige Bereich"
                              , "LBL-CLOSE"           : "Schliessen"
                              , "BTN-NEW"             : "Neu"
@@ -1937,171 +1942,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
     return 1;
 };
 
-
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: setDefaultStylesDialog
- ***************************************************************************/
-window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
-{
-    'use strict';
-
-    //
-    // Exit if not in APEX Page Designer
-    //
-    if (typeof(window.pageDesigner) != 'object') {
-       return 0;
-    }
-
-    var l_dialog$;
-    var l_dialogPE$;
-    var l_properties1 = [];
-    var l_out         = apex.util.htmlBuilder();
-
-
-    l_out.markup('<div')
-         .attr('id','ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG')
-         .markup('>')
-         .markup('<div')
-         .attr('id','StyleDefaultsDlgPE')
-         .markup('>');
-
-
-    l_dialog$ = $(l_out.html)
-        .dialog(
-                { modal   : true,
-                  title   : p_title,
-                  width   : 400,
-
-                  close   : function(pEvent) {
-                               $('#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG').remove();
-                            },
-                  open    : function() {
-
-                              function getStyleLOV(p_mode) {
-                                var l_arr_LOV    = [];
-                                var l_arr_styles = window.pageDesigner.getStyles();
-
-                                for (var l in l_arr_styles) {
-                                    if (   (p_mode == 'DAYLIGHT'  && l_arr_styles[l].DARK_STYLE == 'NO')
-                                        || (p_mode == 'MOONLIGHT' && l_arr_styles[l].DARK_STYLE == 'YES') ) {
-
-                                        l_arr_LOV.push({ d: l_arr_styles[l].STYLE_NAME,
-                                                         r: l_arr_styles[l].STYLE_NAME
-                                                       });
-                                    } // if
-                                }     // for
-
-                                if (p_mode == 'DAYLIGHT') {
-                                   l_arr_LOV.push({ d: 'Original (none)', r: 'NONE'});
-                                }
-
-                                return l_arr_LOV;
-                              }
-
-
-                               l_dialogPE$ = $('#StyleDefaultsDlgPE');
-
-                               //
-                               // Build properties for property group 1 (style options)
-                               //
-                               l_properties1[0] = {
-                                   propertyName: "default_daylight_style",
-                                   value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-DAYLIGHT'),
-                                       lovValues:      getStyleLOV('DAYLIGHT'),
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "style_id"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
-
-                               l_properties1[1] = {
-                                   propertyName: "default_moonlight_style",
-                                   value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-MOONLIGHT'),
-                                       lovValues:      getStyleLOV('MOONLIGHT'),
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "style_id"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
-
-
-
-                               //
-                               // Create Property Editor
-                               //
-                               $('#StyleDefaultsDlgPE').propertyEditor( {
-                                 focusPropertyName: "default_daylight_style",
-                                 data: {
-                                   propertySet: [
-                                     {
-                                       displayGroupId    : "style_id",
-                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
-                                       properties        : l_properties1
-                                     },
-                                   ] // propertySet
-                                 }   // data
-                               });   // propertyEditor
-
-
-                               $('div#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG div.a-Property-labelContainer label')
-                                      .first()
-                                      .append('&nbsp; &nbsp; <span class="a-Icon icon-xplug-sun"></span>');
-
-                               $('div#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG div.a-Property-labelContainer label')
-                                      .last()
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
-
-
-                               $( '#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG' ).dialog({
-                                   position: { 'my': 'center', 'at': 'center' }
-                               });
-
-
-                            }, // open
-
-                  buttons : [
-                              { text  : get_label('BTN-CANCEL'),
-                                click : function() {
-                                  $( this ).dialog( "close" );
-                                }
-                              },
-
-                              { text  : get_label('BTN-SAVE'),
-                                class : 'a-Button--hot',
-                                click : function() {
-                                  var l_style1 = $('#StyleDefaultsDlgPE_1').val();
-                                  var l_style2 = $('#StyleDefaultsDlgPE_2').val();
-                                  var l_class  = $('button#ORATRONIK_XPLUG_moonsun_button span').attr('class');
-
-                                  xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
-                                  xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
-
-                                  window.pageDesigner.loadStyle(
-                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
-                                                                              : l_style1
-                                  );
-
-                                  $( this ).dialog( "close" );
-                                }
-                              }
-                            ]
-                }
-       ); // setDefaultStylesDialog
-
-    return 1;
-};
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -2715,21 +2555,6 @@ Xplug.prototype.install_menu = function() {
          { type   : "separator" },
 
          {
-            type  : "action",
-            label : get_label('LBL-DEFAULT-STYLES'),
-            get   : function()
-                    {
-                     return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
-                    },
-            action: function()
-                    {
-                      window.pageDesigner.setDefaultStylesDialog(get_label('LBL-STYLE'));
-                    }
-         },
-
-         { type   : "separator" },
-
-         {
            type     : "action",
            label    : get_label('CUSTOMIZE'),
            action   : function()
@@ -3209,8 +3034,11 @@ Xplug.prototype.configureDialog = function()
     var l_dialog$;
     var l_dialogPE$;
     var l_settings_obj, l_imp_obj;
-    var l_properties1     = [], l_properties2 = [], l_properties3 = [];
-    var l_out             = apex.util.htmlBuilder();
+    var l_properties1 = [];
+    var l_properties2 = [];
+    var l_properties3 = [];
+    var l_properties4 = [];
+    var l_out         = apex.util.htmlBuilder();
 
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_CONFIG_DIALOG')
@@ -3224,7 +3052,7 @@ Xplug.prototype.configureDialog = function()
         .dialog(
                 { modal   : false,
                   title   : get_label('LBL-XPLUG-SETTINGS'),
-                  width   : 400,
+                  width   : 450,
 
                   close   : function(pEvent) {
                                // Hide any remaining notifications
@@ -3234,6 +3062,29 @@ Xplug.prototype.configureDialog = function()
                             },
 
                   open    : function() {
+
+                               function getStyleLOV(p_mode) {
+                                  var l_arr_LOV    = [];
+                                  var l_arr_styles = window.pageDesigner.getStyles();
+
+                                  for (var l in l_arr_styles) {
+                                      if (   (p_mode == 'DAYLIGHT'  && l_arr_styles[l].DARK_STYLE == 'NO')
+                                          || (p_mode == 'MOONLIGHT' && l_arr_styles[l].DARK_STYLE == 'YES') ) {
+
+                                          l_arr_LOV.push({ d: l_arr_styles[l].STYLE_NAME,
+                                                           r: l_arr_styles[l].STYLE_NAME
+                                                         });
+                                      } // if
+                                  }     // for
+
+                                  if (p_mode == 'DAYLIGHT') {
+                                     l_arr_LOV.push({ d: 'Original (none)', r: 'NONE'});
+                                  }
+
+                                  return l_arr_LOV;
+                               }
+
+
                                l_dialogPE$ = $('#ConfigDlgPE');
 
                                l_properties1[0] = {
@@ -3286,9 +3137,42 @@ Xplug.prototype.configureDialog = function()
 
 
                                //
-                               // Build Properties for property group 2 (Advanced)
+                               // Build properties for property group 2 (Default styles)
                                //
                                l_properties2[0] = {
+                                   propertyName: "default_daylight_style",
+                                   value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         get_label('LBL-DAYLIGHT'),
+                                       lovValues:      getStyleLOV('DAYLIGHT'),
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               l_properties2[1] = {
+                                   propertyName: "default_moonlight_style",
+                                   value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         get_label('LBL-MOONLIGHT'),
+                                       lovValues:      getStyleLOV('MOONLIGHT'),
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               //
+                               // Build Properties for property group 3 (Advanced)
+                               //
+                               l_properties3[0] = {
                                    propertyName: "show_grid",
                                    value:        "NO",
                                    metaData: {
@@ -3306,9 +3190,9 @@ Xplug.prototype.configureDialog = function()
 
 
                                //
-                               // Build Properties for property group 3 (Experimental)
+                               // Build Properties for property group 4 (Experimental)
                                //
-                               l_properties3[0] = {
+                               l_properties4[0] = {
                                    propertyName: "override_css",
                                    value:        "NO",
                                    metaData: {
@@ -3338,15 +3222,20 @@ Xplug.prototype.configureDialog = function()
                                        properties        : l_properties1
                                      },
                                      {
+                                       displayGroupId    : "style_id",
+                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
+                                       properties        : l_properties2
+                                     },
+                                     {
                                        displayGroupId    : "advanced",
                                        displayGroupTitle : get_label('LBL-ADVANCED'),
-                                       properties        : l_properties2
+                                       properties        : l_properties3
                                      },
                                      {
                                        displayGroupId    : "experimental",
                                        displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
                                        collapsed         : true,
-                                       properties        : l_properties3
+                                       properties        : l_properties4
                                      }
                                    ] // propertySet
                                  }   // data
@@ -3390,6 +3279,19 @@ Xplug.prototype.configureDialog = function()
 
                                   if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
                                                                                              else  { xplug.deinstallSwapGrid(); }
+
+
+                                  var l_style1 = $('#ConfigDlgPE_4').val();
+                                  var l_style2 = $('#ConfigDlgPE_5').val();
+                                  var l_class  = $('button#ORATRONIK_XPLUG_moonsun_button span').attr('class');
+
+                                  xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
+                                  xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
+
+                                  window.pageDesigner.loadStyle(
+                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
+                                                                              : l_style1
+                                  );
 
                                   $( this ).dialog( "close" );
                                 },

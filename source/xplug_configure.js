@@ -27,8 +27,11 @@ Xplug.prototype.configureDialog = function()
     var l_dialog$;
     var l_dialogPE$;
     var l_settings_obj, l_imp_obj;
-    var l_properties1     = [], l_properties2 = [], l_properties3 = [];
-    var l_out             = apex.util.htmlBuilder();
+    var l_properties1 = [];
+    var l_properties2 = [];
+    var l_properties3 = [];
+    var l_properties4 = [];
+    var l_out         = apex.util.htmlBuilder();
 
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_CONFIG_DIALOG')
@@ -42,7 +45,7 @@ Xplug.prototype.configureDialog = function()
         .dialog(
                 { modal   : false,
                   title   : get_label('LBL-XPLUG-SETTINGS'),
-                  width   : 400,
+                  width   : 450,
 
                   close   : function(pEvent) {
                                // Hide any remaining notifications
@@ -52,6 +55,29 @@ Xplug.prototype.configureDialog = function()
                             },
 
                   open    : function() {
+
+                               function getStyleLOV(p_mode) {
+                                  var l_arr_LOV    = [];
+                                  var l_arr_styles = window.pageDesigner.getStyles();
+
+                                  for (var l in l_arr_styles) {
+                                      if (   (p_mode == 'DAYLIGHT'  && l_arr_styles[l].DARK_STYLE == 'NO')
+                                          || (p_mode == 'MOONLIGHT' && l_arr_styles[l].DARK_STYLE == 'YES') ) {
+
+                                          l_arr_LOV.push({ d: l_arr_styles[l].STYLE_NAME,
+                                                           r: l_arr_styles[l].STYLE_NAME
+                                                         });
+                                      } // if
+                                  }     // for
+
+                                  if (p_mode == 'DAYLIGHT') {
+                                     l_arr_LOV.push({ d: 'Original (none)', r: 'NONE'});
+                                  }
+
+                                  return l_arr_LOV;
+                               }
+
+
                                l_dialogPE$ = $('#ConfigDlgPE');
 
                                l_properties1[0] = {
@@ -104,9 +130,42 @@ Xplug.prototype.configureDialog = function()
 
 
                                //
-                               // Build Properties for property group 2 (Advanced)
+                               // Build properties for property group 2 (Default styles)
                                //
                                l_properties2[0] = {
+                                   propertyName: "default_daylight_style",
+                                   value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         get_label('LBL-DAYLIGHT'),
+                                       lovValues:      getStyleLOV('DAYLIGHT'),
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               l_properties2[1] = {
+                                   propertyName: "default_moonlight_style",
+                                   value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         get_label('LBL-MOONLIGHT'),
+                                       lovValues:      getStyleLOV('MOONLIGHT'),
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               //
+                               // Build Properties for property group 3 (Advanced)
+                               //
+                               l_properties3[0] = {
                                    propertyName: "show_grid",
                                    value:        "NO",
                                    metaData: {
@@ -124,9 +183,9 @@ Xplug.prototype.configureDialog = function()
 
 
                                //
-                               // Build Properties for property group 3 (Experimental)
+                               // Build Properties for property group 4 (Experimental)
                                //
-                               l_properties3[0] = {
+                               l_properties4[0] = {
                                    propertyName: "override_css",
                                    value:        "NO",
                                    metaData: {
@@ -156,15 +215,20 @@ Xplug.prototype.configureDialog = function()
                                        properties        : l_properties1
                                      },
                                      {
+                                       displayGroupId    : "style_id",
+                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
+                                       properties        : l_properties2
+                                     },
+                                     {
                                        displayGroupId    : "advanced",
                                        displayGroupTitle : get_label('LBL-ADVANCED'),
-                                       properties        : l_properties2
+                                       properties        : l_properties3
                                      },
                                      {
                                        displayGroupId    : "experimental",
                                        displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
                                        collapsed         : true,
-                                       properties        : l_properties3
+                                       properties        : l_properties4
                                      }
                                    ] // propertySet
                                  }   // data
@@ -208,6 +272,19 @@ Xplug.prototype.configureDialog = function()
 
                                   if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
                                                                                              else  { xplug.deinstallSwapGrid(); }
+
+
+                                  var l_style1 = $('#ConfigDlgPE_4').val();
+                                  var l_style2 = $('#ConfigDlgPE_5').val();
+                                  var l_class  = $('button#ORATRONIK_XPLUG_moonsun_button span').attr('class');
+
+                                  xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
+                                  xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
+
+                                  window.pageDesigner.loadStyle(
+                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
+                                                                              : l_style1
+                                  );
 
                                   $( this ).dialog( "close" );
                                 },

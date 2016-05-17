@@ -68,21 +68,6 @@ Xplug.prototype.install_menu = function() {
          { type   : "separator" },
 
          {
-            type  : "action",
-            label : get_label('LBL-DEFAULT-STYLES'),
-            get   : function()
-                    {
-                     return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
-                    },
-            action: function()
-                    {
-                      window.pageDesigner.setDefaultStylesDialog(get_label('LBL-STYLE'));
-                    }
-         },
-
-         { type   : "separator" },
-
-         {
            type     : "action",
            label    : get_label('CUSTOMIZE'),
            action   : function()

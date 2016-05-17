@@ -176,6 +176,10 @@
 //                       Is required due to new possibility of turning most features on/off.
 //                     - Possibility to toggle all Xplug buttons on/off from Xplug settings dialog
 //
+// V1.3.0 2016-05-16 * Change
+//                     Configure default Page Designer Styles as part of Xplug settings dialog, instead of
+//                     having own dialog. Removed corresponding submenu entry and refactored code.
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
