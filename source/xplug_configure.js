@@ -186,8 +186,8 @@ Xplug.prototype.configureDialog = function()
                                // Build Properties for property group 4 (Experimental)
                                //
                                l_properties4[0] = {
-                                   propertyName: "override_css",
-                                   value:        "NO",
+                                   propertyName: "enhance_pd_title",
+                                   value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                        prompt:         "Show [app:page] info in window title",
@@ -273,6 +273,9 @@ Xplug.prototype.configureDialog = function()
                                   if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
                                                                                              else  { xplug.deinstallSwapGrid(); }
 
+                                  if ($('input[name=ConfigDlgPE_7_name]:checked').val() == 'YES')  { xplug.installPDTitle();   }
+                                                                                             else  { xplug.deinstallPDTitle(); }
+
 
                                   var l_style1 = $('#ConfigDlgPE_4').val();
                                   var l_style2 = $('#ConfigDlgPE_5').val();
@@ -281,10 +284,12 @@ Xplug.prototype.configureDialog = function()
                                   xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
                                   xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
 
-                                  window.pageDesigner.loadStyle(
-                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
-                                                                              : l_style1
-                                  );
+                                  if (typeof(l_class) != 'undefined') {
+                                    window.pageDesigner.loadStyle(
+                                        l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
+                                                                                : l_style1
+                                    );
+                                  }
 
                                   $( this ).dialog( "close" );
                                 },

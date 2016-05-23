@@ -144,7 +144,7 @@
 //                                get tracked as soon as the powerbox is opened.
 //
 // V1.2.2 2016-02-17 * Multiple changes
-//                     - Bug-fix: djusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
+//                     - Bug-fix: Adjusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
 //                                We only want the Xplug plugin to be activated when dealing with
 //                                page 4500 (Page Designer)
 //                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
@@ -179,6 +179,16 @@
 // V1.3.0 2016-05-16 * Change
 //                     Configure default Page Designer Styles as part of Xplug settings dialog, instead of
 //                     having own dialog. Removed corresponding submenu entry and refactored code.
+//
+// V1.3.0 2016-05-23 * Multiple changes
+//                     - Bug-fix: Use promise when jumping to previous/next page. This behaviour is
+//                                aligned with PD behaviour and prevents creation of double event handlers.
+//                                Benefit is also that buttons are reliably re-enabled even if user aborts
+//                                switching page in confirmation dialog.
+//                     - Change:  Code refactoring and renamed daylight/moonlight mode to day/night mode.
+//                     - Change:  Make setting [APP:ID] in Page Designer window title optional.
+//                     - Change:  Renamed 'Page Designer Style' in 'Theme' because that is what it is.
+//                     - Change:  Reworked the Xplug menus, is cleaner and more understandable now.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

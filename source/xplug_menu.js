@@ -58,7 +58,7 @@ Xplug.prototype.install_menu = function() {
                     },
             set   : function()
                     {
-                      apex.actions.invoke('pd-xplug-set-daylight-mode');
+                      apex.actions.invoke('pd-xplug-set-day-mode');
                     }
          }
        );
@@ -69,7 +69,8 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "action",
-           label    : get_label('CUSTOMIZE'),
+           label    : get_label('LBL-STYLE-GALLERY'),
+           icon    : "icon-theme-roller",
            action   : function()
                       {
                          window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
@@ -111,14 +112,81 @@ Xplug.prototype.install_menu = function() {
 
             choices : [
                 {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
-                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
-                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
+                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false, shortcut: "ALT+N" },
+                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false, shortcut: "ALT+R" }
             ]
          }
        );
 
        return l_arr_menu_items;
     } // install_SubmenuDockGrid
+
+
+    function install_SubmenuQuickControls() {
+       var l_arr_menu_items = [];
+
+       l_arr_menu_items.push(
+         {
+           type     : "toggle",
+           label    : get_label('NOTOOLTIPS'),
+           get      : function()
+                      {
+                         return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
+
+                           apex.actions.invoke('pd-xplug-enable-tooltips')
+                              ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
+                              : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
+
+                        } else {
+
+                            apex.actions.invoke('pd-xplug-disable-tooltips')
+                            ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
+                            : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
+                        }
+
+                        // Remove notification afer 1.5 seconds
+                        window.setTimeout( function() {
+                                             pageDesigner.hideNotification();
+                                           },
+                                           1500
+                                         );
+                      },
+
+           disabled : function() { return false; }
+         },
+
+         {
+           type     : "toggle",
+           label    : get_label('LBL-ADD-POWERBOX'),
+           get      : function()
+                      {
+                         return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
+                           apex.actions.invoke('pd-xplug-remove-powerbox');
+                        } else {
+                           apex.actions.invoke('pd-xplug-add-powerbox');
+                        }
+                      },
+
+           disabled : function()
+                      {
+                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                      }
+         }
+       );
+
+       return l_arr_menu_items;
+    } // install_SubmenuQuickControls
+
 
 
     // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
@@ -144,64 +212,14 @@ Xplug.prototype.install_menu = function() {
 
         { type   : "separator" },
 
-        {
-          type     : "toggle",
-          label    : get_label('NOTOOLTIPS'),
-          get      : function()
-                     {
-                        return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
-                     },
-
-          set      : function()
-                     {
-                       if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
-
-                          apex.actions.invoke('pd-xplug-enable-tooltips')
-                             ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
-                             : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
-
-                       } else {
-
-                           apex.actions.invoke('pd-xplug-disable-tooltips')
-                           ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
-                           : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
-                       }
-
-                       // Remove notification afer 1.5 seconds
-                       window.setTimeout( function() {
-                                            pageDesigner.hideNotification();
-                                          },
-                                          1500
-                                        );
-                     },
-
+        { type     : "subMenu",
+          label    : get_label('QUICK-CTRL'),
+          menu     : { items : install_SubmenuQuickControls() },
           disabled : function()
                      {
                        return false;
                      }
-        },
 
-        {
-          type     : "toggle",
-          label    : get_label('LBL-ADD-POWERBOX'),
-          get      : function()
-                     {
-                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
-                     },
-
-          set      : function()
-                     {
-                       if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
-                          apex.actions.invoke('pd-xplug-remove-powerbox');
-                       } else {
-                          apex.actions.invoke('pd-xplug-add-powerbox');
-                       }
-                     },
-
-          disabled : function()
-                     {
-                       return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
-                     }
         },
 
         { type     : "separator" },
@@ -218,22 +236,14 @@ Xplug.prototype.install_menu = function() {
 
         { type     : "separator" },
 
-        { type    : "subMenu",
+        { type    : "action",
           label   : get_label('CONFIGURE'),
           icon    : "icon-tools",
-          menu    : { items :
-                      [
-                         {
-                           type     : "action",
-                           label    : get_label('LBL-XPLUG-SETTINGS'),
-                           action   : xplug.configureDialog,
-                           disabled : function()
-                                      {
-                                        return 0;
-                                      }
-                         }
-                      ]
-                    },
+          action   : xplug.configureDialog,
+          disabled : function()
+                     {
+                       return 0;
+                     }
         },
 
         { type     : "separator"

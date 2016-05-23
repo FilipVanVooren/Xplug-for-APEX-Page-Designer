@@ -129,27 +129,27 @@ var Xplug = function() {
           },
 
           {
-            name     : "pd-xplug-set-moonlight-mode",
+            name     : "pd-xplug-set-night-mode",
             label    : get_label('LBL-MOONLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                           return window.pageDesigner.MoonlightMode();
+                           return window.pageDesigner.setNightMode();
                        }
           },
 
           {
-            name     : "pd-xplug-set-daylight-mode",
+            name     : "pd-xplug-set-day-mode",
             label    : get_label('LBL-DAYLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                           return window.pageDesigner.DaylightMode();
+                           return window.pageDesigner.setDayMode();
                        }
           },
 
           {
-            name     : "pd-xplug-toggle-daylight-moonlight-mode",
+            name     : "pd-xplug-toggle-day-night-mode",
             label    : get_label('BTN-TGL-DAY-MOON'),
             shortcut : "Alt+F10",
             action   : function( event, focusElement )
@@ -158,9 +158,9 @@ var Xplug = function() {
                                                      .attr('class').indexOf('icon-xplug-moon') >= 0;
 
                           if (l_style2_is_on === true) {
-                             return  apex.actions.invoke('pd-xplug-set-daylight-mode');
+                             return  apex.actions.invoke('pd-xplug-set-day-mode');
                           } else {
-                             return  apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                             return  apex.actions.invoke('pd-xplug-set-night-mode');
                           }
                        }
           },
@@ -352,7 +352,7 @@ var Xplug = function() {
                       + ' type="button"'
                       + ' ID="ORATRONIK_XPLUG_moonsun_button"'
                       + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
-                      + ' data-action="pd-xplug-toggle-daylight-moonlight-mode">'
+                      + ' data-action="pd-xplug-toggle-day-night-mode">'
                       + ' <span class="a-Icon icon-xplug-sun"></span>'
                       + '</button>'
                     );
@@ -400,7 +400,7 @@ var Xplug = function() {
 
 
   /****************************************************************************
-   * DeInstall swap grid pane button
+   * Deinstall swap grid pane button
    ***************************************************************************/
    Xplug.prototype.deinstallSwapGrid = function ()
    {
@@ -408,6 +408,34 @@ var Xplug = function() {
 
      xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
    }; // DeinstallSwapGrid
+
+
+   /****************************************************************************
+    * Install [app:id] in Window Title
+    ***************************************************************************/
+    Xplug.prototype.installPDTitle = function ()
+    {
+      $(document).on('modelReady', pageDesigner.setWinTitle);
+      pageDesigner.setWinTitle();
+
+      xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
+    }; // installPDTitle
+
+
+    /****************************************************************************
+    * Deinstall [app:id] in Window Title
+    ****************************************************************************/
+    Xplug.prototype.deinstallPDTitle = function ()
+    {
+      $(document).off('modelReady', pageDesigner.setWinTitle);
+
+      var l_title = $(document).attr('title');
+      l_title     = l_title.replace(/\s\[.*$/,'');                             // Remnove old [xxx:xxx] value
+
+      $(document).attr('title',l_title);
+
+      xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
+    }; // deinstallPDTitle
 
 
   /*****************************************************************************
@@ -425,7 +453,7 @@ var Xplug = function() {
      xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installGotoPage();
      xplug.getStorage('BTN-THEME-SWITCH','NO')   == 'YES' && xplug.installThemeSwitch();
      xplug.getStorage('BTN-SWAP-GRID-PANE','NO') == 'YES' && xplug.installSwapGrid();
-
+     xplug.getStorage('APP+ID-IN-PD-TITLE','NO') == 'YES' && xplug.installPDTitle();
    }; // Xplug.prototype.loadSettings
 
 

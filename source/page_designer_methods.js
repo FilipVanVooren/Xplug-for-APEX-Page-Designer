@@ -15,7 +15,6 @@
  ***************************************************************************/
  window.pageDesigner.setWinTitle = function()
   {
-    console.log("got here.....");
     var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
     var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
     var l_title   = $(document).attr('title');
@@ -28,7 +27,7 @@
     $(document).attr('title',l_title);
 
     return 1;
-  }; // window.pageDeisgner.setWinTitle
+  }; // window.pageDesigner.setWinTitle
 
 
 
@@ -64,19 +63,24 @@ window.pageDesigner.goToPrevPage = function () {
     //
     apex.actions.disable('pd-xplug-goto-previous-page');
     apex.actions.disable('pd-xplug-goto-next-page');
-    $(document).on('modelReady',
-      function () {
-        console.debug("model is ready");
-        window.setTimeout(
-           function() {
-              apex.actions.enable('pd-xplug-goto-previous-page');
-              apex.actions.enable('pd-xplug-goto-next-page');
-           },500    // Is this a good value?
-        );
-      }
-    );
 
-    window.pageDesigner.goToPage(l_prev);
+    //
+    // Get page and re-enable buttons/actions
+    //
+    var l_deferred = window.pageDesigner.goToPage( l_prev );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
   }
 }; //  window.pageDesigner.goToPrevPage
 
@@ -109,24 +113,29 @@ window.pageDesigner.goToNextPage = function () {
   }
 
   if (l_next != l_page) {
-     //
-     // Temporary disable actions until new page has loaded completely
-     //
-     apex.actions.disable('pd-xplug-goto-previous-page');
-     apex.actions.disable('pd-xplug-goto-next-page');
-     $(document).on('modelReady',
-       function () {
-         console.debug("model is ready");
-         window.setTimeout(
-            function() {
-               apex.actions.enable('pd-xplug-goto-previous-page');
-               apex.actions.enable('pd-xplug-goto-next-page');
-            },500    // Is this a good value?
-         );
-       }
-     );
+    //
+    // Temporary disable actions until new page has loaded completely
+    //
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
 
-     window.pageDesigner.goToPage(l_next);
+    //
+    // Get page and re-enable buttons/actions
+    //
+    var l_deferred = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
   }
 }; // window.pageDesigner.goToNextPage
 
@@ -311,9 +320,9 @@ window.pageDesigner.enableTooltips = function()
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: DaylightMode
+ * METHOD: setDayMode
  ***************************************************************************/
-window.pageDesigner.DaylightMode = function() {
+window.pageDesigner.setDayMode = function() {
 
   var l_style = xplug.getStorage('DEFAULT_STYLE1','NONE',true);
   window.pageDesigner.loadStyle(l_style);
@@ -321,15 +330,15 @@ window.pageDesigner.DaylightMode = function() {
   $('#ORATRONIK_XPLUG_moonsun_button span')
        .removeClass('icon-xplug-moon')
        .addClass('icon-xplug-sun');
-};
+}; // window.pageDesigner.setDayMode
 
 
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: MoonlightMode
+ * METHOD: setNightMode
  ***************************************************************************/
-window.pageDesigner.MoonlightMode = function() {
+window.pageDesigner.setNightMode = function() {
 
   var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
   window.pageDesigner.loadStyle(l_style);
@@ -337,7 +346,7 @@ window.pageDesigner.MoonlightMode = function() {
   $('#ORATRONIK_XPLUG_moonsun_button span')
         .removeClass('icon-xplug-sun')
         .addClass('icon-xplug-moon');
-};
+}; // window.pageDesigner.setNightMode
 
 
 

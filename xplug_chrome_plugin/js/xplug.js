@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue May 17 2016 21:12:35
+// Built using Gulp. Built date: Mon May 23 2016 23:14:16
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -145,7 +145,7 @@
 //                                get tracked as soon as the powerbox is opened.
 //
 // V1.2.2 2016-02-17 * Multiple changes
-//                     - Bug-fix: djusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
+//                     - Bug-fix: Adjusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
 //                                We only want the Xplug plugin to be activated when dealing with
 //                                page 4500 (Page Designer)
 //                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
@@ -181,6 +181,16 @@
 //                     Configure default Page Designer Styles as part of Xplug settings dialog, instead of
 //                     having own dialog. Removed corresponding submenu entry and refactored code.
 //
+// V1.3.0 2016-05-23 * Multiple changes
+//                     - Bug-fix: Use promise when jumping to previous/next page. This behaviour is
+//                                aligned with PD behaviour and prevents creation of double event handlers.
+//                                Benefit is also that buttons are reliably re-enabled even if user aborts
+//                                switching page in confirmation dialog.
+//                     - Change:  Code refactoring and renamed daylight/moonlight mode to day/night mode.
+//                     - Change:  Make setting [APP:ID] in Page Designer window title optional.
+//                     - Change:  Renamed 'Page Designer Style' in 'Theme' because that is what it is.
+//                     - Change:  Reworked the Xplug menus, is cleaner and more understandable now.
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -213,6 +223,7 @@
                              , "SETUP"        : "Setup"
                              , "CONFIGURE"    : "Configure"
                              , "CUSTOMIZE"    : "Customize"
+                             , "QUICK-CTRL"   : "Quick Controls"
 
                              , "BTN-NEW"             : "New"
                              , "BTN-SAVE"            : "Save"
@@ -223,22 +234,22 @@
                              , "BTN-CLEAR"           : "Clear"
                              , "BTN-EXPORT"          : "Export"
                              , "BTN-IMPORT"          : "Import"
-                             , "BTN-TGL-DAY-MOON"    : "Toggle daylight/moonlight mode"
+                             , "BTN-TGL-DAY-MOON"    : "Toggle day/night mode"
                              , "BTN-SWAP-GRID-PANE"  : "Swap grid position (middle/right)"
 
-                             , "LBL-STYLE"           : "Page Designer Style"
-                             , "LBL-STYLE-DEFAULT"   : "Default styles"
-                             , "LBL-STYLE-GALLERY"   : "Page Designer Styles Gallery"
-                             , "LBL-STYLE-CUSTOM"    : "Customize Page Designer Style"
-                             , "LBL-STYLE-EXPORT"    : "Export Page Designer Style"
-                             , "LBL-STYLE-IMPORT"    : "Import Page Designer Style"
+                             , "LBL-STYLE"           : "Theme"
+                             , "LBL-STYLE-DEFAULT"   : "Default themes"
+                             , "LBL-STYLE-GALLERY"   : "Themes Gallery"
+                             , "LBL-STYLE-CUSTOM"    : "Customize theme"
+                             , "LBL-STYLE-EXPORT"    : "Export theme"
+                             , "LBL-STYLE-IMPORT"    : "Import theme"
                              , "LBL-XPLUG"           : "Xplug"
                              , "LBL-XPLUG-SETTINGS"  : "Xplug settings"
                              , "LBL-LEFT"            : "Left"
                              , "LBL-MIDDLE"          : "Middle"
                              , "LBL-RIGHT"           : "Right"
                              , "LBL-NAME"            : "Name"
-                             , "LBL-DARK-STYLE"      : "Dark Style"
+                             , "LBL-DARK-STYLE"      : "Night Mode"
                              , "LBL-CRNTLY-ACTIVE"   : "Currently Active"
                              , "LBL-PROTECTED"       : "Protected"
                              , "LBL-SHOW-GRID"       : "Show Grid"
@@ -250,8 +261,8 @@
                              , "LBL-ADVANCED"        : "Advanced"
                              , "LBL-EXPERIMENTAL"    : "Experimental features"
                              , "LBL-SHOW-BUTTONS"    : "Show Buttons"
-                             , "LBL-DAYLIGHT"        : "Daylight mode"
-                             , "LBL-MOONLIGHT"       : "Moonlight mode"
+                             , "LBL-DAYLIGHT"        : "Day mode"
+                             , "LBL-MOONLIGHT"       : "Night mode"
                              , "LBL-DEFAULT-STYLES"  : "Page Designer Styles"
                              , "LBL-ADD-POWERBOX"    : "Show powerbox pane"
                              , "LBL-CLOSE"           : "Close"
@@ -285,13 +296,14 @@
                              , "SETUP"        : "Setup"
                              , "CONFIGURE"    : "Konfigurieren"
                              , "CUSTOMIZE"    : "Anpassen"
+                             , "QUICK-CTRL"   : "Schnelleinstellungen"
 
-                             , "LBL-STYLE"           : "Page Designer Stil"
-                             , "LBL-STYLE-DEFAULT"   : "Standard Stil einstellen"
-                             , "LBL-STYLE-GALLERY"   : "Page Designer Stil Galerie"
-                             , "LBL-STYLE-CUSTOM"    : "Page Designer Stil anpassen"
-                             , "LBL-STYLE-EXPORT"    : "Page Designer Stil exportieren"
-                             , "LBL-STYLE-IMPORT"    : "Import Page Designer Style"
+                             , "LBL-STYLE"           : "Theme"
+                             , "LBL-STYLE-DEFAULT"   : "Standardtheme"
+                             , "LBL-STYLE-GALLERY"   : "Theme Gallerie"
+                             , "LBL-STYLE-CUSTOM"    : "Theme anpassen"
+                             , "LBL-STYLE-EXPORT"    : "Theme exportieren"
+                             , "LBL-STYLE-IMPORT"    : "Theme importieren"
                              , "LBL-XPLUG"           : "Xplug"
                              , "LBL-XPLUG-SETTINGS"  : "Xplug Einstellungen"
                              , "LBL-LEFT"            : "Links"
@@ -310,8 +322,8 @@
                              , "LBL-ADVANCED"        : "Fortgeschritten"
                              , "LBL-EXPERIMENTAL"    : "Experimentelle Optionen"
                              , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
-                             , "LBL-DAYLIGHT"        : "Tageslicht Modus"
-                             , "LBL-MOONLIGHT"       : "Mondlicht Modus"
+                             , "LBL-DAYLIGHT"        : "Tag Modus"
+                             , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Page Designer Stile"
                              , "LBL-ADD-POWERBOX"    : "Zeige Bereich"
                              , "LBL-CLOSE"           : "Schliessen"
@@ -457,7 +469,6 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
  ***************************************************************************/
  window.pageDesigner.setWinTitle = function()
   {
-    console.log("got here.....");
     var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
     var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
     var l_title   = $(document).attr('title');
@@ -470,7 +481,7 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
     $(document).attr('title',l_title);
 
     return 1;
-  }; // window.pageDeisgner.setWinTitle
+  }; // window.pageDesigner.setWinTitle
 
 
 
@@ -506,19 +517,24 @@ window.pageDesigner.goToPrevPage = function () {
     //
     apex.actions.disable('pd-xplug-goto-previous-page');
     apex.actions.disable('pd-xplug-goto-next-page');
-    $(document).on('modelReady',
-      function () {
-        console.debug("model is ready");
-        window.setTimeout(
-           function() {
-              apex.actions.enable('pd-xplug-goto-previous-page');
-              apex.actions.enable('pd-xplug-goto-next-page');
-           },500    // Is this a good value?
-        );
-      }
-    );
 
-    window.pageDesigner.goToPage(l_prev);
+    //
+    // Get page and re-enable buttons/actions
+    //
+    var l_deferred = window.pageDesigner.goToPage( l_prev );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
   }
 }; //  window.pageDesigner.goToPrevPage
 
@@ -551,24 +567,29 @@ window.pageDesigner.goToNextPage = function () {
   }
 
   if (l_next != l_page) {
-     //
-     // Temporary disable actions until new page has loaded completely
-     //
-     apex.actions.disable('pd-xplug-goto-previous-page');
-     apex.actions.disable('pd-xplug-goto-next-page');
-     $(document).on('modelReady',
-       function () {
-         console.debug("model is ready");
-         window.setTimeout(
-            function() {
-               apex.actions.enable('pd-xplug-goto-previous-page');
-               apex.actions.enable('pd-xplug-goto-next-page');
-            },500    // Is this a good value?
-         );
-       }
-     );
+    //
+    // Temporary disable actions until new page has loaded completely
+    //
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
 
-     window.pageDesigner.goToPage(l_next);
+    //
+    // Get page and re-enable buttons/actions
+    //
+    var l_deferred = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
   }
 }; // window.pageDesigner.goToNextPage
 
@@ -753,9 +774,9 @@ window.pageDesigner.enableTooltips = function()
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: DaylightMode
+ * METHOD: setDayMode
  ***************************************************************************/
-window.pageDesigner.DaylightMode = function() {
+window.pageDesigner.setDayMode = function() {
 
   var l_style = xplug.getStorage('DEFAULT_STYLE1','NONE',true);
   window.pageDesigner.loadStyle(l_style);
@@ -763,15 +784,15 @@ window.pageDesigner.DaylightMode = function() {
   $('#ORATRONIK_XPLUG_moonsun_button span')
        .removeClass('icon-xplug-moon')
        .addClass('icon-xplug-sun');
-};
+}; // window.pageDesigner.setDayMode
 
 
 
 /****************************************************************************
  * Add custom method to pageDesigner Object
- * METHOD: MoonlightMode
+ * METHOD: setNightMode
  ***************************************************************************/
-window.pageDesigner.MoonlightMode = function() {
+window.pageDesigner.setNightMode = function() {
 
   var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
   window.pageDesigner.loadStyle(l_style);
@@ -779,7 +800,7 @@ window.pageDesigner.MoonlightMode = function() {
   $('#ORATRONIK_XPLUG_moonsun_button span')
         .removeClass('icon-xplug-sun')
         .addClass('icon-xplug-moon');
-};
+}; // window.pageDesigner.setNightMode
 
 
 
@@ -2073,27 +2094,27 @@ var Xplug = function() {
           },
 
           {
-            name     : "pd-xplug-set-moonlight-mode",
+            name     : "pd-xplug-set-night-mode",
             label    : get_label('LBL-MOONLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                           return window.pageDesigner.MoonlightMode();
+                           return window.pageDesigner.setNightMode();
                        }
           },
 
           {
-            name     : "pd-xplug-set-daylight-mode",
+            name     : "pd-xplug-set-day-mode",
             label    : get_label('LBL-DAYLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                           return window.pageDesigner.DaylightMode();
+                           return window.pageDesigner.setDayMode();
                        }
           },
 
           {
-            name     : "pd-xplug-toggle-daylight-moonlight-mode",
+            name     : "pd-xplug-toggle-day-night-mode",
             label    : get_label('BTN-TGL-DAY-MOON'),
             shortcut : "Alt+F10",
             action   : function( event, focusElement )
@@ -2102,9 +2123,9 @@ var Xplug = function() {
                                                      .attr('class').indexOf('icon-xplug-moon') >= 0;
 
                           if (l_style2_is_on === true) {
-                             return  apex.actions.invoke('pd-xplug-set-daylight-mode');
+                             return  apex.actions.invoke('pd-xplug-set-day-mode');
                           } else {
-                             return  apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                             return  apex.actions.invoke('pd-xplug-set-night-mode');
                           }
                        }
           },
@@ -2296,7 +2317,7 @@ var Xplug = function() {
                       + ' type="button"'
                       + ' ID="ORATRONIK_XPLUG_moonsun_button"'
                       + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
-                      + ' data-action="pd-xplug-toggle-daylight-moonlight-mode">'
+                      + ' data-action="pd-xplug-toggle-day-night-mode">'
                       + ' <span class="a-Icon icon-xplug-sun"></span>'
                       + '</button>'
                     );
@@ -2344,7 +2365,7 @@ var Xplug = function() {
 
 
   /****************************************************************************
-   * DeInstall swap grid pane button
+   * Deinstall swap grid pane button
    ***************************************************************************/
    Xplug.prototype.deinstallSwapGrid = function ()
    {
@@ -2352,6 +2373,34 @@ var Xplug = function() {
 
      xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
    }; // DeinstallSwapGrid
+
+
+   /****************************************************************************
+    * Install [app:id] in Window Title
+    ***************************************************************************/
+    Xplug.prototype.installPDTitle = function ()
+    {
+      $(document).on('modelReady', pageDesigner.setWinTitle);
+      pageDesigner.setWinTitle();
+
+      xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
+    }; // installPDTitle
+
+
+    /****************************************************************************
+    * Deinstall [app:id] in Window Title
+    ****************************************************************************/
+    Xplug.prototype.deinstallPDTitle = function ()
+    {
+      $(document).off('modelReady', pageDesigner.setWinTitle);
+
+      var l_title = $(document).attr('title');
+      l_title     = l_title.replace(/\s\[.*$/,'');                             // Remnove old [xxx:xxx] value
+
+      $(document).attr('title',l_title);
+
+      xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
+    }; // deinstallPDTitle
 
 
   /*****************************************************************************
@@ -2369,7 +2418,7 @@ var Xplug = function() {
      xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installGotoPage();
      xplug.getStorage('BTN-THEME-SWITCH','NO')   == 'YES' && xplug.installThemeSwitch();
      xplug.getStorage('BTN-SWAP-GRID-PANE','NO') == 'YES' && xplug.installSwapGrid();
-
+     xplug.getStorage('APP+ID-IN-PD-TITLE','NO') == 'YES' && xplug.installPDTitle();
    }; // Xplug.prototype.loadSettings
 
 
@@ -2545,7 +2594,7 @@ Xplug.prototype.install_menu = function() {
                     },
             set   : function()
                     {
-                      apex.actions.invoke('pd-xplug-set-daylight-mode');
+                      apex.actions.invoke('pd-xplug-set-day-mode');
                     }
          }
        );
@@ -2556,7 +2605,8 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "action",
-           label    : get_label('CUSTOMIZE'),
+           label    : get_label('LBL-STYLE-GALLERY'),
+           icon    : "icon-theme-roller",
            action   : function()
                       {
                          window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
@@ -2598,14 +2648,81 @@ Xplug.prototype.install_menu = function() {
 
             choices : [
                 {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
-                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
-                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
+                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false, shortcut: "ALT+N" },
+                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false, shortcut: "ALT+R" }
             ]
          }
        );
 
        return l_arr_menu_items;
     } // install_SubmenuDockGrid
+
+
+    function install_SubmenuQuickControls() {
+       var l_arr_menu_items = [];
+
+       l_arr_menu_items.push(
+         {
+           type     : "toggle",
+           label    : get_label('NOTOOLTIPS'),
+           get      : function()
+                      {
+                         return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
+
+                           apex.actions.invoke('pd-xplug-enable-tooltips')
+                              ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
+                              : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
+
+                        } else {
+
+                            apex.actions.invoke('pd-xplug-disable-tooltips')
+                            ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
+                            : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
+                        }
+
+                        // Remove notification afer 1.5 seconds
+                        window.setTimeout( function() {
+                                             pageDesigner.hideNotification();
+                                           },
+                                           1500
+                                         );
+                      },
+
+           disabled : function() { return false; }
+         },
+
+         {
+           type     : "toggle",
+           label    : get_label('LBL-ADD-POWERBOX'),
+           get      : function()
+                      {
+                         return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
+                           apex.actions.invoke('pd-xplug-remove-powerbox');
+                        } else {
+                           apex.actions.invoke('pd-xplug-add-powerbox');
+                        }
+                      },
+
+           disabled : function()
+                      {
+                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                      }
+         }
+       );
+
+       return l_arr_menu_items;
+    } // install_SubmenuQuickControls
+
 
 
     // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
@@ -2631,64 +2748,14 @@ Xplug.prototype.install_menu = function() {
 
         { type   : "separator" },
 
-        {
-          type     : "toggle",
-          label    : get_label('NOTOOLTIPS'),
-          get      : function()
-                     {
-                        return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
-                     },
-
-          set      : function()
-                     {
-                       if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
-
-                          apex.actions.invoke('pd-xplug-enable-tooltips')
-                             ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
-                             : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
-
-                       } else {
-
-                           apex.actions.invoke('pd-xplug-disable-tooltips')
-                           ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
-                           : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
-                       }
-
-                       // Remove notification afer 1.5 seconds
-                       window.setTimeout( function() {
-                                            pageDesigner.hideNotification();
-                                          },
-                                          1500
-                                        );
-                     },
-
+        { type     : "subMenu",
+          label    : get_label('QUICK-CTRL'),
+          menu     : { items : install_SubmenuQuickControls() },
           disabled : function()
                      {
                        return false;
                      }
-        },
 
-        {
-          type     : "toggle",
-          label    : get_label('LBL-ADD-POWERBOX'),
-          get      : function()
-                     {
-                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
-                     },
-
-          set      : function()
-                     {
-                       if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
-                          apex.actions.invoke('pd-xplug-remove-powerbox');
-                       } else {
-                          apex.actions.invoke('pd-xplug-add-powerbox');
-                       }
-                     },
-
-          disabled : function()
-                     {
-                       return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
-                     }
         },
 
         { type     : "separator" },
@@ -2705,22 +2772,14 @@ Xplug.prototype.install_menu = function() {
 
         { type     : "separator" },
 
-        { type    : "subMenu",
+        { type    : "action",
           label   : get_label('CONFIGURE'),
           icon    : "icon-tools",
-          menu    : { items :
-                      [
-                         {
-                           type     : "action",
-                           label    : get_label('LBL-XPLUG-SETTINGS'),
-                           action   : xplug.configureDialog,
-                           disabled : function()
-                                      {
-                                        return 0;
-                                      }
-                         }
-                      ]
-                    },
+          action   : xplug.configureDialog,
+          disabled : function()
+                     {
+                       return 0;
+                     }
         },
 
         { type     : "separator"
@@ -3193,8 +3252,8 @@ Xplug.prototype.configureDialog = function()
                                // Build Properties for property group 4 (Experimental)
                                //
                                l_properties4[0] = {
-                                   propertyName: "override_css",
-                                   value:        "NO",
+                                   propertyName: "enhance_pd_title",
+                                   value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                        prompt:         "Show [app:page] info in window title",
@@ -3280,6 +3339,9 @@ Xplug.prototype.configureDialog = function()
                                   if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
                                                                                              else  { xplug.deinstallSwapGrid(); }
 
+                                  if ($('input[name=ConfigDlgPE_7_name]:checked').val() == 'YES')  { xplug.installPDTitle();   }
+                                                                                             else  { xplug.deinstallPDTitle(); }
+
 
                                   var l_style1 = $('#ConfigDlgPE_4').val();
                                   var l_style2 = $('#ConfigDlgPE_5').val();
@@ -3288,10 +3350,12 @@ Xplug.prototype.configureDialog = function()
                                   xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
                                   xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
 
-                                  window.pageDesigner.loadStyle(
-                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
-                                                                              : l_style1
-                                  );
+                                  if (typeof(l_class) != 'undefined') {
+                                    window.pageDesigner.loadStyle(
+                                        l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
+                                                                                : l_style1
+                                    );
+                                  }
 
                                   $( this ).dialog( "close" );
                                 },
@@ -3316,14 +3380,6 @@ Xplug.prototype.configureDialog = function()
 
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();
-
-   //__install_moonsun_switch();
-   //__install_goto_page();
-
-
-   $(document).on('modelReady', pageDesigner.setWinTitle);
-
-   pageDesigner.setWinTitle();
 
    xplug.install_menu();
    xplug.loadSettings();
