@@ -190,6 +190,11 @@
 //                     - Change:  Renamed 'Page Designer Style' in 'Theme' because that is what it is.
 //                     - Change:  Reworked the Xplug menus, is cleaner and more understandable now.
 //
+//
+// V1.3.0 2016-05-24 * Multiple changes
+//                     - Added new 'Search' tab to Powerbox
+//                     - Renamed some labels
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

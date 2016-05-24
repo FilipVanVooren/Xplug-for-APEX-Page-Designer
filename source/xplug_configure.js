@@ -219,15 +219,14 @@ Xplug.prototype.configureDialog = function()
                                        displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
                                        properties        : l_properties2
                                      },
-                                     {
-                                       displayGroupId    : "advanced",
-                                       displayGroupTitle : get_label('LBL-ADVANCED'),
-                                       properties        : l_properties3
-                                     },
+                                    //  {
+                                    //    displayGroupId    : "advanced",
+                                    //    displayGroupTitle : get_label('LBL-ADVANCED'),
+                                    //    properties        : l_properties3
+                                    //  },
                                      {
                                        displayGroupId    : "experimental",
                                        displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
-                                       collapsed         : true,
                                        properties        : l_properties4
                                      }
                                    ] // propertySet

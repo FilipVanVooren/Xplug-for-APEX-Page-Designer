@@ -171,7 +171,7 @@ var Xplug = function() {
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.addPowerbox();
+                          return xplug.installPowerbox();
                        }
           },
 
@@ -181,7 +181,7 @@ var Xplug = function() {
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.removePowerbox();
+                          return xplug.deinstallPowerbox();
                        }
           }
 

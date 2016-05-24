@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon May 23 2016 23:14:16
+// Built using Gulp. Built date: Tue May 24 2016 22:29:11
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -191,6 +191,11 @@
 //                     - Change:  Renamed 'Page Designer Style' in 'Theme' because that is what it is.
 //                     - Change:  Reworked the Xplug menus, is cleaner and more understandable now.
 //
+//
+// V1.3.0 2016-05-24 * Multiple changes
+//                     - Added new 'Search' tab to Powerbox
+//                     - Renamed some labels
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -263,12 +268,14 @@
                              , "LBL-SHOW-BUTTONS"    : "Show Buttons"
                              , "LBL-DAYLIGHT"        : "Day mode"
                              , "LBL-MOONLIGHT"       : "Night mode"
-                             , "LBL-DEFAULT-STYLES"  : "Page Designer Styles"
+                             , "LBL-DEFAULT-STYLES"  : "Default Themes"
                              , "LBL-ADD-POWERBOX"    : "Show powerbox pane"
                              , "LBL-CLOSE"           : "Close"
+                             , "LBL-HIDE"            : "Hide"
 
+                             , "TAB-PB-METRICS"      : "Metrics"
                              , "TAB-PB-MESSAGES"     : "Messages"
-                             , "TAB-PB-ADVISOR"      : "Advisor"
+                             , "TAB-PB-SEARCH"       : "Search"
                              , "TAB-PB-CONSOLE"      : "Console"
                              , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
@@ -298,6 +305,18 @@
                              , "CUSTOMIZE"    : "Anpassen"
                              , "QUICK-CTRL"   : "Schnelleinstellungen"
 
+                             , "BTN-NEW"             : "Neu"
+                             , "BTN-SAVE"            : "Speichern"
+                             , "BTN-APPLY"           : "Anwenden"
+                             , "BTN-OK"              : "OK"
+                             , "BTN-CANCEL"          : "Abbrechen"
+                             , "BTN-DELETE"          : "Löschen"
+                             , "BTN-CLEAR"           : "Leeren"
+                             , "BTN-EXPORT"          : "Exportieren"
+                             , "BTN-IMPORT"          : "Importieren"
+                             , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
+                             , "BTN-SWAP-GRID-PANE"  : "Ansicht umschalten"
+
                              , "LBL-STYLE"           : "Theme"
                              , "LBL-STYLE-DEFAULT"   : "Standardtheme"
                              , "LBL-STYLE-GALLERY"   : "Theme Gallerie"
@@ -324,25 +343,15 @@
                              , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
-                             , "LBL-DEFAULT-STYLES"  : "Page Designer Stile"
+                             , "LBL-DEFAULT-STYLES"  : "Standard Themes"
                              , "LBL-ADD-POWERBOX"    : "Zeige Bereich"
                              , "LBL-CLOSE"           : "Schliessen"
-                             , "BTN-NEW"             : "Neu"
-                             , "BTN-SAVE"            : "Speichern"
-                             , "BTN-APPLY"           : "Anwenden"
-                             , "BTN-OK"              : "OK"
-                             , "BTN-CANCEL"          : "Abbrechen"
-                             , "BTN-DELETE"          : "Löschen"
-                             , "BTN-CLEAR"           : "Leeren"
-                             , "BTN-EXPORT"          : "Exportieren"
-                             , "BTN-IMPORT"          : "Importieren"
-                             , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
-                             , "BTN-SWAP-GRID-PANE"  : "Ansicht umschalten"
+                             , "LBL-HIDE"            : "Ausblenden"
 
+                             , "TAB-PB-METRICS"      : "Statistik"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
-                             , "TAB-PB-ADVISOR"      : "Berater"
+                             , "TAB-PB-SEARCH"       : "Suchen"
                              , "TAB-PB-CONSOLE"      : "Konsole"
-
                              , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
                              , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
                              , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
@@ -2136,7 +2145,7 @@ var Xplug = function() {
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.addPowerbox();
+                          return xplug.installPowerbox();
                        }
           },
 
@@ -2146,7 +2155,7 @@ var Xplug = function() {
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.removePowerbox();
+                          return xplug.deinstallPowerbox();
                        }
           }
 
@@ -2648,8 +2657,8 @@ Xplug.prototype.install_menu = function() {
 
             choices : [
                 {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
-                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false, shortcut: "ALT+N" },
-                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false, shortcut: "ALT+R" }
+                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
+                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
             ]
          }
        );
@@ -2821,7 +2830,7 @@ l_menu$.menu(
   items : [
     {
       type     : "toggle",
-      label    : get_label('LBL-CLOSE'),
+      label    : get_label('LBL-HIDE'),
       get      : function()
                  {
                     return 0;
@@ -2842,9 +2851,9 @@ l_menu$.menu(
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: addPowerbox
+* METHOD: installPowerbox
 ***************************************************************************/
-Xplug.prototype.addPowerbox = function()
+Xplug.prototype.installPowerbox = function()
 {
     'use strict';
 
@@ -2898,6 +2907,32 @@ Xplug.prototype.addPowerbox = function()
 
 
 
+    function installTabPowersearch() {
+        $('#xplug_pb_search').html(
+            'Search: '
+          + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
+          + '<div ID="xplug_search_results"></div>'
+        );
+
+       $('#xplug_search_field').focusout(
+           function() {
+               var l_search = $('#xplug_search_field').val();
+               if (l_search.length > 0) {
+                  $('#xplug_search_results').peSearch('search',l_search);
+               }
+           }
+       );
+
+        $('#xplug_search_results').peSearch();
+
+        $( document ).on( "modelCleared", function(){
+            $('#xplug_search_field').val('');
+            $('#xplug_search_results').peSearch('clear');
+        });
+    } // installTabPowersearch
+
+
+
   // Add (simulated) vertical splitter bar and powerbox DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
@@ -2905,17 +2940,17 @@ Xplug.prototype.addPowerbox = function()
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
-//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE')   + '</a></li>'
+       +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
-//     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR')   + '</a></li>'
+       +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
        +     '</ul>'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
-       +   '<div ID="xplug_pb_msgview"></div>'
-//     +   '<div ID="xplug_pb_advisor">This is the Advisor pane.</div>'
+       +   '<div ID="xplug_pb_metrics">This is the Metrics pane.</div>'
+       +   '<div ID="xplug_pb_msgview">This is the messages pane.</div>'
+       +   '<div ID="xplug_pb_search">This is the search pane.</div>'
        + '</div>'
   );
 
@@ -2969,6 +3004,9 @@ Xplug.prototype.addPowerbox = function()
   $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
 
 
+  // Install "Search" tab
+  installTabPowersearch();
+
   // Resize-redraw powerbox when splitter(s) are moved/created
   $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
 
@@ -3016,7 +3054,7 @@ Xplug.prototype.addPowerbox = function()
   //
   //
   // Nice benefit of having an own observer is that we can also automatically
-  // switch to our "Errors"-tab if an error is detected
+  // switch to our "Messages"-tab if an error is detected
   //
   // We interact with the running widget instance.
   // See http://stackoverflow.com/questions/8506621/accessing-widget-instance-from-outside-widget
@@ -3037,14 +3075,15 @@ Xplug.prototype.addPowerbox = function()
           $('div#xplug_pb_container').tabs( "option", "active", 1);
           l_widget._update( pNotifications );
       });
-}; // Xplug.prototype.addPowerbox
+
+}; // Xplug.prototype.installPowerbox
 
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: removePowerbox
+* METHOD: deinstallPowerbox
 ***************************************************************************/
-Xplug.prototype.removePowerbox = function()
+Xplug.prototype.deinstallPowerbox = function()
 {
   'use strict';
 
@@ -3062,7 +3101,7 @@ Xplug.prototype.removePowerbox = function()
       .trigger('resize');
 
   xplug.setStorage('SHOW_POWERBOX_PANE','NO');
-}; // Xplug.prototype.removePowerbox
+}; // Xplug.prototype.deinstallPowerbox
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -3285,15 +3324,14 @@ Xplug.prototype.configureDialog = function()
                                        displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
                                        properties        : l_properties2
                                      },
-                                     {
-                                       displayGroupId    : "advanced",
-                                       displayGroupTitle : get_label('LBL-ADVANCED'),
-                                       properties        : l_properties3
-                                     },
+                                    //  {
+                                    //    displayGroupId    : "advanced",
+                                    //    displayGroupTitle : get_label('LBL-ADVANCED'),
+                                    //    properties        : l_properties3
+                                    //  },
                                      {
                                        displayGroupId    : "experimental",
                                        displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
-                                       collapsed         : true,
                                        properties        : l_properties4
                                      }
                                    ] // propertySet

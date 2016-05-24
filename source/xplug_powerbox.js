@@ -24,7 +24,7 @@ l_menu$.menu(
   items : [
     {
       type     : "toggle",
-      label    : get_label('LBL-CLOSE'),
+      label    : get_label('LBL-HIDE'),
       get      : function()
                  {
                     return 0;
@@ -45,9 +45,9 @@ l_menu$.menu(
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: addPowerbox
+* METHOD: installPowerbox
 ***************************************************************************/
-Xplug.prototype.addPowerbox = function()
+Xplug.prototype.installPowerbox = function()
 {
     'use strict';
 
@@ -101,6 +101,32 @@ Xplug.prototype.addPowerbox = function()
 
 
 
+    function installTabPowersearch() {
+        $('#xplug_pb_search').html(
+            'Search: '
+          + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
+          + '<div ID="xplug_search_results"></div>'
+        );
+
+       $('#xplug_search_field').focusout(
+           function() {
+               var l_search = $('#xplug_search_field').val();
+               if (l_search.length > 0) {
+                  $('#xplug_search_results').peSearch('search',l_search);
+               }
+           }
+       );
+
+        $('#xplug_search_results').peSearch();
+
+        $( document ).on( "modelCleared", function(){
+            $('#xplug_search_field').val('');
+            $('#xplug_search_results').peSearch('clear');
+        });
+    } // installTabPowersearch
+
+
+
   // Add (simulated) vertical splitter bar and powerbox DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
@@ -108,17 +134,17 @@ Xplug.prototype.addPowerbox = function()
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
-//     +       '<li><a href="#xplug_pb_console">' + get_label('TAB-PB-CONSOLE')   + '</a></li>'
+       +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
-//     +       '<li><a href="#xplug_pb_advisor">' + get_label('TAB-PB-ADVISOR')   + '</a></li>'
+       +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
        +     '</ul>'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-//     +   '<div ID="xplug_pb_console">This is the Console pane.</div>'
-       +   '<div ID="xplug_pb_msgview"></div>'
-//     +   '<div ID="xplug_pb_advisor">This is the Advisor pane.</div>'
+       +   '<div ID="xplug_pb_metrics">This is the Metrics pane.</div>'
+       +   '<div ID="xplug_pb_msgview">This is the messages pane.</div>'
+       +   '<div ID="xplug_pb_search">This is the search pane.</div>'
        + '</div>'
   );
 
@@ -172,6 +198,9 @@ Xplug.prototype.addPowerbox = function()
   $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
 
 
+  // Install "Search" tab
+  installTabPowersearch();
+
   // Resize-redraw powerbox when splitter(s) are moved/created
   $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
 
@@ -219,7 +248,7 @@ Xplug.prototype.addPowerbox = function()
   //
   //
   // Nice benefit of having an own observer is that we can also automatically
-  // switch to our "Errors"-tab if an error is detected
+  // switch to our "Messages"-tab if an error is detected
   //
   // We interact with the running widget instance.
   // See http://stackoverflow.com/questions/8506621/accessing-widget-instance-from-outside-widget
@@ -240,14 +269,15 @@ Xplug.prototype.addPowerbox = function()
           $('div#xplug_pb_container').tabs( "option", "active", 1);
           l_widget._update( pNotifications );
       });
-}; // Xplug.prototype.addPowerbox
+
+}; // Xplug.prototype.installPowerbox
 
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: removePowerbox
+* METHOD: deinstallPowerbox
 ***************************************************************************/
-Xplug.prototype.removePowerbox = function()
+Xplug.prototype.deinstallPowerbox = function()
 {
   'use strict';
 
@@ -265,4 +295,4 @@ Xplug.prototype.removePowerbox = function()
       .trigger('resize');
 
   xplug.setStorage('SHOW_POWERBOX_PANE','NO');
-}; // Xplug.prototype.removePowerbox
+}; // Xplug.prototype.deinstallPowerbox

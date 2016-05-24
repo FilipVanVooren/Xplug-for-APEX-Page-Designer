@@ -112,8 +112,8 @@ Xplug.prototype.install_menu = function() {
 
             choices : [
                 {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
-                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false, shortcut: "ALT+N" },
-                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false, shortcut: "ALT+R" }
+                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
+                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
             ]
          }
        );
