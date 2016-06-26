@@ -272,7 +272,7 @@ Xplug.prototype.configureDialog = function()
                                   if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
                                                                                              else  { xplug.deinstallSwapGrid(); }
 
-                                  if ($('input[name=ConfigDlgPE_7_name]:checked').val() == 'YES')  { xplug.installPDTitle();   }
+                                  if ($('input[name=ConfigDlgPE_6_name]:checked').val() == 'YES')  { xplug.installPDTitle();   }
                                                                                              else  { xplug.deinstallPDTitle(); }
 
 

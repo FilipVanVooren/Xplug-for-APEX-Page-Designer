@@ -51,7 +51,10 @@ Xplug.prototype.installPowerbox = function()
 {
     'use strict';
 
-    var l_factor = 0.65;                                                            // Scaling factor
+    var c_min_factor = 0.25;
+    var c_max_factor = 0.50;
+    var l_factor     = c_max_factor;                                                // Scaling factor
+
 
     function xplug_pb_resize_handler() {
        var l_maxwidth = $('#glv-viewport').width();
@@ -103,28 +106,42 @@ Xplug.prototype.installPowerbox = function()
 
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
-            'Search: '
+            '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
           + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
-          + '<div ID="xplug_search_results"></div>'
-        );
 
-       $('#xplug_search_field').focusout(
+          + '<div'
+                 + ' ID="ORATRONIK_XPLUG_clear_search_button"'
+                 + ' style="padding: 3px; display: inline-block;">'
+                 + ' <span class="a-Icon icon-xplug-forbidden" aria-hidden="true"></span>'
+          + '</div>'
+          + '<div ID="xplug_search_results"></div>'
+        ).css('padding','3px');
+
+        $('#xplug_search_field').keypress(
            function() {
                var l_search = $('#xplug_search_field').val();
                if (l_search.length > 0) {
                   $('#xplug_search_results').peSearch('search',l_search);
+               } else {
+                  clearPowersearch();
                }
            }
-       );
+        );
 
         $('#xplug_search_results').peSearch();
+        $('#ORATRONIK_XPLUG_clear_search_button').click(clearPowersearch);
 
         $( document ).on( "modelCleared", function(){
-            $('#xplug_search_field').val('');
-            $('#xplug_search_results').peSearch('clear');
+          clearPowersearch();
         });
     } // installTabPowersearch
 
+
+    function clearPowersearch() {
+      $('#xplug_search_field').val('');
+      $('#xplug_search_results').peSearch('clear');
+      $('#xplug_pb_search').css('height','100%');
+    }
 
 
   // Add (simulated) vertical splitter bar and powerbox DIV to DOM
@@ -132,9 +149,9 @@ Xplug.prototype.installPowerbox = function()
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
-       +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
+//     +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
-       +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
+//     +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
        +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
        +     '</ul>'
@@ -142,38 +159,47 @@ Xplug.prototype.installPowerbox = function()
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-       +   '<div ID="xplug_pb_metrics">This is the Metrics pane.</div>'
-       +   '<div ID="xplug_pb_msgview">This is the messages pane.</div>'
-       +   '<div ID="xplug_pb_search">This is the search pane.</div>'
+//     +   '<div ID="xplug_pb_metrics">This is the Metrics pane.</div>'
+       +   '<div ID="xplug_pb_msgview"></div>'
+       +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
        + '</div>'
   );
 
-  // Add pane resize button
-  $('div#xplug_pb_resize')
-            .html( '<button'
-                   + ' type="button"'
-                   + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
-                   + ' class="a-Button a-Button--noLabel a-Button--iconTextButton">'
-                   + ' <span class="a-Icon icon-xplug-arrow-left" aria-hidden="true"></span>'
-                   + '</button>'
-                 )
-            .css('width','48px');
 
+  //****************************************************************************
+  /* Temporarly removed in Xplug v1.3.0.1
 
-  // Add button handler for resizing pane
-  $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
-         function()
-          {
-            if (l_factor == 0.65) {
-               l_factor = 0.45;
-               $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-left','icon-xplug-arrow-right');
-            } else{
-               l_factor = 0.65;
-               $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-right','icon-xplug-arrow-left');
+    // Add pane resize button
+    $('div#xplug_pb_resize')
+              .html( '<button'
+                     + ' type="button"'
+                     + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
+                     + ' class="a-Button a-Button--noLabel a-Button--iconTextButton">'
+                     + ' <span class="a-Icon icon-xplug-arrow-left" aria-hidden="true"></span>'
+                     + '</button>'
+                   )
+              .css('width','48px');
+
+    // Add button handler for resizing pane
+    $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
+           function()
+            {
+              if (l_factor == 0.50) {
+                 l_factor = 0.25;
+                 $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-left','icon-xplug-arrow-right');
+              } else{
+                 l_factor = 0.50;
+                 $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-right','icon-xplug-arrow-left');
+              }
+              xplug_pb_resize_handler();
             }
-            xplug_pb_resize_handler();
-          }
-  );
+    );
+
+  */
+  //****************************************************************************
+
+
+
 
   // Add hamburger menu
   $('div#xplug_pb_right')
@@ -266,7 +292,7 @@ Xplug.prototype.installPowerbox = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 1);
+          $('div#xplug_pb_container').tabs( "option", "active", 0);
           l_widget._update( pNotifications );
       });
 

@@ -52,6 +52,11 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + '</g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>'
                + '</svg>';
 
+   // Forbidden icons
+   C_icon.forbidden
+               = ' <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="%%" height="%%"> '
+               + ' <path fill="#FFF" stroke-width="45" stroke="#F00" d="M86,88a230,230 0 1,0 1-1zL412,412"/> '
+               +  ' </svg>';
 
    // Arrow left
    C_icon.arrow_left

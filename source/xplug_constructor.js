@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.3.0';
+   var C_version = 'Xplug v1.3.0.1';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -208,6 +208,7 @@ var Xplug = function() {
             + l_lf + '  .a-Icon.icon-xplug-arrow-right ' + get_svg_icon('arrow_right',14,14,null,1)
             + l_lf + '  .a-Icon.icon-xplug-moon '        + get_svg_icon('moon',14,14,null,1)
             + l_lf + '  .a-Icon.icon-xplug-sun  '        + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-forbidden '   + get_svg_icon('forbidden',16,16,null,1)
             + l_lf + '</style>'
         );
       }

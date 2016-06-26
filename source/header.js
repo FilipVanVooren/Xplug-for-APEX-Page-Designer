@@ -195,6 +195,12 @@
 //                     - Added new 'Search' tab to Powerbox
 //                     - Renamed some labels
 //
+// V1.3.0.1 2016-06-25 * Several tweaks and Bug-Fixes
+//                       - Bug-fix: Configuration of page designer title wasn't working anymore. Fixed this.
+//                       - Bug-Fix: Added vertical scrollbar to Search function
+//                       - Change:  Temporarly removed possibility to resize Powerbox pane
+//                       - Change:  Completed work on search functionality in Powerbox pane
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
