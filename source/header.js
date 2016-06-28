@@ -201,6 +201,11 @@
 //                       - Change:  Temporarly removed possibility to resize Powerbox pane
 //                       - Change:  Completed work on search functionality in Powerbox pane
 //
+//
+// V1.3.0.1 2016-06-28 * Multiple changes
+//                       - Adjusted messages badge position in powerbox pane
+//
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

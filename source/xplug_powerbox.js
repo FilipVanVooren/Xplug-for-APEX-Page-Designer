@@ -149,13 +149,14 @@ Xplug.prototype.installPowerbox = function()
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
-//     +   '<div ID="xplug_pb_resize" class="a-Toolbar-items a-Toolbar-items--left"></div>'
        +     '<ul>'
 //     +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
        +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
        +     '</ul>'
+       +    '<div style="text-align: right">'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
+       +    '</div>'
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
@@ -164,39 +165,6 @@ Xplug.prototype.installPowerbox = function()
        +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
        + '</div>'
   );
-
-
-  //****************************************************************************
-  /* Temporarly removed in Xplug v1.3.0.1
-
-    // Add pane resize button
-    $('div#xplug_pb_resize')
-              .html( '<button'
-                     + ' type="button"'
-                     + ' ID="ORATRONIK_XPLUG_powercontrol_button"'
-                     + ' class="a-Button a-Button--noLabel a-Button--iconTextButton">'
-                     + ' <span class="a-Icon icon-xplug-arrow-left" aria-hidden="true"></span>'
-                     + '</button>'
-                   )
-              .css('width','48px');
-
-    // Add button handler for resizing pane
-    $('#ORATRONIK_XPLUG_powercontrol_button').on('click',
-           function()
-            {
-              if (l_factor == 0.50) {
-                 l_factor = 0.25;
-                 $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-left','icon-xplug-arrow-right');
-              } else{
-                 l_factor = 0.50;
-                 $('button#ORATRONIK_XPLUG_powercontrol_button span').switchClass('icon-xplug-arrow-right','icon-xplug-arrow-left');
-              }
-              xplug_pb_resize_handler();
-            }
-    );
-
-  */
-  //****************************************************************************
 
 
 
