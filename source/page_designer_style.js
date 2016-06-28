@@ -186,7 +186,11 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          // Hack for border-radius
           + l_lf;
 
-
+    //==========================================================================
+    // Xplug powerbox
+    //==========================================================================
+    l_css +=        ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_search { background-color : ' + l_c2 + '; }'  // Powerbox background
+          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';                      // Buttons background
 
     //==========================================================================
     // Messages, Page Search, Help, Alert Badge
@@ -204,8 +208,8 @@ window.pageDesigner.setStyle = function( p_style_name,
           +  l_lf + ' .a-AlertMessages-message.is-error:hover,'
                   + ' .a-AlertMessages-message.is-error:focus         {  background-color : ' + l_c7 + ' !important; }';
 
-    // Page Search
-    l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label,'
+    // Page Search and Powerbox Search
+    l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label, div#xplug_pb_search  .a-Form-label,'
           +  l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
           +  l_lf + ' { color: ' + l_c7 + '; }';
 
@@ -292,7 +296,10 @@ window.pageDesigner.setStyle = function( p_style_name,
  * Add custom method to pageDesigner Object
  * METHOD: unsetStyle
  ***************************************************************************/
-window.pageDesigner.unsetStyle = function() {
+window.pageDesigner.unsetStyle = function()
+{
+   'use strict';
+
    $('style#XPLUG_THEME').remove();
    window.pageDesigner.noPrettyGrid();
 
@@ -314,29 +321,31 @@ window.pageDesigner.unsetStyle = function() {
  ***************************************************************************/
 window.pageDesigner.loadStyle = function(p_style_name)
 {
-  var l_imp_obj;
+   'use strict';
 
-  if (p_style_name == 'NONE') {
-     window.pageDesigner.unsetStyle();
-     return;
-  }
+   var l_imp_obj;
 
-  //
-  // Get settings
-  //
-  try {
-     l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
-  } catch(e) {
-     console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
-     return 0;
-  }
+   if (p_style_name == 'NONE') {
+      window.pageDesigner.unsetStyle();
+      return;
+   }
+
+   //
+   // Get settings
+   //
+   try {
+      l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
+   } catch(e) {
+      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
+      return 0;
+   }
 
 
-  if (l_imp_obj === null) {
-     console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
-     window.pageDesigner.loadStyle('NONE');
-     return 0;
-  }
+   if (l_imp_obj === null) {
+      console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      window.pageDesigner.loadStyle('NONE');
+      return 0;
+   }
 
 
   window.pageDesigner.setStyle
@@ -365,11 +374,14 @@ window.pageDesigner.loadStyle = function(p_style_name)
  * Add custom method to pageDesigner Object
  * METHOD: getStyles
  ***************************************************************************/
-window.pageDesigner.getStyles = function() {
-  var l_arr_styles = [];
-  var l_arr_keys   = xplug.getStorageKeys(true);
+window.pageDesigner.getStyles = function()
+{
+   'use strict';
 
-  for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
+   var l_arr_styles = [];
+   var l_arr_keys   = xplug.getStorageKeys(true);
+
+   for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
       var l_key = l_arr_keys[i];
 
       var l_current = xplug.getStorage('CURRENT_STYLE','',true);
@@ -384,10 +396,10 @@ window.pageDesigner.getStyles = function() {
          if (l_style !== null) {
             l_arr_styles.push(l_style);
          }
-     }
-  }
+      }
+   }
 
-  return l_arr_styles;
+   return l_arr_styles;
 }; // window.pageDesigner.getStyles
 
 
@@ -490,8 +502,8 @@ window.pageDesigner.customizeStyle = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: exportStyleDialog
  ***************************************************************************/
- window.pageDesigner.exportStyleDialog = function(p_style) {
-
+ window.pageDesigner.exportStyleDialog = function(p_style)
+ {
    'use strict';
 
    var l_out = apex.util.htmlBuilder();
@@ -527,7 +539,6 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_json = JSON.parse(xplug.getStorage(p_style,null,true));
 
    $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON').val(JSON.stringify(l_json,null,4));
-
  }; // exportStyleDalog
 
 
@@ -536,8 +547,8 @@ window.pageDesigner.customizeStyle = function(p_title)
  * Add custom method to pageDesigner Object
  * METHOD: importStyleDialog
  ***************************************************************************/
- window.pageDesigner.importStyleDialog = function(p_LOV_title) {
-
+ window.pageDesigner.importStyleDialog = function(p_LOV_title)
+ {
    'use strict';
 
    var l_out = apex.util.htmlBuilder();
@@ -1049,161 +1060,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                             ]
                 }
        ); // customizeStyleDialog
-
-    return 1;
-};
-
-
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: setDefaultStylesDialog
- ***************************************************************************/
-window.pageDesigner.setDefaultStylesDialog = function(p_title, p_LOV_title)
-{
-    'use strict';
-
-    //
-    // Exit if not in APEX Page Designer
-    //
-    if (typeof(window.pageDesigner) != 'object') {
-       return 0;
-    }
-
-    var l_dialog$;
-    var l_dialogPE$;
-    var l_properties1 = [];
-    var l_out         = apex.util.htmlBuilder();
-
-
-    l_out.markup('<div')
-         .attr('id','ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG')
-         .markup('>')
-         .markup('<div')
-         .attr('id','StyleDefaultsDlgPE')
-         .markup('>');
-
-
-    l_dialog$ = $(l_out.html)
-        .dialog(
-                { modal   : true,
-                  title   : p_title,
-                  width   : 400,
-
-                  close   : function(pEvent) {
-                               $('#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG').remove();
-                            },
-                  open    : function() {
-
-                              function getStyleLOV(p_mode) {
-                                var l_arr_LOV    = [];
-                                var l_arr_styles = window.pageDesigner.getStyles();
-
-                                for (var l in l_arr_styles) {
-                                    if (   (p_mode == 'DAYLIGHT'  && l_arr_styles[l].DARK_STYLE == 'NO')
-                                        || (p_mode == 'MOONLIGHT' && l_arr_styles[l].DARK_STYLE == 'YES') ) {
-
-                                        l_arr_LOV.push({ d: l_arr_styles[l].STYLE_NAME,
-                                                         r: l_arr_styles[l].STYLE_NAME
-                                                       });
-                                    } // if
-                                }     // for
-
-                                if (p_mode == 'DAYLIGHT') {
-                                   l_arr_LOV.push({ d: 'Original (none)', r: 'NONE'});
-                                }
-
-                                return l_arr_LOV;
-                              }
-
-
-                               l_dialogPE$ = $('#StyleDefaultsDlgPE');
-
-                               //
-                               // Build properties for property group 1 (style options)
-                               //
-                               l_properties1[0] = {
-                                   propertyName: "default_daylight_style",
-                                   value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-DAYLIGHT'),
-                                       lovValues:      getStyleLOV('DAYLIGHT'),
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "style_id"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
-
-                               l_properties1[1] = {
-                                   propertyName: "default_moonlight_style",
-                                   value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-MOONLIGHT'),
-                                       lovValues:      getStyleLOV('MOONLIGHT'),
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "style_id"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
-
-
-
-                               //
-                               // Create Property Editor
-                               //
-                               $('#StyleDefaultsDlgPE').propertyEditor( {
-                                 focusPropertyName: "default_daylight_style",
-                                 data: {
-                                   propertySet: [
-                                     {
-                                       displayGroupId    : "style_id",
-                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
-                                       properties        : l_properties1
-                                     },
-                                   ] // propertySet
-                                 }   // data
-                               });   // propertyEditor
-
-                               $( '#ORATRONIK_XPLUG_STYLE_DEFAULTS_DIALOG' ).dialog({
-                                   position: { 'my': 'center', 'at': 'center' }
-                               });
-
-
-                            }, // open
-
-                  buttons : [
-                              { text  : get_label('BTN-CANCEL'),
-                                click : function() {
-                                  $( this ).dialog( "close" );
-                                }
-                              },
-
-                              { text  : get_label('BTN-SAVE'),
-                                class : 'a-Button--hot',
-                                click : function() {
-                                  var l_style1 = $('#StyleDefaultsDlgPE_1').val();
-                                  var l_style2 = $('#StyleDefaultsDlgPE_2').val();
-                                  var l_class  = $('button#ORATRONIK_XPLUG_moonsun_button span').attr('class');
-
-                                  xplug.setStorage('DEFAULT_STYLE1',l_style1,true);
-                                  xplug.setStorage('DEFAULT_STYLE2',l_style2,true);
-
-                                  window.pageDesigner.loadStyle(
-                                      l_class.indexOf('icon-xplug-moon') > -1 ? l_style2
-                                                                              : l_style1
-                                  );
-
-                                  $( this ).dialog( "close" );
-                                }
-                              }
-                            ]
-                }
-       ); // setDefaultStylesDialog
 
     return 1;
 };

@@ -7,7 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
-
+/* jshint -W083 */
 
 Xplug.prototype.install_menu = function() {
 
@@ -58,7 +58,7 @@ Xplug.prototype.install_menu = function() {
                     },
             set   : function()
                     {
-                      apex.actions.invoke('pd-xplug-set-daylight-mode');
+                      apex.actions.invoke('pd-xplug-set-day-mode');
                     }
          }
        );
@@ -68,22 +68,124 @@ Xplug.prototype.install_menu = function() {
          { type   : "separator" },
 
          {
-            type  : "action",
-            label : get_label('SET_DEFAULTS'),
-            get   : function()
-                    {
-                     return xplug.getStorage('CURRENT_STYLE','NONE',true) == 'NONE';
-                    },
-            action: function()
-                    {
-                      window.pageDesigner.setDefaultStylesDialog(get_label('SET_DEFAULTS'));
-                    }
+           type     : "action",
+           label    : get_label('LBL-STYLE-GALLERY'),
+           icon    : "icon-theme-roller",
+           action   : function()
+                      {
+                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
+                      },
+           disabled : function()
+                      {
+                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
+                      }
          }
        );
 
        return l_arr_menu_items;
     } // install_SubmenuPickStyles
 
+
+    function install_SubmenuDockGrid() {
+       var l_arr_menu_items = [];
+
+       l_arr_menu_items.push(
+         {
+            type  : "radioGroup",
+
+            get : function () {
+                    return $('div#top_col').prevAll('div#right_col').length == 1
+                              ? "RIGHT"
+                              : "MIDDLE";
+                  },
+
+            set : function(l_radio_value) {
+                      switch(l_radio_value) {
+                          case "LEFT"   : apex.actions.invoke('pd-xplug-dock-grid-left');
+                                          break;
+                          case "MIDDLE" : apex.actions.invoke('pd-xplug-dock-grid-middle');
+                                          break;
+                          case "RIGHT"  : apex.actions.invoke('pd-xplug-dock-grid-right');
+                                          break;
+                      }
+                   },
+
+            choices : [
+                {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
+                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
+                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
+            ]
+         }
+       );
+
+       return l_arr_menu_items;
+    } // install_SubmenuDockGrid
+
+
+    function install_SubmenuQuickControls() {
+       var l_arr_menu_items = [];
+
+       l_arr_menu_items.push(
+         {
+           type     : "toggle",
+           label    : get_label('NOTOOLTIPS'),
+           get      : function()
+                      {
+                         return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
+
+                           apex.actions.invoke('pd-xplug-enable-tooltips')
+                              ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
+                              : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
+
+                        } else {
+
+                            apex.actions.invoke('pd-xplug-disable-tooltips')
+                            ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
+                            : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
+                        }
+
+                        // Remove notification afer 1.5 seconds
+                        window.setTimeout( function() {
+                                             pageDesigner.hideNotification();
+                                           },
+                                           1500
+                                         );
+                      },
+
+           disabled : function() { return false; }
+         },
+
+         {
+           type     : "toggle",
+           label    : get_label('LBL-ADD-POWERBOX'),
+           get      : function()
+                      {
+                         return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
+                           apex.actions.invoke('pd-xplug-remove-powerbox');
+                        } else {
+                           apex.actions.invoke('pd-xplug-add-powerbox');
+                        }
+                      },
+
+           disabled : function()
+                      {
+                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                      }
+         }
+       );
+
+       return l_arr_menu_items;
+    } // install_SubmenuQuickControls
 
 
 
@@ -98,65 +200,32 @@ Xplug.prototype.install_menu = function() {
     {
       items : [
         {
-          type     : "toggle",
-          label    : get_label('DOCKRIGHT'),
-          get      : function()
-                     {
-                        return $('div#top_col').prevAll('div#right_col').length == 1;
+
+          type     : "subMenu",
+          label    : get_label('DOCK-GRID'),
+          icon     : "icon-region-native-sql-report",
+          menu     : { items : install_SubmenuDockGrid() },
+          disabled : function() {
+                        return false;
                      },
-          set      : function()
-                     {
-                        $('div#top_col').prevAll('div#right_col').length === 0
-                           ? apex.actions.invoke('pd-xplug-dock-grid-right')
-                           : apex.actions.invoke('pd-xplug-dock-grid-middle');
-                     },
-          disabled : function()
-                     {
-                       return false;
-                     }
         },
 
-        {
-          type     : "toggle",
-          label    : get_label('NOTOOLTIPS'),
-          get      : function()
-                     {
-                        return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
-                     },
+        { type   : "separator" },
 
-          set      : function()
-                     {
-                       if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
-
-                          apex.actions.invoke('pd-xplug-enable-tooltips')
-                             ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
-                             : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
-
-                       } else {
-
-                           apex.actions.invoke('pd-xplug-disable-tooltips')
-                           ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
-                           : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
-                       }
-
-                       // Remove notification afer 1.5 seconds
-                       window.setTimeout( function() {
-                                            pageDesigner.hideNotification();
-                                          },
-                                          1500
-                                        );
-                     },
-
+        { type     : "subMenu",
+          label    : get_label('QUICK-CTRL'),
+          menu     : { items : install_SubmenuQuickControls() },
           disabled : function()
                      {
                        return false;
                      }
+
         },
 
         { type     : "separator" },
 
         { type     : "subMenu",
-          label    : get_label('PICK_STYLE'),
+          label    : get_label('LBL-STYLE'),
           menu     : { items : __install_SubmenuPickStyles() },
           disabled : function()
                      {
@@ -167,24 +236,14 @@ Xplug.prototype.install_menu = function() {
 
         { type     : "separator" },
 
-        { type    : "subMenu",
-          label   : get_label('CUSTOMIZE'),
-          menu    : { items :
-                      [
-                         {
-                           type     : "action",
-                           label    : get_label('LBL-STYLE-CUSTOM'),
-                           action   : function()
-                                      {
-                                         window.pageDesigner.customizeStyle('Customize Page Designer Style');
-                                      },
-                           disabled : function()
-                                      {
-                                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
-                                      }
-                         }
-                      ]
-                    }
+        { type    : "action",
+          label   : get_label('CONFIGURE'),
+          icon    : "icon-tools",
+          action   : xplug.configureDialog,
+          disabled : function()
+                     {
+                       return 0;
+                     }
         },
 
         { type     : "separator"

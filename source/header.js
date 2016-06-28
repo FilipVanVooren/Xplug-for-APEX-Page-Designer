@@ -125,9 +125,88 @@
 //                     - Bug-fix: Set height of Custom CSS textarea in configuration dialog AND turn off
 //                                spell-checking for that field.
 //
+// v1.2.2 2016-02-06 * Add application ID and page ID to window/browser tab title (setWinTttle method)
+//
+// V1.2.2 2016-02-07 * Multiple changes
+//                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
+//                     - Bug-fix: removed hard code label parameter in xplug_menu.js
+//                     - Renamed submenu 'Customize' to 'Setup'
+//                     - Added xplug_powerbox.js for displaying errors and advisor stuff
+//
+// V1.2.2 2016-02-09 * Multiple changes
+//                     - Bug-fix: Powerbox - Show Alertbadge when error is displayed
+//                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
+//                                           sure that correct height is taken.
+//
+// V1.2.2 2016-02-14 * Multiple changes
+//                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
+//                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
+//                                get tracked as soon as the powerbox is opened.
+//
+// V1.2.2 2016-02-17 * Multiple changes
+//                     - Bug-fix: Adjusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
+//                                We only want the Xplug plugin to be activated when dealing with
+//                                page 4500 (Page Designer)
+//                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
+//                                ordering. Is now resolved.
+//                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
+//
+// V1.2.2 2016-03-07 * Multiple Changes
+//                     - Removed Advisor/Console tabs in powerbox pane for now
+//                     - Added possibility to horizontally expand/restore size of powerbox pane
+//
+// V1.2.2 2016-04-10 * Some minor Changes
+//                     - Introduced new button for swapping grid pane from middle<->right
+//                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
+//
+// V1.2.2 2016-04-19 * Bug-Fixes
+//                     - Fixed wrong background color for buttons in powerbox, was particulary noticeable in
+//                       Moonlight mode.
+//                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
+//                       gets too small.
+//                     - This version is not officially released, functionality will be part of upcoming v1.3
+//
+// V1.3.0 2016-05-02 * Preliminiary work on new version
+//                     - Reworked menu system (new labels, icons, ...)
+//                     - Show daylight/moonlight icons in Default style dialog
+//                     - Introduced new Xplug settings dialog
+//
+// V1.3.0 2016-05-16 * Multiple changes
+//                     - Code refactoring in xplug_constructor.js
+//                       Is required due to new possibility of turning most features on/off.
+//                     - Possibility to toggle all Xplug buttons on/off from Xplug settings dialog
+//
+// V1.3.0 2016-05-16 * Change
+//                     Configure default Page Designer Styles as part of Xplug settings dialog, instead of
+//                     having own dialog. Removed corresponding submenu entry and refactored code.
+//
+// V1.3.0 2016-05-23 * Multiple changes
+//                     - Bug-fix: Use promise when jumping to previous/next page. This behaviour is
+//                                aligned with PD behaviour and prevents creation of double event handlers.
+//                                Benefit is also that buttons are reliably re-enabled even if user aborts
+//                                switching page in confirmation dialog.
+//                     - Change:  Code refactoring and renamed daylight/moonlight mode to day/night mode.
+//                     - Change:  Make setting [APP:ID] in Page Designer window title optional.
+//                     - Change:  Renamed 'Page Designer Style' in 'Theme' because that is what it is.
+//                     - Change:  Reworked the Xplug menus, is cleaner and more understandable now.
+//
+//
+// V1.3.0 2016-05-24 * Multiple changes
+//                     - Added new 'Search' tab to Powerbox
+//                     - Renamed some labels
+//
+// V1.3.0.1 2016-06-25 * Several tweaks and Bug-Fixes
+//                       - Bug-fix: Configuration of page designer title wasn't working anymore. Fixed this.
+//                       - Bug-Fix: Added vertical scrollbar to Search function
+//                       - Change:  Temporarly removed possibility to resize Powerbox pane
+//                       - Change:  Completed work on search functionality in Powerbox pane
+//
+//
+// V1.3.0.1 2016-06-28 * Multiple changes
+//                       - Adjusted messages badge position in powerbox pane
+//
 //
 // REMARKS
-//
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
 //

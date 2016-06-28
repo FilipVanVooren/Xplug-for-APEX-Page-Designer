@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.2.1 (www.oratronik.de)';
+   var C_version = 'Xplug v1.3.0.1';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -22,51 +22,7 @@ var Xplug = function() {
       return 0;
    }
 
-  /****************************************************************************
-   * Install buttons for going to previous / next page
-   ***************************************************************************/
-   function __install_goto_page()
-   {
-       $('div.a-PageSelect')
 
-          .before( '<button'
-                 + ' type="button"'
-                 + ' ID="ORATRONIK_XPLUG_prev_page_button"'
-                 + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
-                 + ' data-action="pd-xplug-goto-previous-page">'
-                 + ' <span class="a-Icon icon-xplug-previous" aria-hidden="true"></span>'
-                 + '</button>'
-
-                 + '<button'
-                 + ' type="button"'
-                 + ' ID="ORATRONIK_XPLUG_next_page_button"'
-                 + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"'
-                 + ' data-action="pd-xplug-goto-next-page">'
-                 + ' <span class="a-Icon icon-xplug-next" aria-hidden="true"></span>'
-                 + '</button>'
-               );
-
-       $('.a-PageSelect').css('border-left','0px');
-
-
-       // Get list of pages in JSON format and store result in array.
-       // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
-       apex.server.process
-          (
-             "getPages", {
-                           x01:  "Y" ,
-                           x02:  "userInterfaceId" ,
-                           x03:  ""
-                         },
-             {
-               success : function(pPageList)
-                         {
-                            xplug.arr_page_list = pPageList;
-                         }
-             }
-          );
-
-  } // install_goto_page
 
 
   /****************************************************************************
@@ -139,6 +95,20 @@ var Xplug = function() {
           },
 
           {
+            name     : "pd-xplug-swap-grid-pane",
+            label    : get_label('BTN-SWAP-GRID-PANE'),
+            action   : function( event, focusElement )
+                       {
+                         var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
+                         if (l_switched == 'NO') {
+                            return window.pageDesigner.dockGridRight();
+                         } else {
+                            return window.pageDesigner.dockGridMiddle();
+                         }
+                       }
+          },
+
+          {
             name     : "pd-xplug-disable-tooltips",
             label    : get_label('NOTOOLTIPS'),
             shortcut : "????",
@@ -159,27 +129,27 @@ var Xplug = function() {
           },
 
           {
-            name     : "pd-xplug-set-moonlight-mode",
+            name     : "pd-xplug-set-night-mode",
             label    : get_label('LBL-MOONLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                           return window.pageDesigner.MoonlightMode();
+                           return window.pageDesigner.setNightMode();
                        }
           },
 
           {
-            name     : "pd-xplug-set-daylight-mode",
+            name     : "pd-xplug-set-day-mode",
             label    : get_label('LBL-DAYLIGHT'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                           return window.pageDesigner.DaylightMode();
+                           return window.pageDesigner.setDayMode();
                        }
           },
 
           {
-            name     : "pd-xplug-toggle-daylight-moonlight-mode",
+            name     : "pd-xplug-toggle-day-night-mode",
             label    : get_label('BTN-TGL-DAY-MOON'),
             shortcut : "Alt+F10",
             action   : function( event, focusElement )
@@ -188,10 +158,30 @@ var Xplug = function() {
                                                      .attr('class').indexOf('icon-xplug-moon') >= 0;
 
                           if (l_style2_is_on === true) {
-                             return  apex.actions.invoke('pd-xplug-set-daylight-mode');
+                             return  apex.actions.invoke('pd-xplug-set-day-mode');
                           } else {
-                             return  apex.actions.invoke('pd-xplug-set-moonlight-mode');
+                             return  apex.actions.invoke('pd-xplug-set-night-mode');
                           }
+                       }
+          },
+
+          {
+            name     : "pd-xplug-add-powerbox",
+            label    : get_label('LBL-ADD-POWERBOX'),
+            shortcut : "????",
+            action   : function( event, focusElement )
+                       {
+                          return xplug.installPowerbox();
+                       }
+          },
+
+          {
+            name     : "pd-xplug-remove-powerbox",
+            label    : get_label('LBL-REMOVE-POWERBOX'),
+            shortcut : "????",
+            action   : function( event, focusElement )
+                       {
+                          return xplug.deinstallPowerbox();
                        }
           }
 
@@ -210,11 +200,15 @@ var Xplug = function() {
         // Add custom CSS to page header
         $('head').append(
             + l_lf + '<style type="text/css">'
-            + l_lf + '  button#ORATRONIK_XPLUG:hover        { background-color: #FFFFFF!important; }'
-            + l_lf + '  .a-Icon.icon-xplug-previous::before { content: "\\e029" }'
-            + l_lf + '  .a-Icon.icon-xplug-next::before     { content: "\\e028" }'
-            + l_lf + '  .a-Icon.icon-xplug-moon ' + get_svg_icon('moon',14,14,null,1)
-            + l_lf + '  .a-Icon.icon-xplug-sun  ' + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  button#ORATRONIK_XPLUG:hover            { background-color: #FFFFFF!important; }'
+            + l_lf + '  .a-Icon.icon-xplug-previous::before     { content: "\\e029" }'
+            + l_lf + '  .a-Icon.icon-xplug-next::before         { content: "\\e028" }'
+            + l_lf + '  .a-Icon.icon-xplug-arrows-h '    + get_svg_icon('arrows_h',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-arrow-left '  + get_svg_icon('arrow_left',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-arrow-right ' + get_svg_icon('arrow_right',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-moon '        + get_svg_icon('moon',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-sun  '        + get_svg_icon('sun',14,14,null,1)
+            + l_lf + '  .a-Icon.icon-xplug-forbidden '   + get_svg_icon('forbidden',16,16,null,1)
             + l_lf + '</style>'
         );
       }
@@ -256,8 +250,6 @@ var Xplug = function() {
                        + l_menu_icon
                        + '</button>');
 
-        __install_goto_page();
-        __install_moonsun_switch();
         __install_actions();
 
         if (localStorage === null) {
@@ -266,6 +258,9 @@ var Xplug = function() {
                  { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
         }
+
+
+
    } // __init
 
    __init();
@@ -273,13 +268,198 @@ var Xplug = function() {
 
 
 
-Xplug.prototype.loadSettings = function ()
-{
-   window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
 
-   xplug.getStorage('PANES_SWITCHED','NO')    == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-   xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-}; // Xplug.prototype.loadSettings
+
+
+
+
+  /****************************************************************************
+   * Install buttons for going to previous / next page
+   ***************************************************************************/
+  Xplug.prototype.installGotoPage = function ()
+  {
+    if  ( $('button#ORATRONIK_XPLUG_prev_page_button').length == 1 ) return;
+
+    var l_node = $('button#ORATRONIK_XPLUG_moonsun_button').length == 1
+                     ? 'button#ORATRONIK_XPLUG_moonsun_button'
+                     : 'div.a-PageSelect';
+
+    $(l_node)
+        .before( '<button'
+               + ' type="button"'
+               + ' ID="ORATRONIK_XPLUG_prev_page_button"'
+               + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+               + ' data-action="pd-xplug-goto-previous-page">'
+               + ' <span class="a-Icon icon-xplug-previous" aria-hidden="true"></span>'
+               + '</button>'
+
+               + '<button'
+               + ' type="button"'
+               + ' ID="ORATRONIK_XPLUG_next_page_button"'
+               + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"'
+               + ' data-action="pd-xplug-goto-next-page">'
+               + ' <span class="a-Icon icon-xplug-next" aria-hidden="true"></span>'
+               + '</button>'
+             );
+
+
+     // Get list of pages in JSON format and store result in array.
+     // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
+     apex.server.process
+        (
+           "getPages", {
+                         x01:  "Y" ,
+                         x02:  "userInterfaceId" ,
+                         x03:  ""
+                       },
+           {
+             success : function(pPageList)
+                       {
+                          xplug.arr_page_list = pPageList;
+                       }
+           }
+        );
+
+     xplug.setStorage('BTN-PRVNEXT-PAGE','YES');
+  }; // installGotoPage
+
+
+
+  /****************************************************************************
+   * Deinstall buttons for going to previous / next page
+   ***************************************************************************/
+  Xplug.prototype.deinstallGotoPage = function ()
+  {
+    $('button#ORATRONIK_XPLUG_prev_page_button,button#ORATRONIK_XPLUG_next_page_button')
+        .remove();
+
+    xplug.setStorage('BTN-PRVNEXT-PAGE','NO');
+   }; // deinstallGotoPage
+
+
+
+
+
+  /****************************************************************************
+   * Install Theme switch (daylight/moonlight) button
+   ***************************************************************************/
+   Xplug.prototype.installThemeSwitch = function ()
+   {
+     if  ( $('button#ORATRONIK_XPLUG_moonsun_button').length == 1 ) return;
+     $('.a-PageSelect').css('border-left','0px');
+
+     $('div.a-PageSelect')
+               .before( '<button'
+                      + ' type="button"'
+                      + ' ID="ORATRONIK_XPLUG_moonsun_button"'
+                      + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                      + ' data-action="pd-xplug-toggle-day-night-mode">'
+                      + ' <span class="a-Icon icon-xplug-sun"></span>'
+                      + '</button>'
+                    );
+
+     xplug.setStorage('BTN-THEME-SWITCH','YES');
+   }; // installThemeSwitch
+
+
+  /****************************************************************************
+   * Install Theme switch (daylight/moonlight) button
+   ***************************************************************************/
+   Xplug.prototype.deinstallThemeSwitch = function ()
+   {
+     $('button#ORATRONIK_XPLUG_moonsun_button').remove();
+
+     if ( $('button#ORATRONIK_XPLUG_prev_page_button').length === 0) {
+        $('.a-PageSelect').css('border-left',
+                               xplug.getStorage('orig.a-PageSelect','0px'));
+     }
+
+     xplug.setStorage('BTN-THEME-SWITCH','NO');
+   }; // deinstallThemeSwitch
+
+
+
+  /****************************************************************************
+   * Install swap grid pane button
+   ***************************************************************************/
+   Xplug.prototype.installSwapGrid = function ()
+   {
+     if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
+
+     $('button#glvExpandRestoreBtn')
+              .after( '<button'
+                    + ' type="button"'
+                    + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
+                    + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                    + ' data-action="pd-xplug-swap-grid-pane">'
+                    + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                    + '</button>'
+              );
+
+     xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
+   }; // installSwapGrid
+
+
+  /****************************************************************************
+   * Deinstall swap grid pane button
+   ***************************************************************************/
+   Xplug.prototype.deinstallSwapGrid = function ()
+   {
+     $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
+
+     xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
+   }; // DeinstallSwapGrid
+
+
+   /****************************************************************************
+    * Install [app:id] in Window Title
+    ***************************************************************************/
+    Xplug.prototype.installPDTitle = function ()
+    {
+      $(document).on('modelReady', pageDesigner.setWinTitle);
+      pageDesigner.setWinTitle();
+
+      xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
+    }; // installPDTitle
+
+
+    /****************************************************************************
+    * Deinstall [app:id] in Window Title
+    ****************************************************************************/
+    Xplug.prototype.deinstallPDTitle = function ()
+    {
+      $(document).off('modelReady', pageDesigner.setWinTitle);
+
+      var l_title = $(document).attr('title');
+      l_title     = l_title.replace(/\s\[.*$/,'');                             // Remnove old [xxx:xxx] value
+
+      $(document).attr('title',l_title);
+
+      xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
+    }; // deinstallPDTitle
+
+
+  /*****************************************************************************
+   * Load Xplug settings from localStorage
+   ****************************************************************************/
+   Xplug.prototype.loadSettings = function ()
+   {
+     window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
+
+     xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+     xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+     xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-powerbox');
+
+     xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
+     xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installGotoPage();
+     xplug.getStorage('BTN-THEME-SWITCH','NO')   == 'YES' && xplug.installThemeSwitch();
+     xplug.getStorage('BTN-SWAP-GRID-PANE','NO') == 'YES' && xplug.installSwapGrid();
+     xplug.getStorage('APP+ID-IN-PD-TITLE','NO') == 'YES' && xplug.installPDTitle();
+   }; // Xplug.prototype.loadSettings
+
+
+
+
 
 
 
