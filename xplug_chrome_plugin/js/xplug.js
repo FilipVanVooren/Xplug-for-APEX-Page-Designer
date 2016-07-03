@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Jun 28 2016 20:47:56
+// Built using Gulp. Built date: Sun Jul 03 2016 19:17:40
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -205,7 +205,11 @@
 //
 // V1.3.0.1 2016-06-28 * Multiple changes
 //                       - Adjusted messages badge position in powerbox pane
+//                       - This is the official released version
 //
+// V1.3.0.2 2016-07-01 * Bug-fix
+//                       - Default value for the previous/next button and dark mode / daylight mode is set
+//                         to YES in the configuration dialog. This is wrong.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -1999,7 +2003,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.3.0.1';
+   var C_version = 'Xplug v1.3.0.2';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -3198,7 +3202,7 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[0] = {
                                    propertyName: "show_prevnext_buttons",
-                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','YES'),
+                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                        prompt:         '',
@@ -3214,7 +3218,7 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[1] = {
                                    propertyName: "show_moonlight_toggle",
-                                   value:        xplug.getStorage('BTN-THEME-SWITCH','YES'),
+                                   value:        xplug.getStorage('BTN-THEME-SWITCH','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                        prompt:         '',

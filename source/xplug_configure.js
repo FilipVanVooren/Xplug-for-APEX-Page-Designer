@@ -82,7 +82,7 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[0] = {
                                    propertyName: "show_prevnext_buttons",
-                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','YES'),
+                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                        prompt:         '',
@@ -98,7 +98,7 @@ Xplug.prototype.configureDialog = function()
 
                                l_properties1[1] = {
                                    propertyName: "show_moonlight_toggle",
-                                   value:        xplug.getStorage('BTN-THEME-SWITCH','YES'),
+                                   value:        xplug.getStorage('BTN-THEME-SWITCH','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                        prompt:         '',
