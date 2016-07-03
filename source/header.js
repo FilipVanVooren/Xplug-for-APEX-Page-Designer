@@ -204,7 +204,11 @@
 //
 // V1.3.0.1 2016-06-28 * Multiple changes
 //                       - Adjusted messages badge position in powerbox pane
+//                       - This is the official released version
 //
+// V1.3.0.2 2016-07-01 * Bug-fix
+//                       - Default value for the previous/next button and dark mode / daylight mode is set
+//                         to YES in the configuration dialog. This is wrong.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
