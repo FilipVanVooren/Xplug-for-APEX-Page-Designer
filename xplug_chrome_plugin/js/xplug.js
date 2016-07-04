@@ -1,4 +1,3 @@
-// Built using Gulp. Built date: Sun Jul 03 2016 19:17:40
 // Built using Gulp. Built date: Mon Jul 04 2016 21:00:03
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
