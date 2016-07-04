@@ -1,231 +1,5 @@
-// Built using Gulp. Built date: Sun Jul 03 2016 19:17:40
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-//
-// Music listened to while programming Xplug (in no particular order)
-//   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
-//   Birdy, GusGus, Massive Attack, ...
-//
-// v0.1 - 2015-07-27  * Initial version
-// v0.2 - 2015-07-28  * Bug fix:
-//                       - pd_dock_grid_right() and pd_dock_grid_middle() now also work in non-english
-//                         language environments => C_SPLIT_HANDLE does not longer filter on element title,
-//                         instead we take the 2nd splitter.
-// v0.3 - 2015-08-01  * Some enhancements
-//                       - Options saved in local storage.
-//
-// v1.0 - 2015-08-07  * First official release as a chrome plugin
-//
-// v1.1 - 2015-08-29  * Multiple changes
-//                      - Code refactored for better integration with Page Designer
-//                      - Introduced previous/next page buttons
-//                      - Bug-fix:
-//                           The html of the XPLUG menu button was missing the attribute type="button",
-//                           This resulted in the ENTER keypress on the page text input element being converted into
-//                           an onclick event on my XPLUG menu button. That's apparently a normal (and weird?) browser behaviour.
-//                           See https://github.com/facebook/react/issues/3907 for details.
-//
-// v1.1 - 2015-09-06  * Now use apex.actions for handling Xplug buttons (e.g. previous/next page).
-//                      See /images/libraries/apex/actions.js for details.
-//
-// v1.1 - 2015-09-13  * Multiple changes
-//                      - Preliminary work on customizing shortcuts.
-//                      - Renamed Xplug custom apex actions to contain "xplug" in name, e.g. "pd-xplug-goto-next-page"
-//                        instead of "pd-goto-next-page".
-//
-// v1.1 - 2015-09-28  * Previous/Next page functionality now picks the correct page, based on page list instead
-//                      of just fetching -1 or +1 page.
-//
-// v1.1 - 2015-10-03  * Added possibility to disable tooltips
-//
-// v1.1 - 2015-10-09  * Multiple changes
-//                      - Bug-fix in disabling/enabling tooltips.
-//                        For details on copy function see: http://blog.oratronik.org/?p=301
-//                      - Added CSS for adding previous/next icons.
-//                      - Added possibility to prettify grid layout with background image and without 100% stretched regions.
-//
-// v1.1 - 2015-10-10 * Multiple changes
-//                      - Removed shortcut code for now. Will be included in a later version.
-//
-// v1.2 - 2015-11-06 * Tweaked Xplug button color so that it doesn't stand out that much.
-//
-// v1.2 - 2015-11-14 * Bug-fix: Handle unavailability of HTML5 localStorage.
-//                      - Fixes problem where Xplug button doesn't appear if localStorage is unavailable.
-//                      - Show error message when clicking on Xplug button if localStorage is unavailable.
-//
-// v1.2 - 2015-12-04 * Implementation of custom midnight style
-//
-// v1.2 - 2015-12-06 * More work on custom midnight style
-//        2015-12-06   - Redefine scrollbars on Webkit
-//        2015-12-08   - Bug-fixing CSS colors of page elements
-//
-// v.2    2015-12-18 * Multiple changes
-//                      - Refactored. Splitted Xplug code in multiple javascript files and using Gulp task for building Xplug
-//                      - Finalized work on moonlight style
-//                      - Removed setWidthOnGrid() and corresponding menu call
-//                      - Removed submenu 'Grid Layout' and menu option 'Background Image'
-//
-// v1.2   2015-12-27 * Multiple changes
-//                      - Added configuration dialog for custom Page Designer Style. Lots of interesting stuff.
-//                      - Store/restore custom style from local storage
-//
-// v1.2   2016-01-02 * Added export dialog for custom style
-//
-// v1.2   2016-01-03 * Multiple changes
-//                      - A lot of code refactoring done
-//                      - Added possibility to save and retrieve custom style settings to/from local storage
-//                      - Reworked menu code and added submenu "Customize"
-//                      - Removed export dialog for now. Will be re-added when the other stuff is working as expected.
-//                        First need to add a dialog for listing available styles
-// v1.2   2016-01-04 * Multiple changes
-//                      - Possibility to set/retrieve global keys (meaning not dependant on host url)
-//                      - Added getStorageKeys method for retrieving all Xplug keys in localStorage
-//                      - Added dialog for listing available styles (Customize submenu)
-//                      - Added new submenu for picking styles
-//
-// v1.2   2016-01-06 * Added a lot of funky stuff
-//
-// v1.2   2016-01-07 * Multiple changes
-//                      - Added delStorage method for deleting entries
-//                      - Added dialog for selecting default styles for daylight / moonlight mode
-//                      - Added/Updated many labels in xplug_language.js
-//                      - ...
-//
-// v1.2   2016-01-08 * Multiple changes
-//                     - Finalized work on dialog for selecting default styles
-//                     - Make toggle buttons work with the default styles
-//                       - Bug-fixes:
-//                       - setStyle method -> Adjusted CSS to fix color on checkox property label to make
-//                                            it play nice with dark styles
-//                       - setStyle method -> Adjusted CSS to prevent button color change in dialog pages
-//
-// v1.2   2016-01-09 * Multiple changes (Styles Gallery / Customize Style dialog)
-//                     - Refactored code. Export and Import Dialogs for styles are now in own functions
-//                     - Added sanity check to style import (JSON)
-//                     - Finalized work on Import dialog
-//
-// v1.2   2016-01-10 * Multiple changes (Styles Gallery / Customize Style dialog)
-//                     - When changing default styles also switch current style
-//                     - Refactored export dialog for Xplug style so that it matches with import dialog
-//                     - Bug-fix: disable style DELETE button if style is default or current style
-//                     - Bug-fix: remove draft style from localStorage when closing dialog without saving
-//                     - Bug-fix: Re-activate correct style when closing dialog without saving
-//                     - Bug-fix: Fixed duplicate value for Daylight mode in Default Styles-Dialog
-//                     - Bug-fix: Update Xplug plugin menu after adding/removing styles, is needed for
-//                                submenu 'Pick Style'
-//
-// V1.2.1 2016-01-16 * Multiple changes
-//                     - Added possibility to override Xplug CSS code. That is particular useful if you only
-//                       want to tweak the standard Page Designer theme.
-//                     - Can now use placeholders in the format %%C1%% .. %%C10%% in the custom CSS.
-//
-// V1.2.1 2016-01-17 * Multiple changes
-//                     - Bug-fix: Added new JSON property OVERRIDE_CSS to import check
-//                     - Bug-fix: Set height of Custom CSS textarea in configuration dialog AND turn off
-//                                spell-checking for that field.
-//
-// v1.2.2 2016-02-06 * Add application ID and page ID to window/browser tab title (setWinTttle method)
-//
-// V1.2.2 2016-02-07 * Multiple changes
-//                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
-//                     - Bug-fix: removed hard code label parameter in xplug_menu.js
-//                     - Renamed submenu 'Customize' to 'Setup'
-//                     - Added xplug_powerbox.js for displaying errors and advisor stuff
-//
-// V1.2.2 2016-02-09 * Multiple changes
-//                     - Bug-fix: Powerbox - Show Alertbadge when error is displayed
-//                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
-//                                           sure that correct height is taken.
-//
-// V1.2.2 2016-02-14 * Multiple changes
-//                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
-//                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
-//                                get tracked as soon as the powerbox is opened.
-//
-// V1.2.2 2016-02-17 * Multiple changes
-//                     - Bug-fix: Adjusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
-//                                We only want the Xplug plugin to be activated when dealing with
-//                                page 4500 (Page Designer)
-//                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
-//                                ordering. Is now resolved.
-//                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
-//
-// V1.2.2 2016-03-07 * Multiple Changes
-//                     - Removed Advisor/Console tabs in powerbox pane for now
-//                     - Added possibility to horizontally expand/restore size of powerbox pane
-//
-// V1.2.2 2016-04-10 * Some minor Changes
-//                     - Introduced new button for swapping grid pane from middle<->right
-//                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
-//
-// V1.2.2 2016-04-19 * Bug-Fixes
-//                     - Fixed wrong background color for buttons in powerbox, was particulary noticeable in
-//                       Moonlight mode.
-//                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
-//                       gets too small.
-//                     - This version is not officially released, functionality will be part of upcoming v1.3
-//
-// V1.3.0 2016-05-02 * Preliminiary work on new version
-//                     - Reworked menu system (new labels, icons, ...)
-//                     - Show daylight/moonlight icons in Default style dialog
-//                     - Introduced new Xplug settings dialog
-//
-// V1.3.0 2016-05-16 * Multiple changes
-//                     - Code refactoring in xplug_constructor.js
-//                       Is required due to new possibility of turning most features on/off.
-//                     - Possibility to toggle all Xplug buttons on/off from Xplug settings dialog
-//
-// V1.3.0 2016-05-16 * Change
-//                     Configure default Page Designer Styles as part of Xplug settings dialog, instead of
-//                     having own dialog. Removed corresponding submenu entry and refactored code.
-//
-// V1.3.0 2016-05-23 * Multiple changes
-//                     - Bug-fix: Use promise when jumping to previous/next page. This behaviour is
-//                                aligned with PD behaviour and prevents creation of double event handlers.
-//                                Benefit is also that buttons are reliably re-enabled even if user aborts
-//                                switching page in confirmation dialog.
-//                     - Change:  Code refactoring and renamed daylight/moonlight mode to day/night mode.
-//                     - Change:  Make setting [APP:ID] in Page Designer window title optional.
-//                     - Change:  Renamed 'Page Designer Style' in 'Theme' because that is what it is.
-//                     - Change:  Reworked the Xplug menus, is cleaner and more understandable now.
-//
-//
-// V1.3.0 2016-05-24 * Multiple changes
-//                     - Added new 'Search' tab to Powerbox
-//                     - Renamed some labels
-//
-// V1.3.0.1 2016-06-25 * Several tweaks and Bug-Fixes
-//                       - Bug-fix: Configuration of page designer title wasn't working anymore. Fixed this.
-//                       - Bug-Fix: Added vertical scrollbar to Search function
-//                       - Change:  Temporarly removed possibility to resize Powerbox pane
-//                       - Change:  Completed work on search functionality in Powerbox pane
-//
-//
-// V1.3.0.1 2016-06-28 * Multiple changes
-//                       - Adjusted messages badge position in powerbox pane
-//                       - This is the official released version
-//
-// V1.3.0.2 2016-07-01 * Bug-fix
-//                       - Default value for the previous/next button and dark mode / daylight mode is set
-//                         to YES in the configuration dialog. This is wrong.
-//
-// REMARKS
-// This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
-// That allows us to build small browser specific extensions (Chrome, Firefox, ...)
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Built using Gulp. Built date: Mon Jul 04 2016 21:00:03
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_language.js
-// 2016-01-03 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
 
  function get_label(p_index)
  {
@@ -386,15 +160,6 @@
      return C_label[C_lang][p_index];
  }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_util.js
-// 2015-12-13 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
 
 function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    var C_icon = {};
@@ -405,7 +170,6 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    p_color  = p_color  || '#000000';
 
 
-   // Moon
    C_icon.moon =   '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
                + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
                + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
@@ -415,7 +179,6 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
                + ' 17.5 34t-4.5 38z"/></svg>';
 
-   // Sun
    C_icon.sun  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
                + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
                + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
@@ -427,7 +190,6 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
                + ' 248q9 12 4 29z"/></svg>';
 
-   // Horizontal arrows
    C_icon.arrows_h
                = '<svg version="1.1" viewBox="0 0 477.427 477.427" style="enable-background:new 0 0 477.427 477.427;"'
                + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"'
@@ -440,13 +202,11 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
                + '</g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>'
                + '</svg>';
 
-   // Forbidden icons
    C_icon.forbidden
                = ' <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="%%" height="%%"> '
                + ' <path fill="#FFF" stroke-width="45" stroke="#F00" d="M86,88a230,230 0 1,0 1-1zL412,412"/> '
                +  ' </svg>';
 
-   // Arrow left
    C_icon.arrow_left
                = '<svg width="%%" height="%%" viewBox="0 0 792 792"'
                + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"'
@@ -465,12 +225,10 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
 
 
 
-   // Arrow right
    C_icon.arrow_right = C_icon.arrow_left;
    C_icon.arrow_right = C_icon.arrow_right.replace('rotate(90','rotate(270');
 
 
-   // Determine width, height & color
    l_svg = C_icon[p_icon] || '';
    l_svg = l_svg.replace('%%',p_width);
    l_svg = l_svg.replace('%%',p_height);
@@ -479,30 +237,17 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    if (p_is_css_background) return '{ background : url(data:image/svg+xml;base64,' + btoa(l_svg) + ') no-repeat; }';
 
    return l_svg;
-}  // get_svg_icon
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// page_designer_methods.js
-// 2015-12-13 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
+}  
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: setWinTitle
- ***************************************************************************/
+
  window.pageDesigner.setWinTitle = function()
   {
-    var l_appid   = pe.getCurrentAppId();                                       // get current appid from PageDesigner model
-    var l_page_id = pe.getCurrentPageId();                                      // get Currrent page from PageDesigner model
+    var l_appid   = pe.getCurrentAppId();                                       
+    var l_page_id = pe.getCurrentPageId();                                      
     var l_title   = $(document).attr('title');
 
-    l_title  = l_title.replace(/\s\[.*$/,'');                                   // Remnove old [xxx:xxx] value
+    l_title  = l_title.replace(/\s\[.*$/,'');                                   
 
     if ((typeof(l_appid) == 'string') && (typeof(l_page_id) == 'string')) {
       l_title += ' [' + l_appid + ':' + l_page_id + ']';
@@ -510,29 +255,19 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
     $(document).attr('title',l_title);
 
     return 1;
-  }; // window.pageDesigner.setWinTitle
+  }; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: Go to previous page
- ***************************************************************************/
 window.pageDesigner.goToPrevPage = function () {
-  var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
+  var l_page  = pe.getCurrentPageId();   
   var l_index = -1;
   var l_prev  = -1;
 
-  //
-  // Look for index of page in array
-  //
   for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
       if (xplug.arr_page_list[i].id == l_page) l_index = i;
   }
 
-  //
-  // Found previous page, now goto page
-  //
   if (l_index > -1) {
     l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
                                              : l_index].id;
@@ -541,15 +276,9 @@ window.pageDesigner.goToPrevPage = function () {
   }
 
   if (l_prev != l_page) {
-    //
-    // Temporary disable actions until new page has loaded completely
-    //
     apex.actions.disable('pd-xplug-goto-previous-page');
     apex.actions.disable('pd-xplug-goto-next-page');
 
-    //
-    // Get page and re-enable buttons/actions
-    //
     var l_deferred = window.pageDesigner.goToPage( l_prev );
     $.when( l_deferred )
             .done( function()
@@ -565,29 +294,19 @@ window.pageDesigner.goToPrevPage = function () {
 
     return;
   }
-}; //  window.pageDesigner.goToPrevPage
+}; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: Go to next page
- ***************************************************************************/
 window.pageDesigner.goToNextPage = function () {
-  var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
+  var l_page  = pe.getCurrentPageId();   
   var l_index = -1;
   var l_next  = -1;
 
-  //
-  // Look for index of page in array
-  //
   for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
       if (xplug.arr_page_list[i].id == l_page) l_index = i;
   }
 
-  //
-  // Found next page, now goto page
-  //
   if (l_index > -1) {
      l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
                                                                            : l_index].id;
@@ -596,15 +315,9 @@ window.pageDesigner.goToNextPage = function () {
   }
 
   if (l_next != l_page) {
-    //
-    // Temporary disable actions until new page has loaded completely
-    //
     apex.actions.disable('pd-xplug-goto-previous-page');
     apex.actions.disable('pd-xplug-goto-next-page');
 
-    //
-    // Get page and re-enable buttons/actions
-    //
     var l_deferred = window.pageDesigner.goToPage( l_next );
     $.when( l_deferred )
             .done( function()
@@ -620,191 +333,114 @@ window.pageDesigner.goToNextPage = function () {
 
     return;
   }
-}; // window.pageDesigner.goToNextPage
+}; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: Dock grid to the right
- ***************************************************************************/
 window.pageDesigner.dockGridRight = function()
 {
     'use strict';
 
-    //
-    // Exit if not in APEX Page Designer
-    //
     if (typeof(window.pageDesigner) != 'object') {
        return 0;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // We have the following setup in the DOM tree:
-    //
-    //  <DIV id="sp_right_content" class="a-Splitter">
-    //      <DIV id="top_col" class="a-PageColumn">...</DIV> <DIV class="a-Splitter-barH">...</DIV> <DIV id="right_col" class="a-PageColumn">...</DIV>
-    //  </DIV>
-    //
-    // Remarks:
-    // * Positioning of child DIV's of <DIV id="sp_right_content"> is absolute.
-    // * In the splitter widget, the private property before$ points to the DIV before <DIV class="a-Splitter-barH"></DIV>
-    // * In the splitter widget, the private property after$ points to the DIV following <DIV class="a-Splitter-barH"></DIV>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 // Page Builder: middle pane (Grid Layout/Messages/Page Search/...)
-        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               // Page Builder: right pane  (Properties Editor)
-        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   // Page Builder: 2nd splitter handle/separator
-        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           // Page Builder: right pane parent DIV element
+    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 
+        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               
+        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   
+        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           
 
-    //
-    // Step 1: Swap the middle pane and properties pane in the DOM tree.
-    //
     $(C_PROP_PANE).insertBefore(C_SPLIT_HANDLE);
     $(C_MIDDLE_PANE).insertAfter(C_SPLIT_HANDLE);
 
-    //
-    // Step 2: Recreate the splitter
-    //
-    // Recreating the splitter is required due to multiple reasons:
-    // 1. We can't change the "positionedFrom" property after the splitter is initialized.
-    // 2. We can't manipulate the "before$" and "after$" private properties in the splitter widget.
-    //
-    // See APEX splitter widget for details: /images/libraries/apex/widget.splitter.js
-    //
     var l_width_visual    = $(C_MIDDLE_PANE).width();
     var l_width_props     = $(C_PROP_PANE).width();
-    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         // Get width of splitter separator (normally 8px)
-    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          // Get splitter widget options
+    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         
+    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          
 
-    l_split_options.positionedFrom = "begin";                                                  // We change this from "end" to "begin"
-    l_split_options.position       = l_width_props;                                            // Re-position splitter separator
-    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 // Remove existing splitter JS object & DOM object
-    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 // Create new splitter JS object & DOM object using our stored options
+    l_split_options.positionedFrom = "begin";                                                  
+    l_split_options.position       = l_width_props;                                            
+    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 
+    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 
 
-    xplug.setStorage('PANES_SWITCHED','YES');                                                  // Save option in local database
+    xplug.setStorage('PANES_SWITCHED','YES');                                                  
 
     return 1;
-}; // window.pageDesigner.dockGridRight
+}; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: Dock grid in the middle
- ***************************************************************************/
 window.pageDesigner.dockGridMiddle = function()
 {
     'use strict';
 
-    //
-    // Exit if not in APEX Page Designer
-    //
     if (typeof(window.pageDesigner) != 'object') {
        return 0;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // We have the following setup in the DOM tree:
-    //
-    //  <DIV id="sp_right_content" class="a-Splitter">
-    //      <DIV id="right_col" class="a-PageColumn">...</DIV> <DIV class="a-Splitter-barH">...</DIV> <DIV id="top_col" class="a-PageColumn">...</DIV>
-    //  </DIV>
-    //
-    // Remarks:
-    // * Positioning of child DIV's of <DIV id="sp_right_content"> is absolute.
-    // * In the splitter widget, the private property before$ points to the DIV before <DIV class="a-Splitter-barH"></DIV>
-    // * In the splitter widget, the private property after$ points to the DIV following <DIV class="a-Splitter-barH"></DIV>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 // Page Builder: middle pane (Grid Layout/Messages/Page Search/...)
-        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               // Page Builder: right pane  (Properties Editor)
-        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   // Page Builder: 2nd splitter handle/separator
-        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           // Page Builder: right pane parent DIV element
+    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 
+        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               
+        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   
+        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           
 
-    //
-    // Step 1: Swap the middle pane and properties pane in the DOM tree.
-    //
     $(C_PROP_PANE).insertAfter(C_SPLIT_HANDLE);
     $(C_MIDDLE_PANE).insertBefore(C_SPLIT_HANDLE);
 
-    //
-    // Step 2: Recreate the splitter
-    //
-    // Recreating the splitter is required due to multiple reasons:
-    // 1. We can't change the "positionedFrom" property after the splitter is initialized.
-    // 2. We can't manipulate the "before$" and "after$" private properties in the splitter widget.
-    //
-    // See APEX splitter widget for details: /images/libraries/apex/widget.splitter.js
-    //
     var l_width_visual    = $(C_MIDDLE_PANE).width();
     var l_width_props     = $(C_PROP_PANE).width();
-    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         // Get width of splitter separator (normally 8px)
-    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          // Get splitter widget options
+    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         
+    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          
 
-    l_split_options.positionedFrom = "end";                                                    // We change this from "begin" to "end
-    l_split_options.position       = l_width_props;                                            // Re-position splitter separator
-    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 // Remove existing splitter JS object & DOM object
-    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 // Create new splitter JS object & DOM object using our stored options
+    l_split_options.positionedFrom = "end";                                                    
+    l_split_options.position       = l_width_props;                                            
+    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 
+    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 
 
-    xplug.setStorage('PANES_SWITCHED','NO');                                                   // Save option in local database
+    xplug.setStorage('PANES_SWITCHED','NO');                                                   
 
     return 1;
-}; // window.pageDesigner.dockGridMiddle
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: Disable tooltips
- ***************************************************************************/
 window.pageDesigner.disableTooltips = function()
 {
   if (typeof(pageDesigner.tooltipContentForComponent) == "function") {
 
-     // Backup function
      if (typeof(pageDesigner.tooltipContentForComponentCopy) == "undefined") {
         pageDesigner.tooltipContentForComponentCopy = pageDesigner.tooltipContentForComponent;
      }
 
-     // Turn off tooltips
      pageDesigner.tooltipContentForComponent = function() { };
 
-     xplug.setStorage('TOOLTIPS_DISABLED','YES');                                             // Save option in local database
-     console.debug('XPLUG - Tooltips disabled');
+     xplug.setStorage('TOOLTIPS_DISABLED','YES');                                             
+     void 0;
 
      return 1;
    } else {
-      console.error("XPLUG - Tooltips can't be disabled");
+      void 0;
       return 0;
    }
-}; // window.pageDesigner.disableTooltips
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: Enable tooltips
- ***************************************************************************/
 window.pageDesigner.enableTooltips = function()
 {
-  // Restore - Turn on tooltips again
   if (typeof(pageDesigner.tooltipContentForComponentCopy) == "function") {
      pageDesigner.tooltipContentForComponent = pageDesigner.tooltipContentForComponentCopy;
 
      pageDesigner.tooltipContentForComponentCopy = undefined;
 
-     xplug.setStorage('TOOLTIPS_DISABLED','NO');                                              // Save option in local database
-     console.debug('XPLUG - Tooltips enabled');
+     xplug.setStorage('TOOLTIPS_DISABLED','NO');                                              
+     void 0;
 
      return 1;
   } else {
-     console.error("XPLUG - Tooltips can't be enabled");
+     void 0;
      return 0;
   }
-}; // window.pageDesigner.enableTooltips
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: setDayMode
- ***************************************************************************/
 window.pageDesigner.setDayMode = function() {
 
   var l_style = xplug.getStorage('DEFAULT_STYLE1','NONE',true);
@@ -813,14 +449,10 @@ window.pageDesigner.setDayMode = function() {
   $('#ORATRONIK_XPLUG_moonsun_button span')
        .removeClass('icon-xplug-moon')
        .addClass('icon-xplug-sun');
-}; // window.pageDesigner.setDayMode
+}; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: setNightMode
- ***************************************************************************/
 window.pageDesigner.setNightMode = function() {
 
   var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
@@ -829,49 +461,34 @@ window.pageDesigner.setNightMode = function() {
   $('#ORATRONIK_XPLUG_moonsun_button span')
         .removeClass('icon-xplug-sun')
         .addClass('icon-xplug-moon');
-}; // window.pageDesigner.setNightMode
+}; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: prettfyGrid
- ***************************************************************************/
 window.pageDesigner.prettyGrid = function()
 {
   document.getElementById("glv-viewport").style.backgroundImage = "url('" + $('div[xplug-background]').attr('xplug-background') + "')";
   xplug.setStorage('PRETTY_GRID','YES');
 
   return 1;
-}; // window.pageDesigner.prettyGrid
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: noPrettyGrid
- ***************************************************************************/
 window.pageDesigner.noPrettyGrid = function()
 {
   $('#glv-viewport').css('background-image','none');
   xplug.setStorage('PRETTY_GRID','NO');
 
   return 1;
-}; // window.pageDesigner.noPrettyGrid
+}; 
 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: customizeShortcuts
- ***************************************************************************/
 window.pageDesigner.customizeShortcuts = function(p_title)
 {
     'use strict';
 
-    //
-    // Exit if not in APEX Page Designer
-    //
     if (typeof(window.pageDesigner) != 'object') {
        return 0;
     }
@@ -889,57 +506,36 @@ window.pageDesigner.customizeShortcuts = function(p_title)
                                         { name  : "shortcut",  title : "Shortcut" } ],
 
                   filterLov         : function( pFilters, pRenderLovEntries ) {
-                                         // To understand where we get our LOV from, just
-                                         // run apex.actions.list() in your javascript console and you'll get the idea.
-                                         //
-                                         // We're not using apex.actions.listShortcuts() because we also want to list
-                                         // actions that do not yet have a shortcut assigned.
 
                                          var l_arr = apex.actions.list().sort();
                                          for (var i=0; i<l_arr.length; i++) {
                                              l_arr[i].shortcut =  apex.actions.lookup(l_arr[i].name).shortcut;
                                          }
 
-                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
-                                         // To render our LOV, all we need to do is call this function and pass
-                                         // our LOV as an array.
                                          pRenderLovEntries(l_arr);
                                       },
 
                   width             : 700,
                   height            : 340,
 
-                  close             : // called by widget.lovDialog.js close function
+                  close             : 
                                       function(pEvent) {
                                          $('#ORATRONIK_XPLUG_DIALOG_SHORTCUTS').remove();
                                       },
 
                   multiValue       : false,
                   valueSelected    : function( pEvent, pData ) {
-                                         alert(pData.label);
-                                         console.log(pData);
+                                         void 0;
+                                         void 0;
                                      }
 
                 }
                );
 
     return 1;
-}; // window.pageDesigner.customizeShortcuts
+}; 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// page_designer_style.js
-// 2015-12-13 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: setStyle
- ***************************************************************************/
 window.pageDesigner.setStyle = function( p_style_name,
                                          p_save_style,
                                          p_is_dark_style,
@@ -951,16 +547,16 @@ window.pageDesigner.setStyle = function( p_style_name,
 {
    'use strict';
 
-    var l_c1   = p1    || '#3F3F3F';       // Dark-Grey
-    var l_c2   = p2    || '#505050';       // Light-Grey shade 3
-    var l_c3   = p3    || '#246396';       // Light-blue
-    var l_c4   = p4    || '#3C424F';       // Dark-Grey 2
-    var l_c5   = p5    || '#909090';       // Light-Grey
-    var l_c6   = p6    || '#AC761B';       // Orange
-    var l_c7   = p7    || '#FFFFFF';       // White
-    var l_c8   = p8    || '#000000';       // Black
-    var l_c9   = p9    || '#CFE6FA';       // light-Cyan
-    var l_cerr = p_err || '#FFC3C3';       // Error background color
+    var l_c1   = p1    || '#3F3F3F';       
+    var l_c2   = p2    || '#505050';       
+    var l_c3   = p3    || '#246396';       
+    var l_c4   = p4    || '#3C424F';       
+    var l_c5   = p5    || '#909090';       
+    var l_c6   = p6    || '#AC761B';       
+    var l_c7   = p7    || '#FFFFFF';       
+    var l_c8   = p8    || '#000000';       
+    var l_c9   = p9    || '#CFE6FA';       
+    var l_cerr = p_err || '#FFC3C3';       
     var l_lf   = "\n";
 
     var l_css, l_custom_css;
@@ -971,9 +567,6 @@ window.pageDesigner.setStyle = function( p_style_name,
     }
 
 
-    //==========================================================================
-    // Save style settings if required
-    //==========================================================================
     var l_settings_obj = { "STYLE_NAME"   : p_style_name,
                            "DARK_STYLE"   : typeof(p_is_dark_style) == 'undefined' ? 'YES' : p_is_dark_style,
                            "SHOW_GRID"    : typeof(p_show_grid)     == 'undefined' ? 'YES' : p_show_grid,
@@ -993,7 +586,7 @@ window.pageDesigner.setStyle = function( p_style_name,
                       };
 
     if (p_save_style == 'SAVE' || p_save_style == 'SAVE_ONLY') {
-       xplug.setStorage('STYLE_' + p_style_name, JSON.stringify(l_settings_obj), true);         // Save global option in local storage
+       xplug.setStorage('STYLE_' + p_style_name, JSON.stringify(l_settings_obj), true);         
 
        if (p_save_style == 'SAVE_ONLY') {
           return;
@@ -1002,39 +595,29 @@ window.pageDesigner.setStyle = function( p_style_name,
 
     window.pageDesigner.unsetStyle();
 
-    //==========================================================================
-    // Custom icon for Page Designer select element. Needed due to colours
-    //==========================================================================
     var l_icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" enable-background="new 0 0 24 24">'
-               + '<path fill="' + l_c1 + '" d="M0 0h24v24h-24z"/>'                                  // Background color
-               + '<path fill="' + l_c2 + '" d="M0 0h1v24h-1z"/>'                                    // Left vertical line
+               + '<path fill="' + l_c1 + '" d="M0 0h24v24h-24z"/>'                                  
+               + '<path fill="' + l_c2 + '" d="M0 0h1v24h-1z"/>'                                    
                + '<path fill="' + l_c9 + '" d="M16.5 14.293c0 .128-.049.256-.146.354l-4.354 4.353-4.354-4.354c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.647 3.647 3.646-3.646c.195-.195.512-.195.707 0 .098.097.147.225.147.353zM7.5 9.707c0-.128.049-.256.146-.354l4.354-4.353 4.354 4.354c.195.195.195.512 0 .707s-.512.195-.707 0l-3.647-3.647-3.646 3.646c-.195.195-.512.195-.707 0-.098-.097-.147-.225-.147-.353z"/>'
                + '</svg>';
 
 
-    //==========================================================================
-    // Widgets, tabs
-    //==========================================================================
     l_css = l_lf + ' body                                    { background-color: ' + l_c2 + '; }';
 
-    // Tabs at the top of page designer (active)
     l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color: ' + l_c1 + ' !important; }'
           +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '            + l_c7 +  '!important; }'
           +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '            + l_c7 +  '!important; }'
           +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:'  + l_c6 + '; }';
 
-    // Tabs at the top of page designer (inactive)
-    l_css += l_lf + ' .ui-tabs-anchor > span                 { color: ' + l_c6 + '; }'                   // Icon color tabs (Rendering, ...)
-          + l_lf  + ' .a-PageDesigner-treeTitle              { color: ' + l_c7 + '; }'   // Tab Tree title color (Rendering, Dynamic Actions, ....)
+    l_css += l_lf + ' .ui-tabs-anchor > span                 { color: ' + l_c6 + '; }'                   
+          + l_lf  + ' .a-PageDesigner-treeTitle              { color: ' + l_c7 + '; }'   
           + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
                   + ' .ui-tabs-anchor { color: ' + l_c1 + '; border-right-color: ' + l_c4 + '; }'
           + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-state-default { background-color: ' + l_c6 + '; }';
 
-    // Toolbar below tabs
-    l_css += l_lf  + ' div.a-Toolbar-items                   { background-color: ' + l_c1     + '; }';   // Toolbar items
+    l_css += l_lf  + ' div.a-Toolbar-items                   { background-color: ' + l_c1     + '; }';   
 
 
-    // Border-color between elements
     l_css +='.body,'
           + '.ui-widget-content,'
           + '.a-Toolbar-pageColumn,'
@@ -1045,7 +628,6 @@ window.pageDesigner.setStyle = function( p_style_name,
           + 'div#sp_right .ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'
           + l_lf;
 
-    // Buttons
     l_css +=        ' .ui-tabs-nav .ui-tabs-anchor           { border-right-color : ' + l_c4 + '; }'
           +  l_lf + ' div#sp_main button.a-Button            { background-color   : ' + l_c5 + '; }'
           +  l_lf + ' div#sp_main .a-Button.is-active,'
@@ -1054,75 +636,59 @@ window.pageDesigner.setStyle = function( p_style_name,
           +  l_lf + ' div#sp_main .fc-button.ui-state-active,'
           +  l_lf + ' div#sp_main .ui-buttonset .ui-button.ui-state-active,'
           +  l_lf + ' div#sp_main .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
-          +  l_lf + '                                        { background-color: ' + l_c9 + ' !important; }'; // Active Buttons
+          +  l_lf + '                                        { background-color: ' + l_c9 + ' !important; }'; 
 
     l_css += ' div#sp_main .a-Button:hover,'
-           + ' div#sp_main .fc-button.ui-state-hover         { background-color: ' + l_c7 + '!important; }'   // Hover Buttons
+           + ' div#sp_main .fc-button.ui-state-hover         { background-color: ' + l_c7 + '!important; }'   
            + l_lf;
 
 
-    //==========================================================================
-    // Left pane (Tree)
-    //==========================================================================
-    l_css +=        ' .a-PageDesigner-treeWrap               { background-color : ' + l_c1 + '; }'          // Space between tree and surroundings (tab1-tab4)
-          +  l_lf + ' div#PDrenderingTree.a-TreeView         { background-color : ' + l_c1 + '; }'          // Rendering - Tree (=tab1)
-          +  l_lf + ' div#PDdynamicActionTree.a-TreeView     { background-color : ' + l_c1 + '; }'          // Dynamic Actions - Tree (=tab2)
-          +  l_lf + ' div#PDprocessingTree.a-TreeView        { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab3)
-          +  l_lf + ' div#PDsharedCompTree.a-TreeView        { background-color : ' + l_c1 + '; }'          // Processing - Tree (=tab4)
-          +  l_lf + ' span.a-TreeView-label                  { color            : ' + l_c5 + '; }'          // Node label text color
-          +  l_lf + ' span.a-TreeView-toggle                 { color            : ' + l_c5 + '; }'          // Node collapse/expand icon color
-          +  l_lf + ' div.resize.u-ScrollingViewport         { background-color : ' + l_c1 + '; }'          // Background color empty space
-          +  l_lf + ' ul.ui-widget-header                    { background-color : ' + l_c1 + '; }'          // Background color empty space
+    l_css +=        ' .a-PageDesigner-treeWrap               { background-color : ' + l_c1 + '; }'          
+          +  l_lf + ' div#PDrenderingTree.a-TreeView         { background-color : ' + l_c1 + '; }'          
+          +  l_lf + ' div#PDdynamicActionTree.a-TreeView     { background-color : ' + l_c1 + '; }'          
+          +  l_lf + ' div#PDprocessingTree.a-TreeView        { background-color : ' + l_c1 + '; }'          
+          +  l_lf + ' div#PDsharedCompTree.a-TreeView        { background-color : ' + l_c1 + '; }'          
+          +  l_lf + ' span.a-TreeView-label                  { color            : ' + l_c5 + '; }'          
+          +  l_lf + ' span.a-TreeView-toggle                 { color            : ' + l_c5 + '; }'          
+          +  l_lf + ' div.resize.u-ScrollingViewport         { background-color : ' + l_c1 + '; }'          
+          +  l_lf + ' ul.ui-widget-header                    { background-color : ' + l_c1 + '; }'          
           +  l_lf;
 
-    //==========================================================================
-    // Properties Editor
-    //==========================================================================
-    l_css +=        ' div#sp_right .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3  + '; }'  // Group header
-          +  l_lf + ' div#sp_right .a-PropertyEditor-propertyGroup-title  { color            : ' + l_c7  + '; }'  // Group header title
-          +  l_lf + ' div#sp_right div.a-Property-fieldContainer          { background-color : ' + l_c2  + '; }'  // Fieldcontainer
-          +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  // Labelcontainer
+    l_css +=        ' div#sp_right .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3  + '; }'  
+          +  l_lf + ' div#sp_right .a-PropertyEditor-propertyGroup-title  { color            : ' + l_c7  + '; }'  
+          +  l_lf + ' div#sp_right div.a-Property-fieldContainer          { background-color : ' + l_c2  + '; }'  
+          +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  
 
-          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                                     // Labelcontainer in error
-          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                                     // Fieldcontainer in error
+          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                                     
+          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                                     
           +  l_lf + ' .a-Property.is-error { background-color: ' + l_cerr + '!important; }'
 
           +  l_lf + ' div#sp_right div.a-Property,'
           +  l_lf + ' div#sp_right div.a-Property:hover,'
           +  l_lf + ' div#sp_right div.a-Property:focus,'
-          +  l_lf + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2 + '; }'            // Property button
-          +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1 + ' !important; }' // Property border color
+          +  l_lf + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2 + '; }'            
+          +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1 + ' !important; }' 
           +  l_lf + ' div#sp_right .a-Property-field:hover,'
-          +  l_lf + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1 + '; }'            // Property input field (active)
-          +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2 + '; }'            // Property input field
-          +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9 + '; }'            // Property input field
-          +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'   // Property label
-          +  l_lf + ' div#sp_right .a-Property-checkbox-label             { color : ' + l_c9 + '; text-shadow : none; }'   // Property Checkbox label
-          +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                       // Properties editor message
-          +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'     // Redefine select icon
+          +  l_lf + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1 + '; }'            
+          +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2 + '; }'            
+          +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9 + '; }'            
+          +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'   
+          +  l_lf + ' div#sp_right .a-Property-checkbox-label             { color : ' + l_c9 + '; text-shadow : none; }'   
+          +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                       
+          +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'     
 
           +  l_lf + ' .a-Property-checkbox-label, .a-Property-radio, .a-Property-unit { text-shadow :  none; }'
           +  l_lf;
 
-    //==========================================================================
-    // Grid Layout - Gallery
-    //==========================================================================
-    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'                       // Gallery background
-          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                                        // Gallery tab row reset
+    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'                       
+          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                                        
           + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_c6 + '; border: 0px solid ' + l_c2 + '; border-radius: 2px;}'
-                                                                                                                  // Gallery tab background color
-          + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          // Hack for border-radius
+          + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          
           + l_lf;
 
-    //==========================================================================
-    // Xplug powerbox
-    //==========================================================================
-    l_css +=        ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_search { background-color : ' + l_c2 + '; }'  // Powerbox background
-          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';                      // Buttons background
+    l_css +=        ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_search { background-color : ' + l_c2 + '; }'  
+          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';                      
 
-    //==========================================================================
-    // Messages, Page Search, Help, Alert Badge
-    //==========================================================================
     l_css +=       ' div#messages, div#search, div#help               { background-color : ' + l_c1 + '; }'
           + l_lf + ' div#help-container                               { background-color : ' + l_c1 + '; }'
           + l_lf + ' .ui-tabs-helpTab.ui-state-active .ui-tabs-anchor { background-color : ' + l_c1 + ' !important; }'
@@ -1131,27 +697,18 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf + ' div#help-container a                             { color : '            + l_c3 + '; }'
           + l_lf + ' div#help-container *                             { color : '            + l_c5 + '; }';
 
-    // Messages
     l_css += l_lf + ' .a-AlertMessages-message                        {  color: '            + l_c6 + '; }'
           +  l_lf + ' .a-AlertMessages-message.is-error:hover,'
                   + ' .a-AlertMessages-message.is-error:focus         {  background-color : ' + l_c7 + ' !important; }';
 
-    // Page Search and Powerbox Search
     l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label, div#xplug_pb_search  .a-Form-label,'
           +  l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
           +  l_lf + ' { color: ' + l_c7 + '; }';
 
-    // Alert Badge
     l_css += l_lf + ' span.a-AlertBadge { color : ' + l_c7 + '; }';
 
 
 
-    //==========================================================================
-    // Scrollbars
-    //==========================================================================
-    // Webkit scrollbar generator
-    // http://mikethedj4.github.io/Webkit-Scrollbar-Generator/
-    //
     var l_scroll =        '::-webkit-scrollbar              { width: 10px; height: 10px; }'
                  + l_lf + '::-webkit-scrollbar-button       { width: 0px;  height: 0px;  }'
                  + l_lf + '::-webkit-scrollbar-thumb        { background: ' + l_c5 + ';  border-radius: 50px; }'
@@ -1164,9 +721,6 @@ window.pageDesigner.setStyle = function( p_style_name,
                  + l_lf;
 
 
-    //==========================================================================
-    // Add Xplug CSS style to HTML page head
-    //==========================================================================
     var l_style = '<style type="text/css" ID="XPLUG_THEME">' + l_lf;
 
     if (p_override_css != 'YES') {
@@ -1174,9 +728,6 @@ window.pageDesigner.setStyle = function( p_style_name,
         l_style += l_scroll + l_lf;
     }
 
-    //==========================================================================
-    // Add custom CSS to HTML page head
-    //==========================================================================
     if (typeof(p_custom_css) != 'undefined') {
        l_custom_css = p_custom_css;
        l_custom_css = l_custom_css.replace(/%%C1%%/gi,l_c1);
@@ -1194,7 +745,6 @@ window.pageDesigner.setStyle = function( p_style_name,
     }
     l_style += '</style>' + l_lf;
 
-    // console.log(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
@@ -1210,20 +760,16 @@ window.pageDesigner.setStyle = function( p_style_name,
 
 
     if ( p_save_style == 'DO_NOT_SAVE') {
-         console.debug('XPLUG - Page Designer style "' + p_style_name + '" (DRAFT mode applied).');
+         void 0;
     } else {
-         console.debug('XPLUG - Page Designer Style "' + p_style_name + '" set.');
+         void 0;
          xplug.setStorage('CURRENT_STYLE',p_style_name, true);
     }
 
     return JSON.stringify(l_settings_obj);
-}; // window.pageDesigner.setStyle
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: unsetStyle
- ***************************************************************************/
 window.pageDesigner.unsetStyle = function()
 {
    'use strict';
@@ -1235,18 +781,14 @@ window.pageDesigner.unsetStyle = function()
         .removeClass('icon-xplug-moon')
         .addClass('icon-xplug-sun');
 
-   console.debug('XPLUG - Current page designer style unset.');
+   void 0;
 
    xplug.setStorage('CURRENT_STYLE','NONE', true);
 
    return 1;
-}; // window.pageDesigner.unsetStyle
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: loadStyle
- ***************************************************************************/
 window.pageDesigner.loadStyle = function(p_style_name)
 {
    'use strict';
@@ -1258,19 +800,16 @@ window.pageDesigner.loadStyle = function(p_style_name)
       return;
    }
 
-   //
-   // Get settings
-   //
    try {
       l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
    } catch(e) {
-      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
+      void 0;
       return 0;
    }
 
 
    if (l_imp_obj === null) {
-      console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      void 0;
       window.pageDesigner.loadStyle('NONE');
       return 0;
    }
@@ -1295,13 +834,9 @@ window.pageDesigner.loadStyle = function(p_style_name)
        l_imp_obj.C9,
        l_imp_obj.C10
     );
-}; // window.pageDesigner.loadStyle
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: getStyles
- ***************************************************************************/
 window.pageDesigner.getStyles = function()
 {
    'use strict';
@@ -1328,7 +863,7 @@ window.pageDesigner.getStyles = function()
    }
 
    return l_arr_styles;
-}; // window.pageDesigner.getStyles
+}; 
 
 
 
@@ -1336,9 +871,6 @@ window.pageDesigner.customizeStyle = function(p_title)
 {
     'use strict';
 
-    //
-    // Exit if not in APEX Page Designer
-    //
     if (typeof(window.pageDesigner) != 'object') {
        return 0;
     }
@@ -1361,22 +893,16 @@ window.pageDesigner.customizeStyle = function(p_title)
                   filterLov         : function( pFilters, pRenderLovEntries ) {
 
                                          var l_arr = window.pageDesigner.getStyles();
-                                         // pRenderLovEntries is a method function set by widget.lovDialog.js
-                                         // For details see /images/apex_ui/js/widget.lovDioalog.js
-                                         //
-                                         // To render our LOV, all we need to do is call this function and pass
-                                         // our LOV as an array.
                                          pRenderLovEntries(l_arr);
                                       },
 
                   width             : 600,
                   height            : 340,
 
-                  close             : // called by widget.lovDialog.js close function
+                  close             : 
                                       function(pEvent) {
                                          $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').remove();
 
-                                         // Update Xplug plugin menu: sync Styles in submenu "Pick Style"
                                          xplug.install_menu();
                                       },
 
@@ -1421,15 +947,11 @@ window.pageDesigner.customizeStyle = function(p_title)
                );
 
     return 1;
-}; // window.pageDesigner.customizeStyle
+}; 
 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: exportStyleDialog
- ***************************************************************************/
  window.pageDesigner.exportStyleDialog = function(p_style)
  {
    'use strict';
@@ -1467,14 +989,10 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_json = JSON.parse(xplug.getStorage(p_style,null,true));
 
    $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON').val(JSON.stringify(l_json,null,4));
- }; // exportStyleDalog
+ }; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: importStyleDialog
- ***************************************************************************/
  window.pageDesigner.importStyleDialog = function(p_LOV_title)
  {
    'use strict';
@@ -1507,28 +1025,22 @@ window.pageDesigner.customizeStyle = function(p_title)
          }
 
 
-     // Show message
      if (l_is_valid === true) {
 
-        // Check if required keys are all there
         for (var l_key in l_json_obj) {
             l_req += '#' + l_key.toLowerCase();
         }
 
         if (l_req == C_valid) {
-           // JSON code is valid and compatible
            $('div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG1').css('display','block');
 
         } else {
-           // JSON code is valid but probably incompatible
            $('div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG3').css('display','block'); }
 
      } else {
-        // JSON code is invalid
         $('div#ORATRONIK_XPLUG_IMPORT_DIALOG_MSG2').css('display','block');
      }
 
-     // Enable or disable "OK" button
      if (l_is_valid === true) {
         $('button#ORATRONIK_XPLUG_STYLE_IMPORT_JSON')
              .removeAttr('disabled')
@@ -1624,21 +1136,14 @@ window.pageDesigner.customizeStyle = function(p_title)
     $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON')
        .on('change click keydown mouseout', function() { verifyJSON($(this).val()); });
 
-}; // window.pageDesigner.importStyleDialog
+}; 
 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: customizeStyleDialog
- ***************************************************************************/
 window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV_title)
 {
     'use strict';
 
-    //
-    // Exit if not in APEX Page Designer
-    //
     if (typeof(window.pageDesigner) != 'object') {
        return 0;
     }
@@ -1663,7 +1168,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
       } catch(e) {}
 
       return false;
-    } // is_protected
+    } 
 
 
     function is_default() {
@@ -1676,13 +1181,10 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
       }
 
       return false;
-    } // is_default
+    } 
 
 
     function apply_style(p_save_mode) {
-      //
-      // Process new/updated values
-      //
       var l_style_name = $('input[data-property-id=style_name]').val();
 
       var l_c = [];
@@ -1703,7 +1205,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
         );
 
       l_style_applied = true;
-    } // apply_style
+    } 
 
 
     l_out.markup('<div')
@@ -1721,41 +1223,29 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                   width   : 400,
 
                   close   : function(pEvent) {
-                               // Hide any remaining notifications
                                pageDesigner.hideNotification();
 
                                $('#ORATRONIK_XPLUG_COLOR_DIALOG').remove();
 
-                               // Remove all colorpicker DIVs and associated quick-picks
-                               // Why isn't this automatically handled by APEX, could this be a bug ?
-                               //
-                               // The problem is that the many DIV's start accumulating which can result in a slow reponse
-                               // as the DOM gets bloated with way too many DIV's.
                                $('div.colorpicker').remove();
                                $('div[id^=ColorDlgPE_').remove();
 
-                               // Reactivate current style if we didn't change anything
                                if ( (l_style_applied === true) && (l_style_saved === false) )  {
                                   window.pageDesigner.loadStyle(l_style_name_curr);
                                }
 
-                               // Get rid of remaining draft style, always!
                                xplug.delStorage('STYLE_New custom style',true);
 
-                               // Back to Style Gallery
                                window.pageDesigner.customizeStyle(p_LOV_title);
                             },
 
                   open    : function() {
                                l_dialogPE$ = $('#ColorDlgPE');
 
-                               //
-                               // Get settings
-                               //
                                try {
                                   l_imp_obj = JSON.parse(xplug.getStorage(l_style_name,null,true));
                                } catch(e) {
-                                  console.warn("XPLUG: can't fetch " + l_style_name + " from localStorage. Using defaults.");
+                                  void 0;
                                }
                                l_settings_obj = { "STYLE_NAME"   : typeof(l_imp_obj.STYLE_NAME) == 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
                                                   "DARK_STYLE"   : typeof(l_imp_obj.DARK_STYLE) == 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
@@ -1775,9 +1265,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                              };
 
 
-                               //
-                               // Build properties for property group 1 (style options)
-                               //
                                l_properties1[0] = {
                                    propertyName: "style_name",
                                    value:        l_settings_obj.STYLE_NAME,
@@ -1825,9 +1312,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                };
 
 
-                               //
-                               // Build Properties for property group 2 (Customize Colors)
-                               //
                                for (var l=1; l<=10; l++) {
                                    l_properties2[ l - 1] = {
                                        propertyName: "col_" + l,
@@ -1844,9 +1328,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                    };
                                }
 
-                               //
-                               // Build Properties for property group 3 (Advanced)
-                               //
                                l_properties3[0] = {
                                    propertyName: "override_css",
                                    value:        l_settings_obj.OVERRIDE_CSS,
@@ -1878,9 +1359,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                };
 
 
-                               //
-                               // Create Property Editor
-                               //
                                $('#ColorDlgPE').propertyEditor( {
                                  focusPropertyName: "style_name",
                                  data: {
@@ -1901,20 +1379,14 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                        collapsed         : true,
                                        properties        : l_properties3
                                      }
-                                   ] // propertySet
-                                 }   // data
-                               });   // propertyEditor
+                                   ] 
+                                 }   
+                               });   
 
                                $( '#ORATRONIK_XPLUG_COLOR_DIALOG' ).dialog({
                                    position: { 'my': 'center', 'at': 'center' }
                                });
 
-                               //
-                               // Hack: Prevent colorpicker being hidden behind dialog.
-                               // Is this a bug in APEX 5.0 ? Seems as if the APEX dev team
-                               // did not expect a colorpicker to run from a property editor
-                               // in a dialog ?
-                               //
                                $("#ORATRONIK_XPLUG_COLOR_DIALOG button[id$='_picker']")
                                    .click(function()
                                      {
@@ -1925,13 +1397,12 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                                   }
                                         ).css('z-index',8000);
                                      }
-                                   ); // click
+                                   ); 
 
-                               // Set height of Custom CSS textarea AND turn off spell-checking
                                $('#ColorDlgPE_15').css('height','150px')
                                                   .attr('spellcheck','false');
 
-                            }, // open
+                            }, 
                   buttons : [
                               { text  : get_label('BTN-EXPORT'),
                                 click : function() {
@@ -1942,7 +1413,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                               { text  : get_label('BTN-DELETE'),
                                 click : function() {
                                   xplug.delStorage(l_style_name_orig,true);
-                                  console.debug('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
+                                  void 0;
                                   $(this).dialog("close");
                                 },
                                 disabled : is_protected() || is_default()
@@ -1951,9 +1422,6 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
                               { text  : get_label('BTN-APPLY'),
                                 click : function() {
-                                  //
-                                  // Apply style but don't save
-                                  //
                                   apply_style('DO_NOT_SAVE');
                                 },
                                 disabled : is_protected()
@@ -1970,14 +1438,12 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                 class : 'a-Button--hot',
                                 click : function() {
 
-                                  // Prevent saving a draft template
                                   var l_new_name = $('input[data-property-id=style_name]').val();
                                   if (l_new_name == 'New custom style') {
                                      pageDesigner.showError(get_label('MSG-STYLE-IS-DRAFT'));
                                      return;
                                   }
 
-                                  // Apply the new style and save in localStorage
                                   apply_style('SAVE');
                                   l_style_saved = true;
 
@@ -1987,23 +1453,14 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                               }
                             ]
                 }
-       ); // customizeStyleDialog
+       ); 
 
     return 1;
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_constructor.js
-// 2015-12-13 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.3.0.2';
+   var C_version = 'Xplug v1.3.0.3';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -2011,7 +1468,6 @@ var Xplug = function() {
    this.arr_page_list = [];
 
 
-   // Exit if not in APEX Page Designer
    if (typeof(window.pageDesigner) != 'object') {
       return 0;
    }
@@ -2019,9 +1475,6 @@ var Xplug = function() {
 
 
 
-  /****************************************************************************
-   * Install button for daylight / moonlight switch
-   ***************************************************************************/
    function __install_moonsun_switch()
    {
      $('div.a-PageSelect')
@@ -2034,12 +1487,9 @@ var Xplug = function() {
                       + '</button>'
                     );
 
-  } // install_moonsun_switch
+  } 
 
 
-  /****************************************************************************
-   * Install XPLUG custom actions
-   ***************************************************************************/
     function __install_actions()
     {
        apex.actions.add(
@@ -2181,17 +1631,13 @@ var Xplug = function() {
 
         ]
        );
-    } // install_actions
+    } 
 
 
-   /****************************************************************************
-    * Xplug initialization
-    ***************************************************************************/
     function __init()
     {
 
       function add_css_to_page_header() {
-        // Add custom CSS to page header
         $('head').append(
             + l_lf + '<style type="text/css">'
             + l_lf + '  button#ORATRONIK_XPLUG:hover            { background-color: #FFFFFF!important; }'
@@ -2207,7 +1653,6 @@ var Xplug = function() {
         );
       }
 
-       // SVG Lifebuoy icon definition
        var C_svg = '<path class="path1" d="M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512'
                  + ' 512-229.23 512-512-229.23-512-512-512zM320 512c0-106.040 85.96-192 192-192s192 85.96 192 192-85.96 192-192'
                  + ' 192-192-85.96-192-192zM925.98 683.476v0l-177.42-73.49c12.518-30.184 19.44-63.276 19.44-97.986s-6.922-67.802-19.44-97.986l177.42-73.49c21.908'
@@ -2217,7 +1662,6 @@ var Xplug = function() {
                  + ' 34.020-171.476zM340.524 925.98l73.49-177.42c30.184 12.518 63.276 19.44 97.986 19.44s67.802-6.922 97.986-19.44l73.49 177.42c-52.822 21.904-110.73 34.020-171.476'
                  + ' 34.020-60.744 0-118.654-12.114-171.476-34.020z"></path>';
 
-        // Definitions for Xplug button
         var l_class     = ' class="a-Button a-Button--noLabel a-Button--iconTextButton js-menuButton a-Button--gapRight" ';
         var l_style     = ' style="background-color:#C3ECE2; height: 32px" ';
         var l_label     = ' title="' + C_version + '" ';
@@ -2230,7 +1674,6 @@ var Xplug = function() {
         add_css_to_page_header();
 
 
-        // Inject the Xplug button in Page Designer (next to Shared Components)
         $('button#menu-shared-components')
                 .after('<button id="ORATRONIK_XPLUG" type="button"'
                        + l_class
@@ -2255,10 +1698,10 @@ var Xplug = function() {
 
 
 
-   } // __init
+   } 
 
    __init();
-}; // constructor Xplug
+}; 
 
 
 
@@ -2267,9 +1710,6 @@ var Xplug = function() {
 
 
 
-  /****************************************************************************
-   * Install buttons for going to previous / next page
-   ***************************************************************************/
   Xplug.prototype.installGotoPage = function ()
   {
     if  ( $('button#ORATRONIK_XPLUG_prev_page_button').length == 1 ) return;
@@ -2297,8 +1737,6 @@ var Xplug = function() {
              );
 
 
-     // Get list of pages in JSON format and store result in array.
-     // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
      apex.server.process
         (
            "getPages", {
@@ -2315,28 +1753,22 @@ var Xplug = function() {
         );
 
      xplug.setStorage('BTN-PRVNEXT-PAGE','YES');
-  }; // installGotoPage
+  }; 
 
 
 
-  /****************************************************************************
-   * Deinstall buttons for going to previous / next page
-   ***************************************************************************/
   Xplug.prototype.deinstallGotoPage = function ()
   {
     $('button#ORATRONIK_XPLUG_prev_page_button,button#ORATRONIK_XPLUG_next_page_button')
         .remove();
 
     xplug.setStorage('BTN-PRVNEXT-PAGE','NO');
-   }; // deinstallGotoPage
+   }; 
 
 
 
 
 
-  /****************************************************************************
-   * Install Theme switch (daylight/moonlight) button
-   ***************************************************************************/
    Xplug.prototype.installThemeSwitch = function ()
    {
      if  ( $('button#ORATRONIK_XPLUG_moonsun_button').length == 1 ) return;
@@ -2353,12 +1785,9 @@ var Xplug = function() {
                     );
 
      xplug.setStorage('BTN-THEME-SWITCH','YES');
-   }; // installThemeSwitch
+   }; 
 
 
-  /****************************************************************************
-   * Install Theme switch (daylight/moonlight) button
-   ***************************************************************************/
    Xplug.prototype.deinstallThemeSwitch = function ()
    {
      $('button#ORATRONIK_XPLUG_moonsun_button').remove();
@@ -2369,13 +1798,10 @@ var Xplug = function() {
      }
 
      xplug.setStorage('BTN-THEME-SWITCH','NO');
-   }; // deinstallThemeSwitch
+   }; 
 
 
 
-  /****************************************************************************
-   * Install swap grid pane button
-   ***************************************************************************/
    Xplug.prototype.installSwapGrid = function ()
    {
      if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
@@ -2391,51 +1817,39 @@ var Xplug = function() {
               );
 
      xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
-   }; // installSwapGrid
+   }; 
 
 
-  /****************************************************************************
-   * Deinstall swap grid pane button
-   ***************************************************************************/
    Xplug.prototype.deinstallSwapGrid = function ()
    {
      $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
 
      xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
-   }; // DeinstallSwapGrid
+   }; 
 
 
-   /****************************************************************************
-    * Install [app:id] in Window Title
-    ***************************************************************************/
     Xplug.prototype.installPDTitle = function ()
     {
       $(document).on('modelReady', pageDesigner.setWinTitle);
       pageDesigner.setWinTitle();
 
       xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
-    }; // installPDTitle
+    }; 
 
 
-    /****************************************************************************
-    * Deinstall [app:id] in Window Title
-    ****************************************************************************/
     Xplug.prototype.deinstallPDTitle = function ()
     {
       $(document).off('modelReady', pageDesigner.setWinTitle);
 
       var l_title = $(document).attr('title');
-      l_title     = l_title.replace(/\s\[.*$/,'');                             // Remnove old [xxx:xxx] value
+      l_title     = l_title.replace(/\s\[.*$/,'');                             
 
       $(document).attr('title',l_title);
 
       xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
-    }; // deinstallPDTitle
+    }; 
 
 
-  /*****************************************************************************
-   * Load Xplug settings from localStorage
-   ****************************************************************************/
    Xplug.prototype.loadSettings = function ()
    {
      window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
@@ -2449,7 +1863,7 @@ var Xplug = function() {
      xplug.getStorage('BTN-THEME-SWITCH','NO')   == 'YES' && xplug.installThemeSwitch();
      xplug.getStorage('BTN-SWAP-GRID-PANE','NO') == 'YES' && xplug.installSwapGrid();
      xplug.getStorage('APP+ID-IN-PD-TITLE','NO') == 'YES' && xplug.installPDTitle();
-   }; // Xplug.prototype.loadSettings
+   }; 
 
 
 
@@ -2460,20 +1874,8 @@ var Xplug = function() {
 Xplug.prototype.getVersion = function ()
 {
    return xplug.version;
-}; // Xplug.prototype.getVersion
+}; 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_storage.js
-// 2016-01-03 * Initial version
-// 2016-01-03 * Possibility to set/retrieve global keys (meaning not dependant on host url)
-// 2016-01-04 * Added getStorageKeys method for retrieving all Xplug keys in localStorage
-// 2016-01-07 * Added delStorage method for deleting entries
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
 
 Xplug.prototype.setStorage = function(p_key, p_value, p_is_global)
     {
@@ -2485,16 +1887,16 @@ Xplug.prototype.setStorage = function(p_key, p_value, p_is_global)
                                  : 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
 
          if (localStorage === null) {
-            console.error('XPLUG - Your browser has localStorage disabled. Cannot save ' + p_key);
+            void 0;
             return false;
          }
          localStorage.setItem(l_key, p_value);
          return true;
       } else {
-         console.error('XPLUG - Your browser does not support localStorage. Cannot save ' + p_key);
+         void 0;
          return false;
       }
-    }; // Xplug.prototype.setStorage
+    }; 
 
 
 Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
@@ -2507,15 +1909,15 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
                                  : 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
 
          if (localStorage === null) {
-            console.error('XPLUG - Your browser has localStorage disabled. Cannot retrieve ' + p_key);
+            void 0;
             return p_default;
          }
          return localStorage.getItem(l_key) || p_default;
       } else {
-         console.error('XPLUG - Your browser does not support localStorage. Cannot retrieve ' + p_key);
+         void 0;
          return p_default;
       }
-    }; // Xplug.prototype.getStorage
+    }; 
 
 
     Xplug.prototype.getStorageKeys = function(p_is_global)
@@ -2534,12 +1936,12 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
              var l_key = localStorage.key(i);
 
              if (l_key.substr(0,l_prefix.length) == l_prefix) {
-                l_arr_keys.push(l_key.substr(l_prefix.length));                 // Push key without Xplug prefix
+                l_arr_keys.push(l_key.substr(l_prefix.length));                 
              }
          }
          return l_arr_keys;
       }
-    }; // Xplug.prototype.getStorageKeys
+    }; 
 
 
     Xplug.prototype.delStorage = function(p_key, p_is_global)
@@ -2552,28 +1954,18 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
                                      : 'APEX_XPLUG#' + location.host + location.pathname + '#' + p_key;
 
              if (localStorage === null) {
-                console.error('XPLUG - Your browser has localStorage disabled. Cannot delete ' + p_key);
+                void 0;
                 return false;
              }
 
              localStorage.removeItem(l_key);
              return true;
           } else {
-             console.error('XPLUG - Your browser does not support localStorage. Cannot delete ' + p_key);
+             void 0;
              return p_default;
           }
-        }; // Xplug.prototype.delStorage
+        }; 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_menu.js
-// 2016-01-03 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
-/* jshint -W083 */
 
 Xplug.prototype.install_menu = function() {
 
@@ -2610,9 +2002,9 @@ Xplug.prototype.install_menu = function() {
                                   }
                   }
                 );
-             } // if l_style
-           }   // if l_key
-       }       // for
+             } 
+           }   
+       }       
 
        l_arr_menu_items.push(
          {
@@ -2649,7 +2041,7 @@ Xplug.prototype.install_menu = function() {
        );
 
        return l_arr_menu_items;
-    } // install_SubmenuPickStyles
+    } 
 
 
     function install_SubmenuDockGrid() {
@@ -2685,7 +2077,7 @@ Xplug.prototype.install_menu = function() {
        );
 
        return l_arr_menu_items;
-    } // install_SubmenuDockGrid
+    } 
 
 
     function install_SubmenuQuickControls() {
@@ -2715,7 +2107,6 @@ Xplug.prototype.install_menu = function() {
                             : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
                         }
 
-                        // Remove notification afer 1.5 seconds
                         window.setTimeout( function() {
                                              pageDesigner.hideNotification();
                                            },
@@ -2751,12 +2142,10 @@ Xplug.prototype.install_menu = function() {
        );
 
        return l_arr_menu_items;
-    } // install_SubmenuQuickControls
+    } 
 
 
 
-    // Inject Xplug popup menu into DOM and create jQuery UI custom menu object
-    // For details on the APEX popup menu functionality refer to /images/libraries/apex/widget.menu.js
     $('#ORATRONIK_XPLUG_PLUGIN_MENU').remove();
 
     var l_menu$ = $("<div id='ORATRONIK_XPLUG_PLUGIN_MENU'></div>");
@@ -2823,24 +2212,10 @@ Xplug.prototype.install_menu = function() {
         }
       ]
     });
-}; // install_menu
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_powerbox.js
-// 2016-02-07 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
+}; 
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Initialisation code
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 $('#ORATRONIK_XPLUG_POWERBOX_MENU').remove();
 
 var l_menu$ = $("<div id='ORATRONIK_XPLUG_POWERBOX_MENU'></div>");
@@ -2870,23 +2245,19 @@ l_menu$.menu(
 
 
 
-/***************************************************************************
-* Add custom method to Xplug
-* METHOD: installPowerbox
-***************************************************************************/
 Xplug.prototype.installPowerbox = function()
 {
     'use strict';
 
     var c_min_factor = 0.25;
     var c_max_factor = 0.50;
-    var l_factor     = c_max_factor;                                                // Scaling factor
+    var l_factor     = c_max_factor;                                                
 
 
     function xplug_pb_resize_handler() {
        var l_maxwidth = $('#glv-viewport').width();
        var l_width    = l_maxwidth * l_factor;
-       var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
+       var l_height   = $('div#cg-regions').height();                               
 
        $('#gallery-tabs')
          .css(
@@ -2894,7 +2265,6 @@ Xplug.prototype.installPowerbox = function()
              )
          .trigger('resize');
 
-        // simulated vertical splitter at left of powerbox
         $('#xplug_pb_splitter').css(
             { 'position'          : 'absolute',
               'top'               : '0px',
@@ -2907,7 +2277,6 @@ Xplug.prototype.installPowerbox = function()
             }
         );
 
-        // Powerbox container DIV
         $('#xplug_pb_container').css(
               { 'position'   : 'absolute',
                 'top'        : '0px',
@@ -2927,7 +2296,7 @@ Xplug.prototype.installPowerbox = function()
                  'height'     : l_height + 'px',
 
             });
-    } // xplug_pb_resize_handler
+    } 
 
 
 
@@ -2961,7 +2330,7 @@ Xplug.prototype.installPowerbox = function()
         $( document ).on( "modelCleared", function(){
           clearPowersearch();
         });
-    } // installTabPowersearch
+    } 
 
 
     function clearPowersearch() {
@@ -2971,13 +2340,11 @@ Xplug.prototype.installPowerbox = function()
     }
 
 
-  // Add (simulated) vertical splitter bar and powerbox DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
-//     +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
        +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
        +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
        +     '</ul>'
@@ -2987,7 +2354,6 @@ Xplug.prototype.installPowerbox = function()
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-//     +   '<div ID="xplug_pb_metrics">This is the Metrics pane.</div>'
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
        + '</div>'
@@ -2996,7 +2362,6 @@ Xplug.prototype.installPowerbox = function()
 
 
 
-  // Add hamburger menu
   $('div#xplug_pb_right')
             .append( '<button'
                    + ' type="button"'
@@ -3010,40 +2375,23 @@ Xplug.prototype.installPowerbox = function()
             .css('width','48px');
 
 
-  // Create new tabs
-  $('div#xplug_pb_container').tabs();   // jQuery UI tabs
-  xplug_pb_resize_handler();            // Show powerbox
+  $('div#xplug_pb_container').tabs();   
+  xplug_pb_resize_handler();            
 
 
-  // Activate standard "Messages" tab if our own badge is clicked.
   $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
 
 
-  // Install "Search" tab
   installTabPowersearch();
 
-  // Resize-redraw powerbox when splitter(s) are moved/created
   $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
 
 
-  // Resize-redraw powerbox when switching tabs (Grid Layout, Messages, ...)
-  // See jQuery UI tabs for details on 'activate' attribute
   $( "div#editor_tabs, div#R1157688004078338241" )
     .tabs(
            { activate: xplug_pb_resize_handler }
          );
 
-  //
-  // Webkit and others continously fire resize events while resizing, which
-  // is a browser performance killer. Should basically only be fired when
-  // resizing has stopped.
-  //
-  // As a workaround only call our event handler if there were no resize events
-  // in the last 300 miliseconds.
-  //
-  // Also added our namespace to the resize event, because later on we only
-  // want to kill our own resize handler, not the original one from Page Designer.
-  //
   var l_timeout_handler;
   $(window).on('resize.xplug_namespace',
                 function()
@@ -3058,24 +2406,8 @@ Xplug.prototype.installPowerbox = function()
 
   xplug.setStorage('SHOW_POWERBOX_PANE','YES');
 
-  //
-  // We need to register our own observer, because the original observer in
-  // the peMessagesView widget gets setup the next time when the modelReady event
-  // is fired, which has already happened by the time we get here.
-  //
-  // Due to this the logic would only start working if we navigate to another page
-  // (=new modelReady event as JSON page is loaded and processed)
-  // Take a look at /images/apex_ui/js/widget.peMessagesView.js for Details.
-  //
-  //
-  // Nice benefit of having an own observer is that we can also automatically
-  // switch to our "Messages"-tab if an error is detected
-  //
-  // We interact with the running widget instance.
-  // See http://stackoverflow.com/questions/8506621/accessing-widget-instance-from-outside-widget
   var l_widget = $('div#xplug_pb_msgview').data('apex-peMessagesView');
 
-  // Listen for all events which have an impact on displayed error or warning messages
   pe.observer(
       "messages_" + l_widget.uuid, {
           events: [
@@ -3091,55 +2423,32 @@ Xplug.prototype.installPowerbox = function()
           l_widget._update( pNotifications );
       });
 
-}; // Xplug.prototype.installPowerbox
+}; 
 
 
-/***************************************************************************
-* Add custom method to Xplug
-* METHOD: deinstallPowerbox
-***************************************************************************/
 Xplug.prototype.deinstallPowerbox = function()
 {
   'use strict';
 
-  // Detach our own resize handler
   $(window).off('resize.xplug_namespace');
   $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
   $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
 
-  // Remove powerbox
   $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
 
-  // Restore original gallery width and trigger redrawing/reposition of icons
   $('div#gallery-tabs')
       .css('width', $('div#glv-viewport').css('width') )
       .trigger('resize');
 
   xplug.setStorage('SHOW_POWERBOX_PANE','NO');
-}; // Xplug.prototype.deinstallPowerbox
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_configure.js
-// 2016-05-02 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
+}; 
 
 
-/****************************************************************************
- * Add custom method to pageDesigner Object
- * METHOD: configureDialog
- ***************************************************************************/
+
 Xplug.prototype.configureDialog = function()
 {
     'use strict';
 
-    //
-    // Exit if not in APEX Page Designer
-    //
     if (typeof(window.pageDesigner) != 'object') {
        return 0;
     }
@@ -3168,7 +2477,6 @@ Xplug.prototype.configureDialog = function()
                   width   : 450,
 
                   close   : function(pEvent) {
-                               // Hide any remaining notifications
                                pageDesigner.hideNotification();
 
                                $('#ORATRONIK_XPLUG_CONFIG_DIALOG').remove();
@@ -3187,8 +2495,8 @@ Xplug.prototype.configureDialog = function()
                                           l_arr_LOV.push({ d: l_arr_styles[l].STYLE_NAME,
                                                            r: l_arr_styles[l].STYLE_NAME
                                                          });
-                                      } // if
-                                  }     // for
+                                      } 
+                                  }     
 
                                   if (p_mode == 'DAYLIGHT') {
                                      l_arr_LOV.push({ d: 'Original (none)', r: 'NONE'});
@@ -3249,9 +2557,6 @@ Xplug.prototype.configureDialog = function()
                                };
 
 
-                               //
-                               // Build properties for property group 2 (Default styles)
-                               //
                                l_properties2[0] = {
                                    propertyName: "default_daylight_style",
                                    value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
@@ -3282,9 +2587,6 @@ Xplug.prototype.configureDialog = function()
                                    warnings: []
                                };
 
-                               //
-                               // Build Properties for property group 3 (Advanced)
-                               //
                                l_properties3[0] = {
                                    propertyName: "show_grid",
                                    value:        "NO",
@@ -3302,9 +2604,6 @@ Xplug.prototype.configureDialog = function()
                                };
 
 
-                               //
-                               // Build Properties for property group 4 (Experimental)
-                               //
                                l_properties4[0] = {
                                    propertyName: "enhance_pd_title",
                                    value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
@@ -3322,9 +2621,6 @@ Xplug.prototype.configureDialog = function()
                                };
 
 
-                               //
-                               // Create Property Editor
-                               //
                                $('#ConfigDlgPE').propertyEditor( {
                                  focusPropertyName: "show_prevnext_buttons",
                                  data: {
@@ -3339,19 +2635,14 @@ Xplug.prototype.configureDialog = function()
                                        displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
                                        properties        : l_properties2
                                      },
-                                    //  {
-                                    //    displayGroupId    : "advanced",
-                                    //    displayGroupTitle : get_label('LBL-ADVANCED'),
-                                    //    properties        : l_properties3
-                                    //  },
                                      {
                                        displayGroupId    : "experimental",
                                        displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
                                        properties        : l_properties4
                                      }
-                                   ] // propertySet
-                                 }   // data
-                               });   // propertyEditor
+                                   ] 
+                                 }   
+                               });   
 
                                $( '#ORATRONIK_XPLUG_CONFIG_DIALOG' ).dialog({
                                    position: { 'my': 'center', 'at': 'center' }
@@ -3372,7 +2663,7 @@ Xplug.prototype.configureDialog = function()
                                $('div#ORATRONIK_XPLUG_CONFIG_DIALOG .a-Property-labelContainer')
                                    .css('min-width','240px');
 
-                            }, // open
+                            }, 
                   buttons : [
                               { text  : get_label('BTN-CANCEL'),
                                 click : function() {
@@ -3416,20 +2707,11 @@ Xplug.prototype.configureDialog = function()
                               }
                             ]
                 }
-       ); // configureDialog
+       ); 
 
     return 1;
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// main.js
-// 2015-12-13 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
 
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();

@@ -1,7 +1,7 @@
 {
   "name"         : "xplug",
   "title"        : "Xplug for APEX Page Designer",
-  "version"      : "1.3.0.2",
+  "version"      : "1.3.0.3",
   "author"       : "Filip van Vooren",
   "description"  : "Enhance the APEX 5.0 Page Designer with some features currently unavailable in the official release (switch panes, ...)",
   "homepage"     : "http://blog.oratronik.org/?page_id=144",
