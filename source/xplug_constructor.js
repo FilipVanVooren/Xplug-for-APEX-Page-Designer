@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.3.0.3';
+   var C_version = 'Xplug v1.3.0.5';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;

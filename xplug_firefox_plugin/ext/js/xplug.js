@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Jul 04 2016 21:00:03
+// Built using Gulp. Built date: Tue Jul 05 2016 21:44:13
 
 
  function get_label(p_index)
@@ -1460,7 +1460,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.3.0.3';
+   var C_version = 'Xplug v1.3.0.5';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;
@@ -2397,7 +2397,8 @@ Xplug.prototype.installPowerbox = function()
                 function()
                       {
                          clearTimeout(l_timeout_handler);
-                         l_timeout_handler = setTimeout(xplug_pb_resize_handler, 300);
+                         l_timeout_handler = setTimeout(
+                           function() { xplug_pb_resize_handler; } , 300);
                       }
   );
 

@@ -222,7 +222,8 @@ Xplug.prototype.installPowerbox = function()
                 function()
                       {
                          clearTimeout(l_timeout_handler);
-                         l_timeout_handler = setTimeout(xplug_pb_resize_handler, 300);
+                         l_timeout_handler = setTimeout(
+                           function() { xplug_pb_resize_handler; } , 300);
                       }
   );
 
