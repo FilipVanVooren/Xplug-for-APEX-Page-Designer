@@ -201,7 +201,6 @@
 //                       - Change:  Temporarly removed possibility to resize Powerbox pane
 //                       - Change:  Completed work on search functionality in Powerbox pane
 //
-//
 // V1.3.0.1 2016-06-28 * Multiple changes
 //                       - Adjusted messages badge position in powerbox pane
 //                       - This is the official released version
@@ -209,6 +208,15 @@
 // V1.3.0.2 2016-07-01 * Bug-fix
 //                       - Default value for the previous/next button and dark mode / daylight mode is set
 //                         to YES in the configuration dialog. This is wrong.
+//
+// V1.3.0.4 2016-07-05 * Multiple changes
+//                       - The versions V1.3.0.3 - V1.3.0.5 do not have any functional changes.
+//                         Changes are in firefox packaging and GULP task file due to restrictiions set by
+//                         Firefox add-on reviewers.
+//                       - Bug-fix: to prevent security a vulnerability, a change was made to the setTimeout
+//                                  method in xplug_powerbox.js as weg got the below warning before:
+//                                  In order to prevent vulnerabilities, the `setTimeout` and `setInterval` functions
+//                                  should be called only with function expressions as their first argument.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
