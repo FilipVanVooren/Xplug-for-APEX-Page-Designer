@@ -218,6 +218,12 @@
 //                                  In order to prevent vulnerabilities, the `setTimeout` and `setInterval` functions
 //                                  should be called only with function expressions as their first argument.
 //
+// V1.4.0.0 2016-07-06 * Multiple changes
+//                       - Code refactoring for next/previous button handling. Moved to file xcplug_prevnext_page.js
+//                       - Code refactoring for day/night mode. Moved to file xplug_daynight_mode.js
+//                       - Removed some dead code in xplug_constructor.js
+//                       - Xplug buttons now have a mouseover title (including shortcut)
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

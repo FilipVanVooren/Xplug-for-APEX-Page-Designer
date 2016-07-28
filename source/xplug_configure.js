@@ -166,11 +166,11 @@ Xplug.prototype.configureDialog = function()
                                // Build Properties for property group 3 (Advanced)
                                //
                                l_properties3[0] = {
-                                   propertyName: "show_grid",
-                                   value:        "NO",
+                                   propertyName: "enhance_pd_title",
+                                   value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         "Enable powerbox",
+                                       prompt:         "Show [app:page] info in window title",
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -219,16 +219,16 @@ Xplug.prototype.configureDialog = function()
                                        displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
                                        properties        : l_properties2
                                      },
-                                    //  {
-                                    //    displayGroupId    : "advanced",
-                                    //    displayGroupTitle : get_label('LBL-ADVANCED'),
-                                    //    properties        : l_properties3
-                                    //  },
                                      {
-                                       displayGroupId    : "experimental",
-                                       displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
-                                       properties        : l_properties4
-                                     }
+                                       displayGroupId    : "advanced",
+                                       displayGroupTitle : get_label('LBL-ADVANCED'),
+                                       properties        : l_properties3
+                                     },
+                                    //  {
+                                    //    displayGroupId    : "experimental",
+                                    //    displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
+                                    //    properties        : l_properties4
+                                    //  }
                                    ] // propertySet
                                  }   // data
                                });   // propertyEditor
@@ -263,8 +263,8 @@ Xplug.prototype.configureDialog = function()
                               { text  : get_label('BTN-APPLY'),
                                 click : function() {
 
-                                  if ($('input[name=ConfigDlgPE_1_name]:checked').val() == 'YES')  { xplug.installGotoPage();   }
-                                                                                             else  { xplug.deinstallGotoPage(); }
+                                  if ($('input[name=ConfigDlgPE_1_name]:checked').val() == 'YES')  { xplug.installPageButtons();   }
+                                                                                             else  { xplug.deinstallPageButtons(); }
 
                                   if ($('input[name=ConfigDlgPE_2_name]:checked').val() == 'YES')  { xplug.installThemeSwitch();   }
                                                                                              else  { xplug.deinstallThemeSwitch(); }

@@ -15,12 +15,15 @@ gulp.task('Build Xplug', function() {
               'source/page_designer_methods.js',
               'source/page_designer_style.js',
               'source/xplug_constructor.js',
+              'source/xplug_prevnext_page.js',
+              'source/xplug_daynight_mode.js',
               'source/xplug_storage.js',
               'source/xplug_menu.js',
               'source/xplug_powerbox.js',
               'source/xplug_configure.js',
+              'source/xplug_prototypes.js',
               'source/main.js'
-            ])
+            ] )
 
 
         ///////////////////////////////////////////////////////////////////////
