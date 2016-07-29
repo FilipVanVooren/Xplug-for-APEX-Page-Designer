@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Fri Jul 29 2016 23:39:51
+// Built using Gulp. Built date: Fri Jul 29 2016 23:54:38
 
 
  function get_label(p_index)
@@ -1915,6 +1915,18 @@ Xplug.prototype.deinstallPageButtons = function ()
 
 
 
+ Xplug.prototype._set_button_tooltip_swap_grid = function()
+{
+  var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
+
+  $("button#ORATRONIK_XPLUG_swap_panes_button")
+     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
+
+}; 
+
+
+
+
 
  Xplug.prototype.installSwapGrid = function ()
  {
@@ -1922,7 +1934,6 @@ Xplug.prototype.deinstallPageButtons = function ()
 
    if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
 
-   var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
 
    $('button#glvExpandRestoreBtn')
             .after( '<button'
@@ -1930,11 +1941,12 @@ Xplug.prototype.deinstallPageButtons = function ()
                   + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
                   + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
                   + ' data-action="pd-xplug-swap-grid-pane"'
-                  + ' title="[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') + '"'
                   + '>'
                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
                   + '</button>'
             );
+
+   xplug._set_button_tooltip_swap_grid();
 
    xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
 
@@ -2786,33 +2798,6 @@ Xplug.prototype.configureDialog = function()
     return 1;
 };
 
-
-
-
- Xplug.prototype.installSwapGrid = function ()
- {
-   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
-
-   $('button#glvExpandRestoreBtn')
-            .after( '<button'
-                  + ' type="button"'
-                  + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
-                  + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
-                  + ' data-action="pd-xplug-swap-grid-pane">'
-                  + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
-                  + '</button>'
-            );
-
-   xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
- }; 
-
-
- Xplug.prototype.deinstallSwapGrid = function ()
- {
-   $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
-
-   xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
- }; 
 
 
   Xplug.prototype.installPDTitle = function ()

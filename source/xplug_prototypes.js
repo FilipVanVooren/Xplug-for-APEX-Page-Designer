@@ -2,44 +2,11 @@
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_initialize.js
+// xplug_prototypes.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
-
-
-
-/****************************************************************************
- * Install swap grid pane button
- ***************************************************************************/
- Xplug.prototype.installSwapGrid = function ()
- {
-   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
-
-   $('button#glvExpandRestoreBtn')
-            .after( '<button'
-                  + ' type="button"'
-                  + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
-                  + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
-                  + ' data-action="pd-xplug-swap-grid-pane">'
-                  + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
-                  + '</button>'
-            );
-
-   xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
- }; // installSwapGrid
-
-
-/****************************************************************************
- * Deinstall swap grid pane button
- ***************************************************************************/
- Xplug.prototype.deinstallSwapGrid = function ()
- {
-   $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
-
-   xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
- }; // DeinstallSwapGrid
 
 
  /****************************************************************************

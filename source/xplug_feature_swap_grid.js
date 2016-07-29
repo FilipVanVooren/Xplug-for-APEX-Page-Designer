@@ -10,6 +10,21 @@
 /* jshint -W083 */
 
 
+/****************************************************************************
+ * Set attribute 'title' of swap panes button
+ ***************************************************************************/
+ Xplug.prototype._set_button_tooltip_swap_grid = function()
+{
+  var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
+
+  $("button#ORATRONIK_XPLUG_swap_panes_button")
+     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
+
+}; // _set_button_tooltip_swap_grid
+
+
+
+
 
 /****************************************************************************
  * Install swap grid pane button
@@ -20,7 +35,6 @@
 
    if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
 
-   var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
 
    $('button#glvExpandRestoreBtn')
             .after( '<button'
@@ -28,11 +42,12 @@
                   + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
                   + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
                   + ' data-action="pd-xplug-swap-grid-pane"'
-                  + ' title="[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') + '"'
                   + '>'
                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
                   + '</button>'
             );
+
+   xplug._set_button_tooltip_swap_grid();
 
    xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
 
