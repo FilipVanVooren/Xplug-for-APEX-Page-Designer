@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Thu Jul 28 2016 22:09:25
+// Built using Gulp. Built date: Fri Jul 29 2016 23:39:51
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -219,11 +219,17 @@
 //                                  In order to prevent vulnerabilities, the `setTimeout` and `setInterval` functions
 //                                  should be called only with function expressions as their first argument.
 //
-// V1.4.0.0 2016-07-06 * Multiple changes
+// V1.4.0.0 2016-07-28 * Multiple changes
 //                       - Code refactoring for next/previous button handling. Moved to file xcplug_prevnext_page.js
 //                       - Code refactoring for day/night mode. Moved to file xplug_daynight_mode.js
 //                       - Removed some dead code in xplug_constructor.js
 //                       - Xplug buttons now have a mouseover title (including shortcut)
+//
+// V1.4.0.0 2016-07-29 * Multiple changes
+//                       - Refactoring & renamed some script files
+//                       - Bug-fix: When loading Page Designer in Dark-Mode, the sun-icon was shown a button icon.
+//                                  Is solved now, moon-icon is shown.
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -1309,6 +1315,8 @@ window.pageDesigner.loadStyle = function(p_style_name)
        l_imp_obj.C9,
        l_imp_obj.C10
     );
+
+    xplug.darkmode = l_imp_obj.DARK_STYLE == 'YES';
 }; // window.pageDesigner.loadStyle
 
 
@@ -2023,6 +2031,7 @@ var Xplug = function() {
    this.version       = C_version;
    this.author        = C_author;
    this.arr_page_list = [];
+   this.darkmode      = false;
 
 
    // Exit if not in APEX Page Designer
@@ -2065,7 +2074,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-dock-grid-right",
             label    : get_label('DOCKRIGHT'),
-            shortcut : "Alt+R",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.dockGridRight();
@@ -2075,7 +2083,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-dock-grid-middle",
             label    : get_label('DOCKMID'),
-            shortcut : "Alt+M",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.dockGridMiddle();
@@ -2085,6 +2092,8 @@ var Xplug = function() {
           {
             name     : "pd-xplug-swap-grid-pane",
             label    : get_label('BTN-SWAP-GRID-PANE'),
+            title    : get_label('BTN-SWAP-GRID-PANE'),
+            shortcut : "ALT+TAB",
             action   : function( event, focusElement )
                        {
                          var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
@@ -2099,7 +2108,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-disable-tooltips",
             label    : get_label('NOTOOLTIPS'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.disableTooltips();
@@ -2109,7 +2117,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-enable-tooltips",
             label    : get_label('TOOLTIPS'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.enableTooltips();
@@ -2119,7 +2126,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-set-night-mode",
             label    : get_label('LBL-MOONLIGHT'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.setNightMode();
@@ -2129,7 +2135,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-set-day-mode",
             label    : get_label('LBL-DAYLIGHT'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.setDayMode();
@@ -2258,7 +2263,7 @@ var Xplug = function() {
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_prevnext_page.js
+// xplug_feature_prevnext_page.js
 // 2016-07-28 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
@@ -2270,7 +2275,8 @@ var Xplug = function() {
  * Private helper function
  * Set attribute 'title' of prev/next buttons
  ***************************************************************************/
-function _set_button_tooltips() {
+Xplug.prototype._set_button_tooltip_prevnext_page = function()
+{
   var l_shortcut_prev_page = apex.actions.lookup('pd-xplug-goto-previous-page').shortcut;
   var l_shortcut_next_page = apex.actions.lookup('pd-xplug-goto-next-page').shortcut;
 
@@ -2279,7 +2285,7 @@ function _set_button_tooltips() {
 
   $("button#ORATRONIK_XPLUG_next_page_button")
      .attr('title', '[' + l_shortcut_next_page + '] ' + get_label('NEXTPAGE') );
-} // _button_tooltips
+}; // _set_button_tooltip_prevnext_page
 
 
 
@@ -2296,7 +2302,7 @@ window.pageDesigner.goToPrevPage = function () {
   function _enable_buttons() {
       apex.actions.enable('pd-xplug-goto-previous-page');
       apex.actions.enable('pd-xplug-goto-next-page');
-      _set_button_tooltips();
+      xplug._set_button_tooltip_prevnext_page();
   } // _enable_buttons
 
 
@@ -2353,7 +2359,7 @@ window.pageDesigner.goToNextPage = function () {
   function _enable_buttons() {
       apex.actions.enable('pd-xplug-goto-previous-page');
       apex.actions.enable('pd-xplug-goto-next-page');
-      _set_button_tooltips();
+      xplug._set_button_tooltip_prevnext_page();
   } // _enable_buttons
 
 
@@ -2426,7 +2432,7 @@ Xplug.prototype.installPageButtons = function ()
              + '</button>'
            );
 
-  _set_button_tooltips();
+   xplug._set_button_tooltip_prevnext_page();
 
    // Get list of pages in JSON format and store result in array.
    // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
@@ -2465,12 +2471,27 @@ Xplug.prototype.deinstallPageButtons = function ()
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_daynight_mode.js
+// xplug_feature_daynight_mode.js
 // 2016-07-28 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
 /* jshint -W083 */
+
+
+/****************************************************************************
+ * Set attribute 'title' of swap panes button
+ ***************************************************************************/
+ Xplug.prototype._set_button_tooltip_daynight_mode = function()
+{
+  var l_shortcut = apex.actions.lookup('pd-xplug-toggle-day-night-mode').shortcut;
+
+  $("button#ORATRONIK_XPLUG_moonsun_button")
+     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-TGL-DAY-MOON') );
+
+}; // _set_button_tooltip_daynight_mode
+
+
 
 /****************************************************************************
  * Install Theme switch (daylight/moonlight) button
@@ -2479,7 +2500,8 @@ Xplug.prototype.deinstallPageButtons = function ()
  {
    if  ( $('button#ORATRONIK_XPLUG_moonsun_button').length == 1 ) return;
 
-   var l_shortcut_toggle = apex.actions.lookup('pd-xplug-toggle-day-night-mode').shortcut;
+   var l_icon = xplug.darkmode ? 'icon-xplug-moon'
+                               : 'icon-xplug-sun';
 
    $('.a-PageSelect').css('border-left','0px');
    $('div.a-PageSelect')
@@ -2488,11 +2510,12 @@ Xplug.prototype.deinstallPageButtons = function ()
                     + ' ID="ORATRONIK_XPLUG_moonsun_button"'
                     + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
                     + ' data-action="pd-xplug-toggle-day-night-mode"'
-                    + ' title="[' + l_shortcut_toggle + '] ' + get_label('BTN-TGL-DAY-MOON') +  '"'
-                    + '>'                    
-                    + ' <span class="a-Icon icon-xplug-sun"></span>'
+                    + '>'
+                    + ' <span class="a-Icon ' + l_icon + '"></span>'
                     + '</button>'
                   );
+
+   xplug._set_button_tooltip_daynight_mode();
 
    xplug.setStorage('BTN-THEME-SWITCH','YES');
  }; // installThemeSwitch
@@ -2513,6 +2536,89 @@ Xplug.prototype.deinstallPageButtons = function ()
 
    xplug.setStorage('BTN-THEME-SWITCH','NO');
  }; // deinstallThemeSwitch
+
+
+ /****************************************************************************
+  * Add custom method to pageDesigner Object
+  * METHOD: setDayMode
+  ***************************************************************************/
+ window.pageDesigner.setDayMode = function() {
+
+   var l_style = xplug.getStorage('DEFAULT_STYLE1','NONE',true);
+   window.pageDesigner.loadStyle(l_style);
+
+   $('#ORATRONIK_XPLUG_moonsun_button span')
+        .removeClass('icon-xplug-moon')
+        .addClass('icon-xplug-sun');
+ }; // window.pageDesigner.setDayMode
+
+
+
+ /****************************************************************************
+  * Add custom method to pageDesigner Object
+  * METHOD: setNightMode
+  ***************************************************************************/
+ window.pageDesigner.setNightMode = function() {
+
+   var l_style = xplug.getStorage('DEFAULT_STYLE2','Moonlight',true);
+   window.pageDesigner.loadStyle(l_style);
+
+   $('#ORATRONIK_XPLUG_moonsun_button span')
+         .removeClass('icon-xplug-sun')
+         .addClass('icon-xplug-moon');
+ }; // window.pageDesigner.setNightMode
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// xplug_feature_swap_grid.js
+// 2016-07-28 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+/* jshint -W083 */
+
+
+
+/****************************************************************************
+ * Install swap grid pane button
+ ***************************************************************************/
+ Xplug.prototype.installSwapGrid = function ()
+ {
+   'use strict';
+
+   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
+
+   var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
+
+   $('button#glvExpandRestoreBtn')
+            .after( '<button'
+                  + ' type="button"'
+                  + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
+                  + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                  + ' data-action="pd-xplug-swap-grid-pane"'
+                  + ' title="[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') + '"'
+                  + '>'
+                  + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                  + '</button>'
+            );
+
+   xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
+
+ }; // installSwapGrid
+
+
+
+/****************************************************************************
+ * Deinstall swap grid pane button
+ ***************************************************************************/
+ Xplug.prototype.deinstallSwapGrid = function ()
+ {
+   $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
+
+   xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
+ }; // DeinstallSwapGrid
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer

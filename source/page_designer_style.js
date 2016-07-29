@@ -367,6 +367,8 @@ window.pageDesigner.loadStyle = function(p_style_name)
        l_imp_obj.C9,
        l_imp_obj.C10
     );
+
+    xplug.darkmode = l_imp_obj.DARK_STYLE == 'YES';
 }; // window.pageDesigner.loadStyle
 
 

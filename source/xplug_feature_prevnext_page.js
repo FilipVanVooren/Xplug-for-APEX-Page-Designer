@@ -2,7 +2,7 @@
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_prevnext_page.js
+// xplug_feature_prevnext_page.js
 // 2016-07-28 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
@@ -14,7 +14,8 @@
  * Private helper function
  * Set attribute 'title' of prev/next buttons
  ***************************************************************************/
-function _set_button_tooltips() {
+Xplug.prototype._set_button_tooltip_prevnext_page = function()
+{
   var l_shortcut_prev_page = apex.actions.lookup('pd-xplug-goto-previous-page').shortcut;
   var l_shortcut_next_page = apex.actions.lookup('pd-xplug-goto-next-page').shortcut;
 
@@ -23,7 +24,7 @@ function _set_button_tooltips() {
 
   $("button#ORATRONIK_XPLUG_next_page_button")
      .attr('title', '[' + l_shortcut_next_page + '] ' + get_label('NEXTPAGE') );
-} // _button_tooltips
+}; // _set_button_tooltip_prevnext_page
 
 
 
@@ -40,7 +41,7 @@ window.pageDesigner.goToPrevPage = function () {
   function _enable_buttons() {
       apex.actions.enable('pd-xplug-goto-previous-page');
       apex.actions.enable('pd-xplug-goto-next-page');
-      _set_button_tooltips();
+      xplug._set_button_tooltip_prevnext_page();
   } // _enable_buttons
 
 
@@ -97,7 +98,7 @@ window.pageDesigner.goToNextPage = function () {
   function _enable_buttons() {
       apex.actions.enable('pd-xplug-goto-previous-page');
       apex.actions.enable('pd-xplug-goto-next-page');
-      _set_button_tooltips();
+      xplug._set_button_tooltip_prevnext_page();
   } // _enable_buttons
 
 
@@ -170,7 +171,7 @@ Xplug.prototype.installPageButtons = function ()
              + '</button>'
            );
 
-  _set_button_tooltips();
+   xplug._set_button_tooltip_prevnext_page();
 
    // Get list of pages in JSON format and store result in array.
    // Code based on getPagesLov() in images/apex_ui/js/pe.model.js

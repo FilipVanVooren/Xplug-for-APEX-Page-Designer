@@ -15,6 +15,7 @@ var Xplug = function() {
    this.version       = C_version;
    this.author        = C_author;
    this.arr_page_list = [];
+   this.darkmode      = false;
 
 
    // Exit if not in APEX Page Designer
@@ -57,7 +58,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-dock-grid-right",
             label    : get_label('DOCKRIGHT'),
-            shortcut : "Alt+R",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.dockGridRight();
@@ -67,7 +67,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-dock-grid-middle",
             label    : get_label('DOCKMID'),
-            shortcut : "Alt+M",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.dockGridMiddle();
@@ -77,6 +76,8 @@ var Xplug = function() {
           {
             name     : "pd-xplug-swap-grid-pane",
             label    : get_label('BTN-SWAP-GRID-PANE'),
+            title    : get_label('BTN-SWAP-GRID-PANE'),
+            shortcut : "ALT+TAB",
             action   : function( event, focusElement )
                        {
                          var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
@@ -91,7 +92,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-disable-tooltips",
             label    : get_label('NOTOOLTIPS'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.disableTooltips();
@@ -101,7 +101,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-enable-tooltips",
             label    : get_label('TOOLTIPS'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.enableTooltips();
@@ -111,7 +110,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-set-night-mode",
             label    : get_label('LBL-MOONLIGHT'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.setNightMode();
@@ -121,7 +119,6 @@ var Xplug = function() {
           {
             name     : "pd-xplug-set-day-mode",
             label    : get_label('LBL-DAYLIGHT'),
-            shortcut : "????",
             action   : function( event, focusElement )
                        {
                            return window.pageDesigner.setDayMode();
