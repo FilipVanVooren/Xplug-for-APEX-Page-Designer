@@ -225,11 +225,15 @@
 //                       - Xplug buttons now have a mouseover title (including shortcut)
 //
 // V1.4.0.0 2016-07-29 * Multiple changes
-//                       - Refactoring & renamed some script files
+//                       - Refactored & renamed some script files
 //                       - Bug-fix: When loading Page Designer in Dark-Mode, the sun-icon was shown a button icon.
 //                                  Is solved now, moon-icon is shown.
 //
 //
+// V1.4.0.0 2016-08-30 * Multiple changes
+//                       - Added probeAPEXVersion() function to xplug_prototypes.js
+//                       - Adjusted message level from debug to info for some console messages
+
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

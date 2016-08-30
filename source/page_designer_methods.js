@@ -285,7 +285,7 @@ window.pageDesigner.disableTooltips = function()
      pageDesigner.tooltipContentForComponent = function() { };
 
      xplug.setStorage('TOOLTIPS_DISABLED','YES');                                             // Save option in local database
-     console.debug('XPLUG - Tooltips disabled');
+     console.info('XPLUG - Tooltips disabled');
 
      return 1;
    } else {
@@ -308,7 +308,7 @@ window.pageDesigner.enableTooltips = function()
      pageDesigner.tooltipContentForComponentCopy = undefined;
 
      xplug.setStorage('TOOLTIPS_DISABLED','NO');                                              // Save option in local database
-     console.debug('XPLUG - Tooltips enabled');
+     console.info('XPLUG - Tooltips enabled');
 
      return 1;
   } else {

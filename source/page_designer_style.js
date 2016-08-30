@@ -282,9 +282,9 @@ window.pageDesigner.setStyle = function( p_style_name,
 
 
     if ( p_save_style == 'DO_NOT_SAVE') {
-         console.debug('XPLUG - Page Designer style "' + p_style_name + '" (DRAFT mode applied).');
+         console.info('XPLUG - Page Designer style "' + p_style_name + '" (DRAFT mode applied).');
     } else {
-         console.debug('XPLUG - Page Designer Style "' + p_style_name + '" set.');
+         console.info('XPLUG - Page Designer Style "' + p_style_name + '" set.');
          xplug.setStorage('CURRENT_STYLE',p_style_name, true);
     }
 
@@ -307,7 +307,7 @@ window.pageDesigner.unsetStyle = function()
         .removeClass('icon-xplug-moon')
         .addClass('icon-xplug-sun');
 
-   console.debug('XPLUG - Current page designer style unset.');
+   console.info('XPLUG - Current page designer style unset.');
 
    xplug.setStorage('CURRENT_STYLE','NONE', true);
 

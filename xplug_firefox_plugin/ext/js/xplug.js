@@ -1,4 +1,5 @@
-// Built using Gulp. Built date: Fri Jul 29 2016 23:54:38
+// Built using Gulp. Built date: Tue Aug 30 2016 21:33:30
+
 
 
  function get_label(p_index)
@@ -2845,8 +2846,25 @@ Xplug.prototype.getVersion = function ()
 }; 
 
 
+
+Xplug.prototype.probeAPEXVersion = function ()
+{
+  var l_version = '?.?.?';
+  try {
+      l_version = $("script[src*='v=']").attr('src').split('=')[1];    
+  } catch(e) {
+      if ($("'script[src*='apex_4_1.min.js']").length == 1) {
+         l_version = '4.1.X';
+      }
+  }
+  return l_version;    
+}; 
+
+
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();
+
+   void 0;
 
    xplug.install_menu();
    xplug.loadSettings();

@@ -61,3 +61,18 @@ Xplug.prototype.getVersion = function ()
 {
  return xplug.version;
 }; // Xplug.prototype.getVersion
+
+
+
+Xplug.prototype.probeAPEXVersion = function ()
+{
+  var l_version = '?.?.?';
+  try {
+      l_version = $("script[src*='v=']").attr('src').split('=')[1];    // 4.2.X
+  } catch(e) {
+      if ($("'script[src*='apex_4_1.min.js']").length == 1) {
+         l_version = '4.1.X';
+      }
+  }
+  return l_version;    
+}; // Xplug.prototype.probeAPEXVersion

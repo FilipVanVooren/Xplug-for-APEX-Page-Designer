@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Fri Jul 29 2016 23:54:38
+// Built using Gulp. Built date: Tue Aug 30 2016 21:33:30
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -226,11 +226,15 @@
 //                       - Xplug buttons now have a mouseover title (including shortcut)
 //
 // V1.4.0.0 2016-07-29 * Multiple changes
-//                       - Refactoring & renamed some script files
+//                       - Refactored & renamed some script files
 //                       - Bug-fix: When loading Page Designer in Dark-Mode, the sun-icon was shown a button icon.
 //                                  Is solved now, moon-icon is shown.
 //
 //
+// V1.4.0.0 2016-08-30 * Multiple changes
+//                       - Added probeAPEXVersion() function to xplug_prototypes.js
+//                       - Adjusted message level from debug to info for some console messages
+
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -788,7 +792,7 @@ window.pageDesigner.disableTooltips = function()
      pageDesigner.tooltipContentForComponent = function() { };
 
      xplug.setStorage('TOOLTIPS_DISABLED','YES');                                             // Save option in local database
-     console.debug('XPLUG - Tooltips disabled');
+     console.info('XPLUG - Tooltips disabled');
 
      return 1;
    } else {
@@ -811,7 +815,7 @@ window.pageDesigner.enableTooltips = function()
      pageDesigner.tooltipContentForComponentCopy = undefined;
 
      xplug.setStorage('TOOLTIPS_DISABLED','NO');                                              // Save option in local database
-     console.debug('XPLUG - Tooltips enabled');
+     console.info('XPLUG - Tooltips enabled');
 
      return 1;
   } else {
@@ -1230,9 +1234,9 @@ window.pageDesigner.setStyle = function( p_style_name,
 
 
     if ( p_save_style == 'DO_NOT_SAVE') {
-         console.debug('XPLUG - Page Designer style "' + p_style_name + '" (DRAFT mode applied).');
+         console.info('XPLUG - Page Designer style "' + p_style_name + '" (DRAFT mode applied).');
     } else {
-         console.debug('XPLUG - Page Designer Style "' + p_style_name + '" set.');
+         console.info('XPLUG - Page Designer Style "' + p_style_name + '" set.');
          xplug.setStorage('CURRENT_STYLE',p_style_name, true);
     }
 
@@ -1255,7 +1259,7 @@ window.pageDesigner.unsetStyle = function()
         .removeClass('icon-xplug-moon')
         .addClass('icon-xplug-sun');
 
-   console.debug('XPLUG - Current page designer style unset.');
+   console.info('XPLUG - Current page designer style unset.');
 
    xplug.setStorage('CURRENT_STYLE','NONE', true);
 
@@ -3659,6 +3663,21 @@ Xplug.prototype.getVersion = function ()
  return xplug.version;
 }; // Xplug.prototype.getVersion
 
+
+
+Xplug.prototype.probeAPEXVersion = function ()
+{
+  var l_version = '?.?.?';
+  try {
+      l_version = $("script[src*='v=']").attr('src').split('=')[1];    // 4.2.X
+  } catch(e) {
+      if ($("'script[src*='apex_4_1.min.js']").length == 1) {
+         l_version = '4.1.X';
+      }
+  }
+  return l_version;    
+}; // Xplug.prototype.probeAPEXVersion
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -3671,6 +3690,8 @@ Xplug.prototype.getVersion = function ()
 
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();
+
+   console.info('XPLUG - Detected APEX version: ' + xplug.probeAPEXVersion() );
 
    xplug.install_menu();
    xplug.loadSettings();

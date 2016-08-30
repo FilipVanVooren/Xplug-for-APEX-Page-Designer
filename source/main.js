@@ -11,6 +11,8 @@
 if (typeof(window.pageDesigner) == 'object') {
    window.xplug = new Xplug();
 
+   console.info('XPLUG - Detected APEX version: ' + xplug.probeAPEXVersion() );
+
    xplug.install_menu();
    xplug.loadSettings();
 }

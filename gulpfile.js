@@ -5,6 +5,7 @@ var jshint          = require('gulp-jshint');
 var df              = require('dateFormat');
 var strip_comments  = require('gulp-strip-comments');
 var strip_debug     = require('gulp-strip-debug');
+var notify          = require('gulp-notify');
 
 gulp.task('Build Xplug', function() {
 
@@ -17,7 +18,7 @@ gulp.task('Build Xplug', function() {
               'source/xplug_constructor.js',
               'source/xplug_feature_prevnext_page.js',
               'source/xplug_feature_daynight_mode.js',
-              'source/xplug_feature_swap_grid.js',              
+              'source/xplug_feature_swap_grid.js',
               'source/xplug_storage.js',
               'source/xplug_menu.js',
               'source/xplug_powerbox.js',
@@ -57,6 +58,8 @@ gulp.task('Build Xplug', function() {
          // Build Firefox add-on
          ///////////////////////////////////////////////////////////////////////
          .pipe(header('// Built using Gulp. Built date: ${date}\n', {date : df() }))
-         .pipe(gulp.dest('xplug_firefox_plugin/ext/js'));
+         .pipe(gulp.dest('xplug_firefox_plugin/ext/js'))
 
+         // Built completed
+         .pipe(notify('Built completed'));
 });
