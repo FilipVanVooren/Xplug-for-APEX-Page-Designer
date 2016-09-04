@@ -34,12 +34,25 @@
    var l_icon = xplug.darkmode ? 'icon-xplug-moon'
                                : 'icon-xplug-sun';
 
-   $('.a-PageSelect').css('border-left','0px');
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
+
+   if (xplug.apex_version.substring(0,4) === '5.0.') {
+     $('.a-PageSelect').css('border-left','0px');
+
+   }
+
    $('div.a-PageSelect')
              .before( '<button'
                     + ' type="button"'
                     + ' ID="ORATRONIK_XPLUG_moonsun_button"'
-                    + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                    + l_class_btn
                     + ' data-action="pd-xplug-toggle-day-night-mode"'
                     + '>'
                     + ' <span class="a-Icon ' + l_icon + '"></span>'

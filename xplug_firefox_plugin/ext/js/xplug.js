@@ -1,5 +1,4 @@
-// Built using Gulp. Built date: Tue Aug 30 2016 21:33:30
-
+// Built using Gulp. Built date: Sun Sep 04 2016 20:20:50
 
 
  function get_label(p_index)
@@ -1470,6 +1469,7 @@ var Xplug = function() {
    this.author        = C_author;
    this.arr_page_list = [];
    this.darkmode      = false;
+   this.apex_version  = '?.?.?.?';
 
 
    if (typeof(window.pageDesigner) != 'object') {
@@ -1527,7 +1527,7 @@ var Xplug = function() {
             name     : "pd-xplug-swap-grid-pane",
             label    : get_label('BTN-SWAP-GRID-PANE'),
             title    : get_label('BTN-SWAP-GRID-PANE'),
-            shortcut : "ALT+TAB",
+            shortcut : "Alt+M",
             action   : function( event, focusElement )
                        {
                          var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
@@ -1688,6 +1688,31 @@ var Xplug = function() {
 
 
 
+Xplug.prototype._get_page_list = function(pCallback)
+{
+  'use strict';
+
+  apex.server.process
+     (
+        "getPages", {
+                      x01:  "Y" ,
+                      x02:  "userInterfaceId" ,
+                      x03:  ""
+                    },
+        {
+          success : function(pPageList)
+                    {
+                       xplug.arr_page_list = pPageList;
+
+                       if (typeof(pCallback) === 'function') {
+                          pCallback.call();
+                       }
+                    }
+        }
+     );
+}; 
+
+
 Xplug.prototype._set_button_tooltip_prevnext_page = function()
 {
   var l_shortcut_prev_page = apex.actions.lookup('pd-xplug-goto-previous-page').shortcut;
@@ -1721,9 +1746,13 @@ window.pageDesigner.goToPrevPage = function () {
   }
 
   if (l_index > -1) {
-    l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
-                                             : l_index].id;
+    l_prev = xplug.arr_page_list[l_index > 0
+           ? l_index - 1
+           : l_index].id;
   } else {
+    void 0;
+    xplug._get_page_list(function () { window.pageDesigner.goToPrevPage(); } );
+
     return;
   }
 
@@ -1744,6 +1773,9 @@ window.pageDesigner.goToPrevPage = function () {
 
 
 window.pageDesigner.goToNextPage = function () {
+
+  'use strict';
+
   var l_page  = pe.getCurrentPageId();   
   var l_index = -1;
   var l_next  = -1;
@@ -1762,9 +1794,14 @@ window.pageDesigner.goToNextPage = function () {
   }
 
   if (l_index > -1) {
-     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
-                                                                           : l_index].id;
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
+            ? l_index + 1
+            : l_index].id;
+
   } else {
+    void 0;
+    xplug._get_page_list(function () { window.pageDesigner.goToNextPage(); } );
+
     return;
   }
 
@@ -1772,8 +1809,8 @@ window.pageDesigner.goToNextPage = function () {
     apex.actions.disable('pd-xplug-goto-previous-page');
     apex.actions.disable('pd-xplug-goto-next-page');
 
-    var l_deferred = window.pageDesigner.goToPage( l_next );
-    $.when( l_deferred )
+    var l_deferred2 = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred2 )
             .done( function()        { _enable_buttons(); })
             .fail( function(reason)  { _enable_buttons(); });
 
@@ -1790,11 +1827,21 @@ Xplug.prototype.installPageButtons = function ()
                    ? 'button#ORATRONIK_XPLUG_moonsun_button'
                    : 'div.a-PageSelect';
 
+  var l_class_btn_left, l_class_btn_right;
+
+  if (xplug.apex_version.substring(0,4) === '5.1.') {
+    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapLeft a-Button--simple"';
+    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapRight a-Button--simple"';
+  } else {
+    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
+  }
+
   $(l_node)
       .before( '<button'
              + ' type="button"'
              + ' ID="ORATRONIK_XPLUG_prev_page_button"'
-             + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+             + l_class_btn_left
              + ' data-action="pd-xplug-goto-previous-page"'
              + '>'
              + ' <span class="a-Icon icon-xplug-previous" aria-hidden="true"></span>'
@@ -1803,7 +1850,7 @@ Xplug.prototype.installPageButtons = function ()
              + '<button'
              + ' type="button"'
              + ' ID="ORATRONIK_XPLUG_next_page_button"'
-             + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"'
+             + l_class_btn_right
              + ' data-action="pd-xplug-goto-next-page"'
              + '>'
              + ' <span class="a-Icon icon-xplug-next" aria-hidden="true"></span>'
@@ -1811,22 +1858,7 @@ Xplug.prototype.installPageButtons = function ()
            );
 
    xplug._set_button_tooltip_prevnext_page();
-
-   apex.server.process
-      (
-         "getPages", {
-                       x01:  "Y" ,
-                       x02:  "userInterfaceId" ,
-                       x03:  ""
-                     },
-         {
-           success : function(pPageList)
-                     {
-                        xplug.arr_page_list = pPageList;
-                     }
-         }
-      );
-
+   xplug._get_page_list();
    xplug.setStorage('BTN-PRVNEXT-PAGE','YES');
 }; 
 
@@ -1860,12 +1892,25 @@ Xplug.prototype.deinstallPageButtons = function ()
    var l_icon = xplug.darkmode ? 'icon-xplug-moon'
                                : 'icon-xplug-sun';
 
-   $('.a-PageSelect').css('border-left','0px');
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
+
+   if (xplug.apex_version.substring(0,4) === '5.0.') {
+     $('.a-PageSelect').css('border-left','0px');
+
+   }
+
    $('div.a-PageSelect')
              .before( '<button'
                     + ' type="button"'
                     + ' ID="ORATRONIK_XPLUG_moonsun_button"'
-                    + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                    + l_class_btn
                     + ' data-action="pd-xplug-toggle-day-night-mode"'
                     + '>'
                     + ' <span class="a-Icon ' + l_icon + '"></span>'
@@ -1935,12 +1980,76 @@ Xplug.prototype.deinstallPageButtons = function ()
 
    if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
 
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
 
    $('button#glvExpandRestoreBtn')
             .after( '<button'
                   + ' type="button"'
                   + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
-                  + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                  + l_class_btn
+                  + ' data-action="pd-xplug-swap-grid-pane"'
+                  + '>'
+                  + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                  + '</button>'
+            );
+
+   xplug._set_button_tooltip_swap_grid();
+
+   xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
+
+ }; 
+
+
+
+ Xplug.prototype.deinstallSwapGrid = function ()
+ {
+   $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
+
+   xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
+ }; 
+
+
+
+ Xplug.prototype._set_button_tooltip_swap_grid = function()
+{
+  var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
+
+  $("button#ORATRONIK_XPLUG_swap_panes_button")
+     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
+
+}; 
+
+
+
+
+
+ Xplug.prototype.installSwapGrid = function ()
+ {
+   'use strict';
+
+   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
+
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
+
+   $('button#glvExpandRestoreBtn')
+            .after( '<button'
+                  + ' type="button"'
+                  + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
+                  + l_class_btn
                   + ' data-action="pd-xplug-swap-grid-pane"'
                   + '>'
                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
@@ -2849,6 +2958,8 @@ Xplug.prototype.getVersion = function ()
 
 Xplug.prototype.probeAPEXVersion = function ()
 {
+  'use strict';
+
   var l_version = '?.?.?';
   try {
       l_version = $("script[src*='v=']").attr('src').split('=')[1];    
@@ -2857,7 +2968,9 @@ Xplug.prototype.probeAPEXVersion = function ()
          l_version = '4.1.X';
       }
   }
-  return l_version;    
+
+  this.apex_version = l_version;
+  return l_version;
 }; 
 
 

@@ -19,6 +19,7 @@ gulp.task('Build Xplug', function() {
               'source/xplug_feature_prevnext_page.js',
               'source/xplug_feature_daynight_mode.js',
               'source/xplug_feature_swap_grid.js',
+              'source/xplug_feature_window_title.js',              
               'source/xplug_storage.js',
               'source/xplug_menu.js',
               'source/xplug_powerbox.js',

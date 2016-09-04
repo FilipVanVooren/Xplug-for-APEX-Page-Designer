@@ -16,6 +16,7 @@ var Xplug = function() {
    this.author        = C_author;
    this.arr_page_list = [];
    this.darkmode      = false;
+   this.apex_version  = '?.?.?.?';
 
 
    // Exit if not in APEX Page Designer
@@ -77,7 +78,7 @@ var Xplug = function() {
             name     : "pd-xplug-swap-grid-pane",
             label    : get_label('BTN-SWAP-GRID-PANE'),
             title    : get_label('BTN-SWAP-GRID-PANE'),
-            shortcut : "ALT+TAB",
+            shortcut : "Alt+M",
             action   : function( event, focusElement )
                        {
                          var l_switched = xplug.getStorage('PANES_SWITCHED','NO');

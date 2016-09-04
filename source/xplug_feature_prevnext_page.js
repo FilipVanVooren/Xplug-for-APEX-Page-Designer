@@ -12,6 +12,37 @@
 
 /****************************************************************************
  * Private helper function
+ * Get page list
+ ***************************************************************************/
+Xplug.prototype._get_page_list = function(pCallback)
+{
+  'use strict';
+
+  // Get list of pages in JSON format and store result in array.
+  // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
+  apex.server.process
+     (
+        "getPages", {
+                      x01:  "Y" ,
+                      x02:  "userInterfaceId" ,
+                      x03:  ""
+                    },
+        {
+          success : function(pPageList)
+                    {
+                       xplug.arr_page_list = pPageList;
+
+                       if (typeof(pCallback) === 'function') {
+                          pCallback.call();
+                       }
+                    }
+        }
+     );
+}; // _get_page_list
+
+
+/****************************************************************************
+ * Private helper function
  * Set attribute 'title' of prev/next buttons
  ***************************************************************************/
 Xplug.prototype._set_button_tooltip_prevnext_page = function()
@@ -57,9 +88,19 @@ window.pageDesigner.goToPrevPage = function () {
   // Found previous page, now goto page
   //
   if (l_index > -1) {
-    l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
-                                             : l_index].id;
+    l_prev = xplug.arr_page_list[l_index > 0
+           ? l_index - 1
+           : l_index].id;
   } else {
+    //
+    // We did not find the poage
+    //
+    //
+    // We did not find the poage
+    //
+    console.debug('XPLUG - Did not find page ' + l_page + ', will retry.');
+    xplug._get_page_list(function () { window.pageDesigner.goToPrevPage(); } );
+
     return;
   }
 
@@ -90,6 +131,9 @@ window.pageDesigner.goToPrevPage = function () {
  * METHOD: Go to next page
  ***************************************************************************/
 window.pageDesigner.goToNextPage = function () {
+
+  'use strict';
+
   var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
   var l_index = -1;
   var l_next  = -1;
@@ -114,9 +158,17 @@ window.pageDesigner.goToNextPage = function () {
   // Found next page, now goto page
   //
   if (l_index > -1) {
-     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
-                                                                           : l_index].id;
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
+            ? l_index + 1
+            : l_index].id;
+
   } else {
+    //
+    // We did not find the poage
+    //
+    console.debug('XPLUG - Did not find page ' + l_page + ', will retry.');
+    xplug._get_page_list(function () { window.pageDesigner.goToNextPage(); } );
+
     return;
   }
 
@@ -130,8 +182,8 @@ window.pageDesigner.goToNextPage = function () {
     //
     // Get page and re-enable buttons/actions
     //
-    var l_deferred = window.pageDesigner.goToPage( l_next );
-    $.when( l_deferred )
+    var l_deferred2 = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred2 )
             .done( function()        { _enable_buttons(); })
             .fail( function(reason)  { _enable_buttons(); });
 
@@ -151,11 +203,21 @@ Xplug.prototype.installPageButtons = function ()
                    ? 'button#ORATRONIK_XPLUG_moonsun_button'
                    : 'div.a-PageSelect';
 
+  var l_class_btn_left, l_class_btn_right;
+
+  if (xplug.apex_version.substring(0,4) === '5.1.') {
+    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapLeft a-Button--simple"';
+    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapRight a-Button--simple"';
+  } else {
+    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
+  }
+
   $(l_node)
       .before( '<button'
              + ' type="button"'
              + ' ID="ORATRONIK_XPLUG_prev_page_button"'
-             + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+             + l_class_btn_left
              + ' data-action="pd-xplug-goto-previous-page"'
              + '>'
              + ' <span class="a-Icon icon-xplug-previous" aria-hidden="true"></span>'
@@ -164,7 +226,7 @@ Xplug.prototype.installPageButtons = function ()
              + '<button'
              + ' type="button"'
              + ' ID="ORATRONIK_XPLUG_next_page_button"'
-             + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"'
+             + l_class_btn_right
              + ' data-action="pd-xplug-goto-next-page"'
              + '>'
              + ' <span class="a-Icon icon-xplug-next" aria-hidden="true"></span>'
@@ -172,24 +234,7 @@ Xplug.prototype.installPageButtons = function ()
            );
 
    xplug._set_button_tooltip_prevnext_page();
-
-   // Get list of pages in JSON format and store result in array.
-   // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
-   apex.server.process
-      (
-         "getPages", {
-                       x01:  "Y" ,
-                       x02:  "userInterfaceId" ,
-                       x03:  ""
-                     },
-         {
-           success : function(pPageList)
-                     {
-                        xplug.arr_page_list = pPageList;
-                     }
-         }
-      );
-
+   xplug._get_page_list();
    xplug.setStorage('BTN-PRVNEXT-PAGE','YES');
 }; // installPageButtons
 

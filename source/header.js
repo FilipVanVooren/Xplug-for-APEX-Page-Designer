@@ -232,8 +232,16 @@
 //
 // V1.4.0.0 2016-08-30 * Multiple changes
 //                       - Added probeAPEXVersion() function to xplug_prototypes.js
-//                       - Adjusted message level from debug to info for some console messages
-
+//                       - Adjusted message level from debug to info for some console log messages
+//
+// V1.4.0.0 2016-09-04 * Multiple changes
+//                       - Adjust CSS of buttons depending on APEX version 5.1 or 5.0
+//                       - Code refactoring, introduced xplug_feature_window_title.js
+//                       - Bug-fix: Previous / Next page buttons did not work after new page was created.
+//                                  This is now resolved by refreshing the list of pages, if page can't be Found
+//                                  during page hopping.
+//                       - Bug-fix: Shortcut for swap grid pane was invalid, now solved by assigning new key Alt+M
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

@@ -35,12 +35,20 @@
 
    if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
 
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
 
    $('button#glvExpandRestoreBtn')
             .after( '<button'
                   + ' type="button"'
                   + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
-                  + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                  + l_class_btn
                   + ' data-action="pd-xplug-swap-grid-pane"'
                   + '>'
                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'

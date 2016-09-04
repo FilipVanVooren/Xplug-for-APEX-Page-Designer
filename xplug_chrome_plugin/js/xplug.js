@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Aug 30 2016 21:33:30
+// Built using Gulp. Built date: Sun Sep 04 2016 20:20:50
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -233,8 +233,14 @@
 //
 // V1.4.0.0 2016-08-30 * Multiple changes
 //                       - Added probeAPEXVersion() function to xplug_prototypes.js
-//                       - Adjusted message level from debug to info for some console messages
-
+//                       - Adjusted message level from debug to info for some console log messages
+//
+// V1.4.0.0 2016-09-04 * Multiple changes
+//                       - Adjust CSS of buttons depending on APEX version 5.1 or 5.0
+//                       - Bug-fix: Previous / Next page buttons did not work after new page was created.
+//                                  This is now resolved by refreshing the list of pages, if page can't be Found
+//                                  during page hopping.
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
@@ -2036,6 +2042,7 @@ var Xplug = function() {
    this.author        = C_author;
    this.arr_page_list = [];
    this.darkmode      = false;
+   this.apex_version  = '?.?.?.?';
 
 
    // Exit if not in APEX Page Designer
@@ -2097,7 +2104,7 @@ var Xplug = function() {
             name     : "pd-xplug-swap-grid-pane",
             label    : get_label('BTN-SWAP-GRID-PANE'),
             title    : get_label('BTN-SWAP-GRID-PANE'),
-            shortcut : "ALT+TAB",
+            shortcut : "Alt+M",
             action   : function( event, focusElement )
                        {
                          var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
@@ -2277,6 +2284,37 @@ var Xplug = function() {
 
 /****************************************************************************
  * Private helper function
+ * Get page list
+ ***************************************************************************/
+Xplug.prototype._get_page_list = function(pCallback)
+{
+  'use strict';
+
+  // Get list of pages in JSON format and store result in array.
+  // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
+  apex.server.process
+     (
+        "getPages", {
+                      x01:  "Y" ,
+                      x02:  "userInterfaceId" ,
+                      x03:  ""
+                    },
+        {
+          success : function(pPageList)
+                    {
+                       xplug.arr_page_list = pPageList;
+
+                       if (typeof(pCallback) === 'function') {
+                          pCallback.call();
+                       }
+                    }
+        }
+     );
+}; // _get_page_list
+
+
+/****************************************************************************
+ * Private helper function
  * Set attribute 'title' of prev/next buttons
  ***************************************************************************/
 Xplug.prototype._set_button_tooltip_prevnext_page = function()
@@ -2322,9 +2360,19 @@ window.pageDesigner.goToPrevPage = function () {
   // Found previous page, now goto page
   //
   if (l_index > -1) {
-    l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
-                                             : l_index].id;
+    l_prev = xplug.arr_page_list[l_index > 0
+           ? l_index - 1
+           : l_index].id;
   } else {
+    //
+    // We did not find the poage
+    //
+    //
+    // We did not find the poage
+    //
+    console.debug('XPLUG - Did not find page ' + l_page + ', will retry.');
+    xplug._get_page_list(function () { window.pageDesigner.goToPrevPage(); } );
+
     return;
   }
 
@@ -2355,6 +2403,9 @@ window.pageDesigner.goToPrevPage = function () {
  * METHOD: Go to next page
  ***************************************************************************/
 window.pageDesigner.goToNextPage = function () {
+
+  'use strict';
+
   var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
   var l_index = -1;
   var l_next  = -1;
@@ -2379,9 +2430,17 @@ window.pageDesigner.goToNextPage = function () {
   // Found next page, now goto page
   //
   if (l_index > -1) {
-     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
-                                                                           : l_index].id;
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
+            ? l_index + 1
+            : l_index].id;
+
   } else {
+    //
+    // We did not find the poage
+    //
+    console.debug('XPLUG - Did not find page ' + l_page + ', will retry.');
+    xplug._get_page_list(function () { window.pageDesigner.goToNextPage(); } );
+
     return;
   }
 
@@ -2395,8 +2454,8 @@ window.pageDesigner.goToNextPage = function () {
     //
     // Get page and re-enable buttons/actions
     //
-    var l_deferred = window.pageDesigner.goToPage( l_next );
-    $.when( l_deferred )
+    var l_deferred2 = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred2 )
             .done( function()        { _enable_buttons(); })
             .fail( function(reason)  { _enable_buttons(); });
 
@@ -2416,11 +2475,21 @@ Xplug.prototype.installPageButtons = function ()
                    ? 'button#ORATRONIK_XPLUG_moonsun_button'
                    : 'div.a-PageSelect';
 
+  var l_class_btn_left, l_class_btn_right;
+
+  if (xplug.apex_version.substring(0,4) === '5.1.') {
+    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapLeft a-Button--simple"';
+    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapRight a-Button--simple"';
+  } else {
+    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
+  }
+
   $(l_node)
       .before( '<button'
              + ' type="button"'
              + ' ID="ORATRONIK_XPLUG_prev_page_button"'
-             + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+             + l_class_btn_left
              + ' data-action="pd-xplug-goto-previous-page"'
              + '>'
              + ' <span class="a-Icon icon-xplug-previous" aria-hidden="true"></span>'
@@ -2429,7 +2498,7 @@ Xplug.prototype.installPageButtons = function ()
              + '<button'
              + ' type="button"'
              + ' ID="ORATRONIK_XPLUG_next_page_button"'
-             + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"'
+             + l_class_btn_right
              + ' data-action="pd-xplug-goto-next-page"'
              + '>'
              + ' <span class="a-Icon icon-xplug-next" aria-hidden="true"></span>'
@@ -2437,24 +2506,7 @@ Xplug.prototype.installPageButtons = function ()
            );
 
    xplug._set_button_tooltip_prevnext_page();
-
-   // Get list of pages in JSON format and store result in array.
-   // Code based on getPagesLov() in images/apex_ui/js/pe.model.js
-   apex.server.process
-      (
-         "getPages", {
-                       x01:  "Y" ,
-                       x02:  "userInterfaceId" ,
-                       x03:  ""
-                     },
-         {
-           success : function(pPageList)
-                     {
-                        xplug.arr_page_list = pPageList;
-                     }
-         }
-      );
-
+   xplug._get_page_list();
    xplug.setStorage('BTN-PRVNEXT-PAGE','YES');
 }; // installPageButtons
 
@@ -2507,12 +2559,25 @@ Xplug.prototype.deinstallPageButtons = function ()
    var l_icon = xplug.darkmode ? 'icon-xplug-moon'
                                : 'icon-xplug-sun';
 
-   $('.a-PageSelect').css('border-left','0px');
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
+
+   if (xplug.apex_version.substring(0,4) === '5.0.') {
+     $('.a-PageSelect').css('border-left','0px');
+
+   }
+
    $('div.a-PageSelect')
              .before( '<button'
                     + ' type="button"'
                     + ' ID="ORATRONIK_XPLUG_moonsun_button"'
-                    + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                    + l_class_btn
                     + ' data-action="pd-xplug-toggle-day-night-mode"'
                     + '>'
                     + ' <span class="a-Icon ' + l_icon + '"></span>'
@@ -2609,12 +2674,95 @@ Xplug.prototype.deinstallPageButtons = function ()
 
    if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
 
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
 
    $('button#glvExpandRestoreBtn')
             .after( '<button'
                   + ' type="button"'
                   + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
-                  + ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"'
+                  + l_class_btn
+                  + ' data-action="pd-xplug-swap-grid-pane"'
+                  + '>'
+                  + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
+                  + '</button>'
+            );
+
+   xplug._set_button_tooltip_swap_grid();
+
+   xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
+
+ }; // installSwapGrid
+
+
+
+/****************************************************************************
+ * Deinstall swap grid pane button
+ ***************************************************************************/
+ Xplug.prototype.deinstallSwapGrid = function ()
+ {
+   $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
+
+   xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
+ }; // DeinstallSwapGrid
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// xplug_feature_swap_grid.js
+// 2016-07-28 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+/* jshint -W083 */
+
+
+/****************************************************************************
+ * Set attribute 'title' of swap panes button
+ ***************************************************************************/
+ Xplug.prototype._set_button_tooltip_swap_grid = function()
+{
+  var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
+
+  $("button#ORATRONIK_XPLUG_swap_panes_button")
+     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
+
+}; // _set_button_tooltip_swap_grid
+
+
+
+
+
+/****************************************************************************
+ * Install swap grid pane button
+ ***************************************************************************/
+ Xplug.prototype.installSwapGrid = function ()
+ {
+   'use strict';
+
+   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
+
+   var l_class_btn;
+
+   if (xplug.apex_version.substring(0,4) === '5.1.') {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+   } else {
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+   }
+
+
+   $('button#glvExpandRestoreBtn')
+            .after( '<button'
+                  + ' type="button"'
+                  + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
+                  + l_class_btn
                   + ' data-action="pd-xplug-swap-grid-pane"'
                   + '>'
                   + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
@@ -3667,6 +3815,8 @@ Xplug.prototype.getVersion = function ()
 
 Xplug.prototype.probeAPEXVersion = function ()
 {
+  'use strict';
+
   var l_version = '?.?.?';
   try {
       l_version = $("script[src*='v=']").attr('src').split('=')[1];    // 4.2.X
@@ -3675,7 +3825,9 @@ Xplug.prototype.probeAPEXVersion = function ()
          l_version = '4.1.X';
       }
   }
-  return l_version;    
+
+  this.apex_version = l_version;
+  return l_version;
 }; // Xplug.prototype.probeAPEXVersion
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

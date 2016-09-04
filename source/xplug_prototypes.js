@@ -66,6 +66,8 @@ Xplug.prototype.getVersion = function ()
 
 Xplug.prototype.probeAPEXVersion = function ()
 {
+  'use strict';
+
   var l_version = '?.?.?';
   try {
       l_version = $("script[src*='v=']").attr('src').split('=')[1];    // 4.2.X
@@ -74,5 +76,7 @@ Xplug.prototype.probeAPEXVersion = function ()
          l_version = '4.1.X';
       }
   }
-  return l_version;    
+
+  this.apex_version = l_version;
+  return l_version;
 }; // Xplug.prototype.probeAPEXVersion
