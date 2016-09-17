@@ -162,24 +162,24 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "toggle",
-           label    : get_label('LBL-ADD-POWERBOX'),
+           label    : get_label('LBL-ADD-SIDEKICK'),
            get      : function()
                       {
-                         return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                         return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES';
                       },
 
            set      : function()
                       {
-                        if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
-                           apex.actions.invoke('pd-xplug-remove-powerbox');
+                        if (xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES') {
+                           apex.actions.invoke('pd-xplug-remove-sidekick');
                         } else {
-                           apex.actions.invoke('pd-xplug-add-powerbox');
+                           apex.actions.invoke('pd-xplug-add-sidekick');
                         }
                       },
 
            disabled : function()
                       {
-                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                        return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
                       }
          }
        );

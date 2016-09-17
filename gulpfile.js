@@ -12,20 +12,20 @@ gulp.task('Build Xplug', function() {
   return gulp.src(
             [ 'source/header.js',
               'source/xplug_language.js',
-              'source/xplug_util.js',
               'source/page_designer_methods.js',
               'source/page_designer_style.js',
               'source/xplug_constructor.js',
+              'source/xplug_util.js',
               'source/xplug_feature_prevnext_page.js',
               'source/xplug_feature_daynight_mode.js',
               'source/xplug_feature_swap_grid.js',
-              'source/xplug_feature_window_title.js',              
+              'source/xplug_feature_window_title.js',
+              'source/xplug_feature_sidekick.js',
               'source/xplug_storage.js',
               'source/xplug_menu.js',
-              'source/xplug_powerbox.js',
               'source/xplug_configure.js',
               'source/xplug_prototypes.js',
-              'source/main.js'
+              'source/main.js',
             ] )
 
 

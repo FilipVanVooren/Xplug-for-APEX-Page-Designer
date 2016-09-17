@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Sep 04 2016 20:20:50
+// Built using Gulp. Built date: Sat Sep 17 2016 21:28:52
 
 
  function get_label(p_index)
@@ -58,11 +58,11 @@
                              , "LBL-DAYLIGHT"        : "Day mode"
                              , "LBL-MOONLIGHT"       : "Night mode"
                              , "LBL-DEFAULT-STYLES"  : "Default Themes"
-                             , "LBL-ADD-POWERBOX"    : "Show powerbox pane"
+                             , "LBL-ADD-SIDEKICK"    : "Show sidekick pane"
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
 
-                             , "TAB-PB-METRICS"      : "Metrics"
+                             , "TAB-PB-DOCU"         : "Documentation"
                              , "TAB-PB-MESSAGES"     : "Messages"
                              , "TAB-PB-SEARCH"       : "Search"
                              , "TAB-PB-CONSOLE"      : "Console"
@@ -133,11 +133,11 @@
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Standard Themes"
-                             , "LBL-ADD-POWERBOX"    : "Zeige Bereich"
+                             , "LBL-ADD-SIDEKICK"    : "Zeige Sidekick-Bereich"
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
 
-                             , "TAB-PB-METRICS"      : "Statistik"
+                             , "TAB-PB-DOCU"         : "Dokumentation"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
                              , "TAB-PB-SEARCH"       : "Suchen"
                              , "TAB-PB-CONSOLE"      : "Konsole"
@@ -159,85 +159,6 @@
 
      return C_label[C_lang][p_index];
  }
-
-
-function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
-   var C_icon = {};
-   var l_svg  = '';
-
-   p_width  = p_width  || 16;
-   p_height = p_height || 16;
-   p_color  = p_color  || '#000000';
-
-
-   C_icon.moon =   '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
-               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
-               + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
-               + ' 248.5t136.5 204 204 136.5 248.5 51q144 0 273.5-61.5t220.5-171.5zm203-85q-94'
-               + ' 203-283.5 324.5t-413.5 121.5q-156 0-298-61t-245-164-164-245-61-298q0-153'
-               + ' 57.5-292.5t156-241.5 235.5-164.5 290-68.5q44-2 61 39 18 41-15 72-86 78-131.5'
-               + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
-               + ' 17.5 34t-4.5 38z"/></svg>';
-
-   C_icon.sun  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
-               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
-               + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
-               + ' 223.5 45.5 223.5 123 184 184 123 223.5 45.5 223.5-45.5 184-123 123-184'
-               + ' 45.5-223.5zm276 277q-4 15-20 20l-292 96v306q0 16-13 26-15 10-29 4l-292-94-180'
-               + ' 248q-10 13-26 13t-26-13l-180-248-292 94q-14'
-               + ' 6-29-4-13-10-13-26v-306l-292-96q-16-5-20-20-5-17 4-29l180-248-180-248q-9-13-4-29'
-               + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
-               + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
-               + ' 248q9 12 4 29z"/></svg>';
-
-   C_icon.arrows_h
-               = '<svg version="1.1" viewBox="0 0 477.427 477.427" style="enable-background:new 0 0 477.427 477.427;"'
-               + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"'
-               + ' xml:space="preserve">'
-               + '<g>'
-               + '<polygon points="101.82,187.52 57.673,143.372 476.213,143.372 476.213,113.372 57.181,113.372 101.82,68.733 80.607,47.519 '
-               + '0,128.126 80.607,208.733 	"/>'
-               + '<polygon points="396.82,268.694 375.607,289.907 420,334.301 1.213,334.301 1.213,364.301 420,364.301 375.607,408.694 '
-               + ' 396.82,429.907 477.427,349.301 	"/>'
-               + '</g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>'
-               + '</svg>';
-
-   C_icon.forbidden
-               = ' <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="%%" height="%%"> '
-               + ' <path fill="#FFF" stroke-width="45" stroke="#F00" d="M86,88a230,230 0 1,0 1-1zL412,412"/> '
-               +  ' </svg>';
-
-   C_icon.arrow_left
-               = '<svg width="%%" height="%%" viewBox="0 0 792 792"'
-               + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"'
-               + ' style="enable-background:new 0 0 792 792;" xml:space="preserve"><rect id="backgroundrect" width="100%" height="100%" x="0" y="0" fill="none" stroke="none"/>'
-               + '<g class="currentLayer">'
-               + '<g id="svg_1" class="" transform="rotate(90,396,396) ">'
-               + '<g id="svg_2">'
-               + ' <path d="M371.671,649.763c6.019,6.849,14.499,11.316,24.29,11.316c0.081,0,0.188-0.08,0.294-0.08c0.08,0,0.187,0.08,0.294,0.08 '
-               + '   c8.373,0,16.746-3.184,23.14-9.577l270.537-270.563c12.787-12.76,12.787-33.493,0-46.253c-12.787-12.787-33.467-12.787-46.254,0 '
-               + '   L428.679,550.008V32.69c0-18.083-14.634-32.69-32.717-32.69c-18.084,0-32.717,14.606-32.717,32.69v516.408L147.977,334.686 '
-               + '   c-12.814-12.787-33.52-12.573-46.28,0.134c-12.76,12.787-12.68,33.466,0.107,46.253L371.671,649.763z" id="svg_3"/>'
-               + ' <path d="M667.086,726.593H124.89c-18.084,0-32.717,14.553-32.717,32.69c0,18.004,14.633,32.717,32.717,32.717h542.223 '
-               + '   c18.084,0,32.717-14.713,32.717-32.717C699.803,741.146,685.17,726.593,667.086,726.593z" id="svg_4"/>'
-               + '</g></g></g>'
-               + '</svg>';
-
-
-
-   C_icon.arrow_right = C_icon.arrow_left;
-   C_icon.arrow_right = C_icon.arrow_right.replace('rotate(90','rotate(270');
-
-
-   l_svg = C_icon[p_icon] || '';
-   l_svg = l_svg.replace('%%',p_width);
-   l_svg = l_svg.replace('%%',p_height);
-   l_svg = l_svg.replace('%%',p_color);
-
-   if (p_is_css_background) return '{ background : url(data:image/svg+xml;base64,' + btoa(l_svg) + ') no-repeat; }';
-
-   return l_svg;
-}  
 
 
 
@@ -1593,22 +1514,22 @@ var Xplug = function() {
           },
 
           {
-            name     : "pd-xplug-add-powerbox",
-            label    : get_label('LBL-ADD-POWERBOX'),
+            name     : "pd-xplug-add-sidekick",
+            label    : get_label('LBL-ADD-SIDEKICK'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.installPowerbox();
+                          return xplug.installSidekick();
                        }
           },
 
           {
-            name     : "pd-xplug-remove-powerbox",
-            label    : get_label('LBL-REMOVE-POWERBOX'),
+            name     : "pd-xplug-remove-sidekick",
+            label    : get_label('LBL-REMOVE-SIDEKICK'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.deinstallPowerbox();
+                          return xplug.deinstallSidekick();
                        }
           }
 
@@ -1684,6 +1605,131 @@ var Xplug = function() {
    } 
 
    __init();
+}; 
+
+
+function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
+   var C_icon = {};
+   var l_svg  = '';
+
+   p_width  = p_width  || 16;
+   p_height = p_height || 16;
+   p_color  = p_color  || '#000000';
+
+
+   C_icon.moon =   '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1390 1303q-54 9-110 9-182'
+               + ' 0-337-90t-245-245-90-337q0-192 104-357-201 60-328.5 229t-127.5 384q0 130 51'
+               + ' 248.5t136.5 204 204 136.5 248.5 51q144 0 273.5-61.5t220.5-171.5zm203-85q-94'
+               + ' 203-283.5 324.5t-413.5 121.5q-156 0-298-61t-245-164-164-245-61-298q0-153'
+               + ' 57.5-292.5t156-241.5 235.5-164.5 290-68.5q44-2 61 39 18 41-15 72-86 78-131.5'
+               + ' 181.5t-45.5 218.5q0 148 73 273t198 198 273 73q118 0 228-51 41-18 72 13 14 14'
+               + ' 17.5 34t-4.5 38z"/></svg>';
+
+   C_icon.sun  = '<svg width="%%" height="%%" viewBox="0 0 1792 1792"'
+               + ' xmlns="http://www.w3.org/2000/svg"><path fill="%%" d="M1472'
+               + ' 896q0-117-45.5-223.5t-123-184-184-123-223.5-45.5-223.5 45.5-184 123-123 184-45.5'
+               + ' 223.5 45.5 223.5 123 184 184 123 223.5 45.5 223.5-45.5 184-123 123-184'
+               + ' 45.5-223.5zm276 277q-4 15-20 20l-292 96v306q0 16-13 26-15 10-29 4l-292-94-180'
+               + ' 248q-10 13-26 13t-26-13l-180-248-292 94q-14'
+               + ' 6-29-4-13-10-13-26v-306l-292-96q-16-5-20-20-5-17 4-29l180-248-180-248q-9-13-4-29'
+               + ' 4-15 20-20l292-96v-306q0-16 13-26 15-10 29-4l292 94 180-248q9-12 26-12t26 12l180'
+               + ' 248 292-94q14-6 29 4 13 10 13 26v306l292 96q16 5 20 20 5 16-4 29l-180 248 180'
+               + ' 248q9 12 4 29z"/></svg>';
+
+   C_icon.arrows_h
+               = '<svg version="1.1" viewBox="0 0 477.427 477.427" style="enable-background:new 0 0 477.427 477.427;"'
+               + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"'
+               + ' xml:space="preserve">'
+               + '<g>'
+               + '<polygon points="101.82,187.52 57.673,143.372 476.213,143.372 476.213,113.372 57.181,113.372 101.82,68.733 80.607,47.519 '
+               + '0,128.126 80.607,208.733 	"/>'
+               + '<polygon points="396.82,268.694 375.607,289.907 420,334.301 1.213,334.301 1.213,364.301 420,364.301 375.607,408.694 '
+               + ' 396.82,429.907 477.427,349.301 	"/>'
+               + '</g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>'
+               + '</svg>';
+
+   C_icon.forbidden
+               = ' <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="%%" height="%%"> '
+               + ' <path fill="#FFF" stroke-width="45" stroke="#F00" d="M86,88a230,230 0 1,0 1-1zL412,412"/> '
+               +  ' </svg>';
+
+   C_icon.arrow_left
+               = '<svg width="%%" height="%%" viewBox="0 0 792 792"'
+               + ' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"'
+               + ' style="enable-background:new 0 0 792 792;" xml:space="preserve"><rect id="backgroundrect" width="100%" height="100%" x="0" y="0" fill="none" stroke="none"/>'
+               + '<g class="currentLayer">'
+               + '<g id="svg_1" class="" transform="rotate(90,396,396) ">'
+               + '<g id="svg_2">'
+               + ' <path d="M371.671,649.763c6.019,6.849,14.499,11.316,24.29,11.316c0.081,0,0.188-0.08,0.294-0.08c0.08,0,0.187,0.08,0.294,0.08 '
+               + '   c8.373,0,16.746-3.184,23.14-9.577l270.537-270.563c12.787-12.76,12.787-33.493,0-46.253c-12.787-12.787-33.467-12.787-46.254,0 '
+               + '   L428.679,550.008V32.69c0-18.083-14.634-32.69-32.717-32.69c-18.084,0-32.717,14.606-32.717,32.69v516.408L147.977,334.686 '
+               + '   c-12.814-12.787-33.52-12.573-46.28,0.134c-12.76,12.787-12.68,33.466,0.107,46.253L371.671,649.763z" id="svg_3"/>'
+               + ' <path d="M667.086,726.593H124.89c-18.084,0-32.717,14.553-32.717,32.69c0,18.004,14.633,32.717,32.717,32.717h542.223 '
+               + '   c18.084,0,32.717-14.713,32.717-32.717C699.803,741.146,685.17,726.593,667.086,726.593z" id="svg_4"/>'
+               + '</g></g></g>'
+               + '</svg>';
+
+
+
+   C_icon.arrow_right = C_icon.arrow_left;
+   C_icon.arrow_right = C_icon.arrow_right.replace('rotate(90','rotate(270');
+
+
+   l_svg = C_icon[p_icon] || '';
+   l_svg = l_svg.replace('%%',p_width);
+   l_svg = l_svg.replace('%%',p_height);
+   l_svg = l_svg.replace('%%',p_color);
+
+   if (p_is_css_background) return '{ background : url(data:image/svg+xml;base64,' + btoa(l_svg) + ') no-repeat; }';
+
+   return l_svg;
+}  
+
+
+
+Xplug.prototype.getComponentProperties = function (pPropTypeEnum) {
+   'use strict';
+
+   var oProp, oCompProp, oComp_arr, oCompRef_arr, oCompProp_arr;
+   var oResultProp_arr = [];                        
+
+   oProp        = pe.getProperty(pPropTypeEnum);    
+   oCompRef_arr = oProp.refByComponentTypes;        
+
+   for (var i=0; i < oCompRef_arr.length; i++) {
+
+        oComp_arr = pe.getComponents(oCompRef_arr[i]);
+
+        for (var j=0; j < oComp_arr.length; j++) {
+
+            oCompProp_arr = oComp_arr[j]._properties;
+
+            oCompProp = oCompProp_arr[pPropTypeEnum];
+
+            oResultProp_arr.push(oCompProp);
+        }
+   }
+   return oResultProp_arr;
+}; 
+
+
+
+Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum) {
+  'use strict';
+
+  var oAllProp_arr    = this.getComponentProperties(pPropTypeEnum);
+  var oResultProp_arr = [];                        
+
+  for (var idx in oAllProp_arr) {
+
+      if (    oAllProp_arr[idx].hasOwnProperty('_value')
+           && oAllProp_arr[idx]._value.length > 0) {
+
+           oResultProp_arr.push(oAllProp_arr[idx]);
+      }
+  }
+  return oResultProp_arr;
 }; 
 
 
@@ -1895,7 +1941,7 @@ Xplug.prototype.deinstallPageButtons = function ()
    var l_class_btn;
 
    if (xplug.apex_version.substring(0,4) === '5.1.') {
-     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
+     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapRight a-Button--simple"';
    } else {
      l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
    }
@@ -2017,59 +2063,271 @@ Xplug.prototype.deinstallPageButtons = function ()
 
 
 
- Xplug.prototype._set_button_tooltip_swap_grid = function()
+ Xplug.prototype.installPDTitle = function ()
+ {
+   $(document).on('modelReady', pageDesigner.setWinTitle);
+   pageDesigner.setWinTitle();
+
+   xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
+ }; 
+
+
+ Xplug.prototype.deinstallPDTitle = function ()
+ {
+   $(document).off('modelReady', pageDesigner.setWinTitle);
+
+   var l_title = $(document).attr('title');
+   l_title     = l_title.replace(/\s\[.*$/,'');                             
+
+   $(document).attr('title',l_title);
+
+   xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
+ }; 
+
+
+
+$('#ORATRONIK_XPLUG_SIDEKICK_MENU').remove();
+
+var l_menu$ = $("<div id='ORATRONIK_XPLUG_SIDEKICK_MENU'></div>");
+$("body").append(l_menu$);
+
+l_menu$.menu(
 {
-  var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
+  items : [
+    {
+      type     : "toggle",
+      label    : get_label('LBL-HIDE'),
+      get      : function()
+                 {
+                    return 0;
+                 },
+      set      : function()
+                 {
+                    apex.actions.invoke('pd-xplug-remove-sidekick');
+                 },
+      disabled : function()
+                 {
+                   return false;
+                 }
+    }
+  ]
+});
 
-  $("button#ORATRONIK_XPLUG_swap_panes_button")
-     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
 
+
+Xplug.prototype.installSidekick = function()
+{
+    'use strict';
+
+    var c_min_factor = 0.25;
+    var c_max_factor = 0.50;
+    var l_factor     = c_max_factor;                                                
+
+
+    function xplug_pb_resize_handler() {
+       var l_maxwidth = $('#glv-viewport').width();
+       var l_width    = l_maxwidth * l_factor;
+       var l_height   = $('div#cg-regions').height();                               
+
+       $('#gallery-tabs')
+         .css(
+               { width : l_width + 'px' }
+             )
+         .trigger('resize');
+
+        $('#xplug_pb_splitter').css(
+            { 'position'          : 'absolute',
+              'top'               : '0px',
+              'left'              :  l_width + 'px',
+              'width'             : '8px',
+              'height'            : '100%',
+              'background-color'  : $('.a-Splitter-barH').css('background-color'),
+              'border-left'       : '1px solid #c0c0c0',
+              'border-right'      : '1px solid #c0c0c0'
+            }
+        );
+
+        $('#xplug_pb_container').css(
+              { 'position'   : 'absolute',
+                'top'        : '0px',
+                'padding'    : '1px',
+                'left'       : (l_width + 8) + 'px',
+                'width'      : (l_maxwidth - l_width - 8) + 'px',
+                'height'     : l_height + 'px',
+                'display'    : 'block'
+              });
+
+        $('#xplug_pb_tabs').css(
+              { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
+            });
+
+        $('#xplug_pb_msgview').css(
+              {  'overflow-y' : 'scroll',
+                 'height'     : l_height + 'px',
+
+            });
+    } 
+
+
+
+    function installTabPowersearch() {
+        $('#xplug_pb_search').html(
+            '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
+          + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
+
+          + '<div'
+                 + ' ID="ORATRONIK_XPLUG_clear_search_button"'
+                 + ' style="padding: 3px; display: inline-block;">'
+                 + ' <span class="a-Icon icon-xplug-forbidden" aria-hidden="true"></span>'
+          + '</div>'
+          + '<div ID="xplug_search_results"></div>'
+        ).css('padding','3px');
+
+        $('#xplug_search_field').keypress(
+           function() {
+               var l_search = $('#xplug_search_field').val();
+               if (l_search.length > 0) {
+                  $('#xplug_search_results').peSearch('search',l_search);
+               } else {
+                  clearPowersearch();
+               }
+           }
+        );
+
+        $('#xplug_search_results').peSearch();
+        $('#ORATRONIK_XPLUG_clear_search_button').click(clearPowersearch);
+
+        $( document ).on( "modelCleared", function(){
+          clearPowersearch();
+        });
+    } 
+
+
+    function clearPowersearch() {
+      $('#xplug_search_field').val('');
+      $('#xplug_search_results').peSearch('clear');
+      $('#xplug_pb_search').css('height','100%');
+    }
+
+
+  $('#R1157688004078338241').append(
+         '<div ID="xplug_pb_splitter"></div>'
+       + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
+       +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
+       +     '<ul>'
+       +       '<li><a href="#xplug_pb_docu">'     + get_label('TAB-PB-DOCU')        + '</a></li>'
+       +       '<li><a href="#xplug_pb_msgview">'  + get_label('TAB-PB-MESSAGES')    + '</a></li>'
+       +       '<li><a href="#xplug_pb_search">'   + get_label('TAB-PB-SEARCH')      + '</a></li>'
+       +     '</ul>'
+       +    '<div style="text-align: right">'
+       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
+       +    '</div>'
+       +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
+       +   '</div>'
+       +   '</div>'
+       +   '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>'
+       +   '<div ID="xplug_pb_msgview"></div>'
+       +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
+       + '</div>'
+  );
+
+
+
+
+  $('div#xplug_pb_right')
+            .append( '<button'
+                   + ' type="button"'
+                   + ' ID="ORATRONIK_XPLUG_powercontrol_button2"'
+                   + ' data-menu="ORATRONIK_XPLUG_SIDEKICK_MENU"'
+                   + ' class="a-Button a-Button--noLabel a-Button--withIcon js-menuButton">'
+                   + ' <span class="a-Icon icon-menu" aria-hidden="true"></span>'
+                   + ' <span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>'
+                   + '</button>'
+                 )
+            .css('width','48px');
+
+
+  $('div#xplug_pb_container').tabs();   
+  xplug_pb_resize_handler();            
+
+
+  $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
+
+
+  installTabPowersearch();
+
+  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
+
+
+  $( "div#editor_tabs, div#R1157688004078338241" )
+    .tabs(
+           { activate: xplug_pb_resize_handler }
+         );
+
+  var l_timeout_handler;
+  $(window).on('resize.xplug_namespace',
+                function()
+                      {
+                         clearTimeout(l_timeout_handler);
+                         l_timeout_handler = setTimeout(
+                           function() { xplug_pb_resize_handler; } , 300);
+                      }
+  );
+
+  $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
+  $('div#gallery-tabs').trigger('resize');
+
+  xplug.setStorage('SHOW_SIDEKICK_PANE','YES');
+
+  var l_widget = $('div#xplug_pb_msgview').data('apex-peMessagesView');
+
+  pe.observer(
+      "messages_" + l_widget.uuid, {
+          events: [
+              pe.EVENT.ERRORS,
+              pe.EVENT.NO_ERRORS,
+              pe.EVENT.WARNINGS,
+              pe.EVENT.NO_WARNINGS,
+              pe.EVENT.DELETE,
+              pe.EVENT.REMOVE_PROP ]
+      },
+      function( pNotifications ) {
+          $('div#xplug_pb_container').tabs( "option", "active", 1);
+          l_widget._update( pNotifications );
+      });
+
+}; 
+
+
+Xplug.prototype.deinstallSidekick = function()
+{
+  'use strict';
+
+  $(window).off('resize.xplug_namespace');
+  $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
+  $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
+
+  $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
+
+  $('div#gallery-tabs')
+      .css('width', $('div#glv-viewport').css('width') )
+      .trigger('resize');
+
+  xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
 }; 
 
 
 
 
+Xplug.prototype.showDocumentation = function ()
+{
+  'use strict';
 
- Xplug.prototype.installSwapGrid = function ()
- {
-   'use strict';
-
-   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
-
-   var l_class_btn;
-
-   if (xplug.apex_version.substring(0,4) === '5.1.') {
-     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
-   } else {
-     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
-   }
-
-
-   $('button#glvExpandRestoreBtn')
-            .after( '<button'
-                  + ' type="button"'
-                  + ' ID="ORATRONIK_XPLUG_swap_panes_button"'
-                  + l_class_btn
-                  + ' data-action="pd-xplug-swap-grid-pane"'
-                  + '>'
-                  + ' <span class="a-Icon icon-xplug-arrows-h" aria-hidden="true"></span>'
-                  + '</button>'
-            );
-
-   xplug._set_button_tooltip_swap_grid();
-
-   xplug.setStorage('BTN-SWAP-GRID-PANE','YES');
-
- }; 
-
-
-
- Xplug.prototype.deinstallSwapGrid = function ()
- {
-   $('button#ORATRONIK_XPLUG_swap_panes_button').remove();
-
-   xplug.setStorage('BTN-SWAP-GRID-PANE','NO');
- }; 
+  var oMarkDownConverter = new showdown.Converter();
+  var sMarkdown          = xplug.getFilteredComponentProperties(4)[0]._value;
+  var sHTML              = oMarkDownConverter.makeHtml(sMarkdown);
+  $('div#xplug_pb_docu').html(sHTML);
+}; 
 
 
 Xplug.prototype.setStorage = function(p_key, p_value, p_is_global)
@@ -2314,24 +2572,24 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "toggle",
-           label    : get_label('LBL-ADD-POWERBOX'),
+           label    : get_label('LBL-ADD-SIDEKICK'),
            get      : function()
                       {
-                         return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                         return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES';
                       },
 
            set      : function()
                       {
-                        if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
-                           apex.actions.invoke('pd-xplug-remove-powerbox');
+                        if (xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES') {
+                           apex.actions.invoke('pd-xplug-remove-sidekick');
                         } else {
-                           apex.actions.invoke('pd-xplug-add-powerbox');
+                           apex.actions.invoke('pd-xplug-add-sidekick');
                         }
                       },
 
            disabled : function()
                       {
-                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                        return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
                       }
          }
        );
@@ -2407,236 +2665,6 @@ Xplug.prototype.install_menu = function() {
         }
       ]
     });
-}; 
-
-
-
-$('#ORATRONIK_XPLUG_POWERBOX_MENU').remove();
-
-var l_menu$ = $("<div id='ORATRONIK_XPLUG_POWERBOX_MENU'></div>");
-$("body").append(l_menu$);
-
-l_menu$.menu(
-{
-  items : [
-    {
-      type     : "toggle",
-      label    : get_label('LBL-HIDE'),
-      get      : function()
-                 {
-                    return 0;
-                 },
-      set      : function()
-                 {
-                    apex.actions.invoke('pd-xplug-remove-powerbox');
-                 },
-      disabled : function()
-                 {
-                   return false;
-                 }
-    }
-  ]
-});
-
-
-
-Xplug.prototype.installPowerbox = function()
-{
-    'use strict';
-
-    var c_min_factor = 0.25;
-    var c_max_factor = 0.50;
-    var l_factor     = c_max_factor;                                                
-
-
-    function xplug_pb_resize_handler() {
-       var l_maxwidth = $('#glv-viewport').width();
-       var l_width    = l_maxwidth * l_factor;
-       var l_height   = $('div#cg-regions').height();                               
-
-       $('#gallery-tabs')
-         .css(
-               { width : l_width + 'px' }
-             )
-         .trigger('resize');
-
-        $('#xplug_pb_splitter').css(
-            { 'position'          : 'absolute',
-              'top'               : '0px',
-              'left'              :  l_width + 'px',
-              'width'             : '8px',
-              'height'            : '100%',
-              'background-color'  : $('.a-Splitter-barH').css('background-color'),
-              'border-left'       : '1px solid #c0c0c0',
-              'border-right'      : '1px solid #c0c0c0'
-            }
-        );
-
-        $('#xplug_pb_container').css(
-              { 'position'   : 'absolute',
-                'top'        : '0px',
-                'padding'    : '1px',
-                'left'       : (l_width + 8) + 'px',
-                'width'      : (l_maxwidth - l_width - 8) + 'px',
-                'height'     : l_height + 'px',
-                'display'    : 'block'
-              });
-
-        $('#xplug_pb_tabs').css(
-              { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
-            });
-
-        $('#xplug_pb_msgview').css(
-              {  'overflow-y' : 'scroll',
-                 'height'     : l_height + 'px',
-
-            });
-    } 
-
-
-
-    function installTabPowersearch() {
-        $('#xplug_pb_search').html(
-            '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
-          + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
-
-          + '<div'
-                 + ' ID="ORATRONIK_XPLUG_clear_search_button"'
-                 + ' style="padding: 3px; display: inline-block;">'
-                 + ' <span class="a-Icon icon-xplug-forbidden" aria-hidden="true"></span>'
-          + '</div>'
-          + '<div ID="xplug_search_results"></div>'
-        ).css('padding','3px');
-
-        $('#xplug_search_field').keypress(
-           function() {
-               var l_search = $('#xplug_search_field').val();
-               if (l_search.length > 0) {
-                  $('#xplug_search_results').peSearch('search',l_search);
-               } else {
-                  clearPowersearch();
-               }
-           }
-        );
-
-        $('#xplug_search_results').peSearch();
-        $('#ORATRONIK_XPLUG_clear_search_button').click(clearPowersearch);
-
-        $( document ).on( "modelCleared", function(){
-          clearPowersearch();
-        });
-    } 
-
-
-    function clearPowersearch() {
-      $('#xplug_search_field').val('');
-      $('#xplug_search_results').peSearch('clear');
-      $('#xplug_pb_search').css('height','100%');
-    }
-
-
-  $('#R1157688004078338241').append(
-         '<div ID="xplug_pb_splitter"></div>'
-       + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
-       +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
-       +     '<ul>'
-       +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
-       +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
-       +     '</ul>'
-       +    '<div style="text-align: right">'
-       +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
-       +    '</div>'
-       +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
-       +   '</div>'
-       +   '</div>'
-       +   '<div ID="xplug_pb_msgview"></div>'
-       +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
-       + '</div>'
-  );
-
-
-
-
-  $('div#xplug_pb_right')
-            .append( '<button'
-                   + ' type="button"'
-                   + ' ID="ORATRONIK_XPLUG_powercontrol_button2"'
-                   + ' data-menu="ORATRONIK_XPLUG_POWERBOX_MENU"'
-                   + ' class="a-Button a-Button--noLabel a-Button--withIcon js-menuButton">'
-                   + ' <span class="a-Icon icon-menu" aria-hidden="true"></span>'
-                   + ' <span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>'
-                   + '</button>'
-                 )
-            .css('width','48px');
-
-
-  $('div#xplug_pb_container').tabs();   
-  xplug_pb_resize_handler();            
-
-
-  $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
-
-
-  installTabPowersearch();
-
-  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
-
-
-  $( "div#editor_tabs, div#R1157688004078338241" )
-    .tabs(
-           { activate: xplug_pb_resize_handler }
-         );
-
-  var l_timeout_handler;
-  $(window).on('resize.xplug_namespace',
-                function()
-                      {
-                         clearTimeout(l_timeout_handler);
-                         l_timeout_handler = setTimeout(
-                           function() { xplug_pb_resize_handler; } , 300);
-                      }
-  );
-
-  $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
-  $('div#gallery-tabs').trigger('resize');
-
-  xplug.setStorage('SHOW_POWERBOX_PANE','YES');
-
-  var l_widget = $('div#xplug_pb_msgview').data('apex-peMessagesView');
-
-  pe.observer(
-      "messages_" + l_widget.uuid, {
-          events: [
-              pe.EVENT.ERRORS,
-              pe.EVENT.NO_ERRORS,
-              pe.EVENT.WARNINGS,
-              pe.EVENT.NO_WARNINGS,
-              pe.EVENT.DELETE,
-              pe.EVENT.REMOVE_PROP ]
-      },
-      function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 0);
-          l_widget._update( pNotifications );
-      });
-
-}; 
-
-
-Xplug.prototype.deinstallPowerbox = function()
-{
-  'use strict';
-
-  $(window).off('resize.xplug_namespace');
-  $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
-  $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
-
-  $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
-
-  $('div#gallery-tabs')
-      .css('width', $('div#glv-viewport').css('width') )
-      .trigger('resize');
-
-  xplug.setStorage('SHOW_POWERBOX_PANE','NO');
 }; 
 
 
@@ -2910,26 +2938,7 @@ Xplug.prototype.configureDialog = function()
 
 
 
-  Xplug.prototype.installPDTitle = function ()
-  {
-    $(document).on('modelReady', pageDesigner.setWinTitle);
-    pageDesigner.setWinTitle();
 
-    xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
-  }; 
-
-
-  Xplug.prototype.deinstallPDTitle = function ()
-  {
-    $(document).off('modelReady', pageDesigner.setWinTitle);
-
-    var l_title = $(document).attr('title');
-    l_title     = l_title.replace(/\s\[.*$/,'');                             
-
-    $(document).attr('title',l_title);
-
-    xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
-  }; 
 
 
  Xplug.prototype.loadSettings = function ()
@@ -2938,7 +2947,7 @@ Xplug.prototype.configureDialog = function()
 
    xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-   xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-powerbox');
+   xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
 
    xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
    xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installPageButtons();

@@ -9,32 +9,7 @@
 /* jshint -W030 */
 
 
- /****************************************************************************
-  * Install [app:id] in Window Title
-  ***************************************************************************/
-  Xplug.prototype.installPDTitle = function ()
-  {
-    $(document).on('modelReady', pageDesigner.setWinTitle);
-    pageDesigner.setWinTitle();
 
-    xplug.setStorage('APP+ID-IN-PD-TITLE','YES');
-  }; // installPDTitle
-
-
-  /****************************************************************************
-  * Deinstall [app:id] in Window Title
-  ****************************************************************************/
-  Xplug.prototype.deinstallPDTitle = function ()
-  {
-    $(document).off('modelReady', pageDesigner.setWinTitle);
-
-    var l_title = $(document).attr('title');
-    l_title     = l_title.replace(/\s\[.*$/,'');                             // Remnove old [xxx:xxx] value
-
-    $(document).attr('title',l_title);
-
-    xplug.setStorage('APP+ID-IN-PD-TITLE','NO');
-  }; // deinstallPDTitle
 
 
 /*****************************************************************************
@@ -46,7 +21,7 @@
 
    xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
    xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-   xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-powerbox');
+   xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
 
    xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
    xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installPageButtons();

@@ -131,38 +131,38 @@
 //                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
 //                     - Bug-fix: removed hard code label parameter in xplug_menu.js
 //                     - Renamed submenu 'Customize' to 'Setup'
-//                     - Added xplug_powerbox.js for displaying errors and advisor stuff
+//                     - Added xplug_sidekick.js for displaying errors and advisor stuff
 //
 // V1.2.2 2016-02-09 * Multiple changes
-//                     - Bug-fix: Powerbox - Show Alertbadge when error is displayed
-//                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
+//                     - Bug-fix: Sidekick - Show Alertbadge when error is displayed
+//                     - Bug-Fix: Sidekick - Resize gallery when Sidekick is drawn for the first time, making
 //                                           sure that correct height is taken.
 //
 // V1.2.2 2016-02-14 * Multiple changes
-//                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
+//                     - Addded menu option for showing/hiding sidekick pane (Errors/Advisor)
 //                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
-//                                get tracked as soon as the powerbox is opened.
+//                                get tracked as soon as the sidekick is opened.
 //
 // V1.2.2 2016-02-17 * Multiple changes
 //                     - Bug-fix: Adjusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
 //                                We only want the Xplug plugin to be activated when dealing with
 //                                page 4500 (Page Designer)
-//                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
+//                     - Bug-Fix: The jQuery UI tabs were not yet working in the sidekick, due to invalid DIV
 //                                ordering. Is now resolved.
 //                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
 //
 // V1.2.2 2016-03-07 * Multiple Changes
-//                     - Removed Advisor/Console tabs in powerbox pane for now
-//                     - Added possibility to horizontally expand/restore size of powerbox pane
+//                     - Removed Advisor/Console tabs in sidekick pane for now
+//                     - Added possibility to horizontally expand/restore size of sidekick pane
 //
 // V1.2.2 2016-04-10 * Some minor Changes
 //                     - Introduced new button for swapping grid pane from middle<->right
-//                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
+//                     - Worked on sidekick. Added possibility to horizontally expand/collaps pane
 //
 // V1.2.2 2016-04-19 * Bug-Fixes
-//                     - Fixed wrong background color for buttons in powerbox, was particulary noticeable in
+//                     - Fixed wrong background color for buttons in sidekick, was particulary noticeable in
 //                       Moonlight mode.
-//                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
+//                     - Adjusted size factor for sidekick, for making sure gallery still looks 'OK' if window
 //                       gets too small.
 //                     - This version is not officially released, functionality will be part of upcoming v1.3
 //
@@ -192,17 +192,17 @@
 //
 //
 // V1.3.0 2016-05-24 * Multiple changes
-//                     - Added new 'Search' tab to Powerbox
+//                     - Added new 'Search' tab to Sidekick
 //                     - Renamed some labels
 //
 // V1.3.0.1 2016-06-25 * Several tweaks and Bug-Fixes
 //                       - Bug-fix: Configuration of page designer title wasn't working anymore. Fixed this.
 //                       - Bug-Fix: Added vertical scrollbar to Search function
-//                       - Change:  Temporarly removed possibility to resize Powerbox pane
-//                       - Change:  Completed work on search functionality in Powerbox pane
+//                       - Change:  Temporarly removed possibility to resize Sidekick pane
+//                       - Change:  Completed work on search functionality in Sidekick pane
 //
 // V1.3.0.1 2016-06-28 * Multiple changes
-//                       - Adjusted messages badge position in powerbox pane
+//                       - Adjusted messages badge position in sidekick pane
 //                       - This is the official released version
 //
 // V1.3.0.2 2016-07-01 * Bug-fix
@@ -214,7 +214,7 @@
 //                         Changes are in firefox packaging and GULP task file due to restrictiions set by
 //                         Firefox add-on reviewers.
 //                       - Bug-fix: to prevent security a vulnerability, a change was made to the setTimeout
-//                                  method in xplug_powerbox.js as weg got the below warning before:
+//                                  method in xplug_sidekick.js as weg got the below warning before:
 //                                  In order to prevent vulnerabilities, the `setTimeout` and `setInterval` functions
 //                                  should be called only with function expressions as their first argument.
 //
@@ -241,6 +241,14 @@
 //                                  This is now resolved by refreshing the list of pages, if page can't be Found
 //                                  during page hopping.
 //                       - Bug-fix: Shortcut for swap grid pane was invalid, now solved by assigning new key Alt+M
+//
+//  V1.4.0.0 2016-09-16 * Multiple changes
+//                        - Some refactopring
+//                        - Renamed 'Powerbox pane' to 'Sidekick panme' and  rename  file xplug_powerbox.js
+//                          to xplug_feature_sidekick.js
+//                        - Adjusted CSS of icon buttons for APEX 5.1
+//                        - Added "Documentation" tab to the sidekick pane, used for showing page comments in
+//                          Markdown format
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

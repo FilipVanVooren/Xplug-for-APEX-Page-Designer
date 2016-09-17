@@ -144,22 +144,22 @@ var Xplug = function() {
           },
 
           {
-            name     : "pd-xplug-add-powerbox",
-            label    : get_label('LBL-ADD-POWERBOX'),
+            name     : "pd-xplug-add-sidekick",
+            label    : get_label('LBL-ADD-SIDEKICK'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.installPowerbox();
+                          return xplug.installSidekick();
                        }
           },
 
           {
-            name     : "pd-xplug-remove-powerbox",
-            label    : get_label('LBL-REMOVE-POWERBOX'),
+            name     : "pd-xplug-remove-sidekick",
+            label    : get_label('LBL-REMOVE-SIDEKICK'),
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.deinstallPowerbox();
+                          return xplug.deinstallSidekick();
                        }
           }
 

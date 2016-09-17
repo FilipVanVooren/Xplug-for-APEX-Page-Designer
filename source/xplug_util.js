@@ -92,3 +92,64 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
 
    return l_svg;
 }  // get_svg_icon
+
+
+
+/***************************************************************************
+* Add custom method to Xplug
+* METHOD: getComponentProperties
+***************************************************************************/
+Xplug.prototype.getComponentProperties = function (pPropTypeEnum) {
+   'use strict';
+
+   var oProp, oCompProp, oComp_arr, oCompRef_arr, oCompProp_arr;
+   var oResultProp_arr = [];                        // Our resultset array
+
+   oProp        = pe.getProperty(pPropTypeEnum);    // Get property
+   oCompRef_arr = oProp.refByComponentTypes;        // Get component types that reference specified property
+
+   // Loop over result set
+   for (var i=0; i < oCompRef_arr.length; i++) {
+
+        // Get all components on page that match the component type
+        oComp_arr = pe.getComponents(oCompRef_arr[i]);
+
+        // Loop over the components result set
+        for (var j=0; j < oComp_arr.length; j++) {
+
+            // Get all properties of component
+            oCompProp_arr = oComp_arr[j]._properties;
+
+            // Get our matching property
+            oCompProp = oCompProp_arr[pPropTypeEnum];
+
+            // Save in our resultset array
+            oResultProp_arr.push(oCompProp);
+        }
+   }
+   return oResultProp_arr;
+}; // getComponentProperties
+
+
+
+/***************************************************************************
+* Add custom method to Xplug
+* METHOD: getFilterComponentProperties
+***************************************************************************/
+Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum) {
+  'use strict';
+
+  var oAllProp_arr    = this.getComponentProperties(pPropTypeEnum);
+  var oResultProp_arr = [];                        // Our resultset array
+
+  // Loop over propteries
+  for (var idx in oAllProp_arr) {
+
+      if (    oAllProp_arr[idx].hasOwnProperty('_value')
+           && oAllProp_arr[idx]._value.length > 0) {
+
+           oResultProp_arr.push(oAllProp_arr[idx]);
+      }
+  }
+  return oResultProp_arr;
+}; // getFilteredComponentProperties

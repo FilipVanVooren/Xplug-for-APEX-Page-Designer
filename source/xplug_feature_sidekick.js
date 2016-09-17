@@ -2,7 +2,7 @@
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_powerbox.js
+// xplug_SIDEKICK.js
 // 2016-02-07 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
@@ -14,9 +14,9 @@
 // Initialisation code
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-$('#ORATRONIK_XPLUG_POWERBOX_MENU').remove();
+$('#ORATRONIK_XPLUG_SIDEKICK_MENU').remove();
 
-var l_menu$ = $("<div id='ORATRONIK_XPLUG_POWERBOX_MENU'></div>");
+var l_menu$ = $("<div id='ORATRONIK_XPLUG_SIDEKICK_MENU'></div>");
 $("body").append(l_menu$);
 
 l_menu$.menu(
@@ -31,7 +31,7 @@ l_menu$.menu(
                  },
       set      : function()
                  {
-                    apex.actions.invoke('pd-xplug-remove-powerbox');
+                    apex.actions.invoke('pd-xplug-remove-sidekick');
                  },
       disabled : function()
                  {
@@ -45,9 +45,9 @@ l_menu$.menu(
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: installPowerbox
+* METHOD: installSidekick
 ***************************************************************************/
-Xplug.prototype.installPowerbox = function()
+Xplug.prototype.installSidekick = function()
 {
     'use strict';
 
@@ -67,7 +67,7 @@ Xplug.prototype.installPowerbox = function()
              )
          .trigger('resize');
 
-        // simulated vertical splitter at left of powerbox
+        // simulated vertical splitter at left of SIDEKICK
         $('#xplug_pb_splitter').css(
             { 'position'          : 'absolute',
               'top'               : '0px',
@@ -80,7 +80,7 @@ Xplug.prototype.installPowerbox = function()
             }
         );
 
-        // Powerbox container DIV
+        // SIDEKICK container DIV
         $('#xplug_pb_container').css(
               { 'position'   : 'absolute',
                 'top'        : '0px',
@@ -144,15 +144,15 @@ Xplug.prototype.installPowerbox = function()
     }
 
 
-  // Add (simulated) vertical splitter bar and powerbox DIV to DOM
+  // Add (simulated) vertical splitter bar and SIDEKICK DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
-//     +       '<li><a href="#xplug_pb_metrics">' + get_label('TAB-PB-METRICS')   + '</a></li>'
-       +       '<li><a href="#xplug_pb_msgview">' + get_label('TAB-PB-MESSAGES')  + '</a></li>'
-       +       '<li><a href="#xplug_pb_search">'  + get_label('TAB-PB-SEARCH')    + '</a></li>'
+       +       '<li><a href="#xplug_pb_docu">'     + get_label('TAB-PB-DOCU')        + '</a></li>'
+       +       '<li><a href="#xplug_pb_msgview">'  + get_label('TAB-PB-MESSAGES')    + '</a></li>'
+       +       '<li><a href="#xplug_pb_search">'   + get_label('TAB-PB-SEARCH')      + '</a></li>'
        +     '</ul>'
        +    '<div style="text-align: right">'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
@@ -160,7 +160,7 @@ Xplug.prototype.installPowerbox = function()
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-//     +   '<div ID="xplug_pb_metrics">This is the Metrics pane.</div>'
+       +   '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>'
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
        + '</div>'
@@ -174,7 +174,7 @@ Xplug.prototype.installPowerbox = function()
             .append( '<button'
                    + ' type="button"'
                    + ' ID="ORATRONIK_XPLUG_powercontrol_button2"'
-                   + ' data-menu="ORATRONIK_XPLUG_POWERBOX_MENU"'
+                   + ' data-menu="ORATRONIK_XPLUG_SIDEKICK_MENU"'
                    + ' class="a-Button a-Button--noLabel a-Button--withIcon js-menuButton">'
                    + ' <span class="a-Icon icon-menu" aria-hidden="true"></span>'
                    + ' <span class="a-Icon icon-menu-drop-down" aria-hidden="true"></span>'
@@ -185,7 +185,7 @@ Xplug.prototype.installPowerbox = function()
 
   // Create new tabs
   $('div#xplug_pb_container').tabs();   // jQuery UI tabs
-  xplug_pb_resize_handler();            // Show powerbox
+  xplug_pb_resize_handler();            // Show SIDEKICK
 
 
   // Activate standard "Messages" tab if our own badge is clicked.
@@ -195,11 +195,11 @@ Xplug.prototype.installPowerbox = function()
   // Install "Search" tab
   installTabPowersearch();
 
-  // Resize-redraw powerbox when splitter(s) are moved/created
+  // Resize-redraw SIDEKICK when splitter(s) are moved/created
   $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
 
 
-  // Resize-redraw powerbox when switching tabs (Grid Layout, Messages, ...)
+  // Resize-redraw SIDEKICK when switching tabs (Grid Layout, Messages, ...)
   // See jQuery UI tabs for details on 'activate' attribute
   $( "div#editor_tabs, div#R1157688004078338241" )
     .tabs(
@@ -230,7 +230,7 @@ Xplug.prototype.installPowerbox = function()
   $('div#xplug_pb_msgview').peMessagesView({ badge : '#xplug_pb_badge' });
   $('div#gallery-tabs').trigger('resize');
 
-  xplug.setStorage('SHOW_POWERBOX_PANE','YES');
+  xplug.setStorage('SHOW_SIDEKICK_PANE','YES');
 
   //
   // We need to register our own observer, because the original observer in
@@ -261,18 +261,18 @@ Xplug.prototype.installPowerbox = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 0);
+          $('div#xplug_pb_container').tabs( "option", "active", 1);
           l_widget._update( pNotifications );
       });
 
-}; // Xplug.prototype.installPowerbox
+}; // Xplug.prototype.installSidekick
 
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: deinstallPowerbox
+* METHOD: deinstallSIDEKICK
 ***************************************************************************/
-Xplug.prototype.deinstallPowerbox = function()
+Xplug.prototype.deinstallSidekick = function()
 {
   'use strict';
 
@@ -281,7 +281,7 @@ Xplug.prototype.deinstallPowerbox = function()
   $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
   $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
 
-  // Remove powerbox
+  // Remove SIDEKICK
   $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
 
   // Restore original gallery width and trigger redrawing/reposition of icons
@@ -289,5 +289,19 @@ Xplug.prototype.deinstallPowerbox = function()
       .css('width', $('div#glv-viewport').css('width') )
       .trigger('resize');
 
-  xplug.setStorage('SHOW_POWERBOX_PANE','NO');
-}; // Xplug.prototype.deinstallPowerbox
+  xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
+}; // Xplug.prototype.deinstallSIDEKICK
+
+
+
+
+Xplug.prototype.showDocumentation = function ()
+{
+  'use strict';
+
+  // Markdown converter is in file /libs/showdown.min.js
+  var oMarkDownConverter = new showdown.Converter();
+  var sMarkdown          = xplug.getFilteredComponentProperties(4)[0]._value;
+  var sHTML              = oMarkDownConverter.makeHtml(sMarkdown);
+  $('div#xplug_pb_docu').html(sHTML);
+}; // showDocumentation
