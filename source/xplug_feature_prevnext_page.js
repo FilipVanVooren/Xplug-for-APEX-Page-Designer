@@ -89,8 +89,8 @@ window.pageDesigner.goToPrevPage = function () {
   //
   if (l_index > -1) {
     l_prev = xplug.arr_page_list[l_index > 0
-           ? l_index - 1
-           : l_index].id;
+                                    ? l_index - 1
+                                    : l_index].id;
   } else {
     //
     // We did not find the poage
@@ -159,8 +159,8 @@ window.pageDesigner.goToNextPage = function () {
   //
   if (l_index > -1) {
      l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
-            ? l_index + 1
-            : l_index].id;
+                                          ? l_index + 1
+                                          : l_index].id;
 
   } else {
     //

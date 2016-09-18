@@ -69,7 +69,7 @@
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
 
-                             , "TAB-PB-DOCU"         : "Documentation"
+                             , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
                              , "TAB-PB-SEARCH"       : "Search"
                              , "TAB-PB-CONSOLE"      : "Console"
@@ -144,7 +144,7 @@
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
 
-                             , "TAB-PB-DOCU"         : "Dokumentation"
+                             , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
                              , "TAB-PB-SEARCH"       : "Suchen"
                              , "TAB-PB-CONSOLE"      : "Konsole"

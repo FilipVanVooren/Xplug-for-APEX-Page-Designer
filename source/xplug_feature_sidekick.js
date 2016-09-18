@@ -265,6 +265,9 @@ Xplug.prototype.installSidekick = function()
           l_widget._update( pNotifications );
       });
 
+   $(document).on('modelReady', this.showDocumentation);
+   this.showDocumentation();
+
 }; // Xplug.prototype.installSidekick
 
 
@@ -290,7 +293,9 @@ Xplug.prototype.deinstallSidekick = function()
       .trigger('resize');
 
   xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
-}; // Xplug.prototype.deinstallSIDEKICK
+
+  $(document).off('modelReady', this.showDocumentation);
+}; // Xplug.prototype.deinstallSidekick
 
 
 
@@ -299,9 +304,25 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  // Markdown converter is in file /libs/showdown.min.js
-  var oMarkDownConverter = new showdown.Converter();
-  var sMarkdown          = xplug.getFilteredComponentProperties(4)[0]._value;
-  var sHTML              = oMarkDownConverter.makeHtml(sMarkdown);
+  var oProp, oProps_arr, l_app_id, sPageComment, sHTML;
+
+  l_app_id     = pe.getCurrentAppId();                     // Appp-ID
+  oProps_arr   = xplug.getFilteredComponentProperties(4);  // Get all comments
+  sPageComment = 'none';
+
+  // Find page comment
+  for (var key in oProps_arr) {
+      oProp = oProps_arr[key];
+
+      if (oProp.component.parentId == l_app_id) {
+         sPageComment = oProp.getDisplayValue();
+
+         sHTML = '<h2>Page Comments</h2>'
+               +  '<pre>'
+               +  sPageComment
+               + '</pre>';
+      }
+  }
   $('div#xplug_pb_docu').html(sHTML);
+
 }; // showDocumentation

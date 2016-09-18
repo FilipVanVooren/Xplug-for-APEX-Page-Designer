@@ -250,6 +250,9 @@
 //                        - Added "Documentation" tab to the sidekick pane, used for showing page comments in
 //                          Markdown format
 //
+//   V1.4.0.0 2016-09-16 * Multiple changes
+//                         - Removed Markdown stuff again, risk for XSS injection is too high,
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

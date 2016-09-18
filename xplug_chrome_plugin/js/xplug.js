@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sat Sep 17 2016 21:28:52
+// Built using Gulp. Built date: Sun Sep 18 2016 20:48:53
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -248,6 +248,11 @@
 //                        - Renamed 'Powerbox pane' to 'Sidekick panme' and  rename  file xplug_powerbox.js
 //                          to xplug_feature_sidekick.js
 //                        - Adjusted CSS of icon buttons for APEX 5.1
+//                        - Added "Documentation" tab to the sidekick pane, used for showing page comments in
+//                          Markdown format
+//
+//   V1.4.0.0 2016-09-16 * Multiple changes
+//                         - Removed Markdown stuff again, risk for XSS injection is too high,
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -326,7 +331,7 @@
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
 
-                             , "TAB-PB-DOCU"         : "Documentation"
+                             , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
                              , "TAB-PB-SEARCH"       : "Search"
                              , "TAB-PB-CONSOLE"      : "Console"
@@ -401,7 +406,7 @@
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
 
-                             , "TAB-PB-DOCU"         : "Dokumentation"
+                             , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
                              , "TAB-PB-SEARCH"       : "Suchen"
                              , "TAB-PB-CONSOLE"      : "Konsole"
@@ -2430,8 +2435,8 @@ window.pageDesigner.goToPrevPage = function () {
   //
   if (l_index > -1) {
     l_prev = xplug.arr_page_list[l_index > 0
-           ? l_index - 1
-           : l_index].id;
+                                    ? l_index - 1
+                                    : l_index].id;
   } else {
     //
     // We did not find the poage
@@ -2500,8 +2505,8 @@ window.pageDesigner.goToNextPage = function () {
   //
   if (l_index > -1) {
      l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
-            ? l_index + 1
-            : l_index].id;
+                                          ? l_index + 1
+                                          : l_index].id;
 
   } else {
     //
@@ -3087,6 +3092,9 @@ Xplug.prototype.installSidekick = function()
           l_widget._update( pNotifications );
       });
 
+   $(document).on('modelReady', this.showDocumentation);
+   this.showDocumentation();
+
 }; // Xplug.prototype.installSidekick
 
 
@@ -3112,7 +3120,9 @@ Xplug.prototype.deinstallSidekick = function()
       .trigger('resize');
 
   xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
-}; // Xplug.prototype.deinstallSIDEKICK
+
+  $(document).off('modelReady', this.showDocumentation);
+}; // Xplug.prototype.deinstallSidekick
 
 
 
@@ -3121,11 +3131,27 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  // Markdown converter is in file /libs/showdown.min.js
-  var oMarkDownConverter = new showdown.Converter();
-  var sMarkdown          = xplug.getFilteredComponentProperties(4)[0]._value;
-  var sHTML              = oMarkDownConverter.makeHtml(sMarkdown);
+  var oProp, oProps_arr, l_app_id, sPageComment, sHTML;
+
+  l_app_id     = pe.getCurrentAppId();                     // Appp-ID
+  oProps_arr   = xplug.getFilteredComponentProperties(4);  // Get all comments
+  sPageComment = 'none';
+
+  // Find page comment
+  for (var key in oProps_arr) {
+      oProp = oProps_arr[key];
+
+      if (oProp.component.parentId == l_app_id) {
+         sPageComment = oProp.getDisplayValue();
+
+         sHTML = '<h2>Page Comments</h2>'
+               +  '<pre>'
+               +  sPageComment
+               + '</pre>';
+      }
+  }
   $('div#xplug_pb_docu').html(sHTML);
+
 }; // showDocumentation
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

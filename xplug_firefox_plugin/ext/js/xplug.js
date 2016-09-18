@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sat Sep 17 2016 21:28:52
+// Built using Gulp. Built date: Sun Sep 18 2016 20:48:53
 
 
  function get_label(p_index)
@@ -62,7 +62,7 @@
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
 
-                             , "TAB-PB-DOCU"         : "Documentation"
+                             , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
                              , "TAB-PB-SEARCH"       : "Search"
                              , "TAB-PB-CONSOLE"      : "Console"
@@ -137,7 +137,7 @@
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
 
-                             , "TAB-PB-DOCU"         : "Dokumentation"
+                             , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
                              , "TAB-PB-SEARCH"       : "Suchen"
                              , "TAB-PB-CONSOLE"      : "Konsole"
@@ -1793,8 +1793,8 @@ window.pageDesigner.goToPrevPage = function () {
 
   if (l_index > -1) {
     l_prev = xplug.arr_page_list[l_index > 0
-           ? l_index - 1
-           : l_index].id;
+                                    ? l_index - 1
+                                    : l_index].id;
   } else {
     void 0;
     xplug._get_page_list(function () { window.pageDesigner.goToPrevPage(); } );
@@ -1841,8 +1841,8 @@ window.pageDesigner.goToNextPage = function () {
 
   if (l_index > -1) {
      l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1
-            ? l_index + 1
-            : l_index].id;
+                                          ? l_index + 1
+                                          : l_index].id;
 
   } else {
     void 0;
@@ -2296,6 +2296,9 @@ Xplug.prototype.installSidekick = function()
           l_widget._update( pNotifications );
       });
 
+   $(document).on('modelReady', this.showDocumentation);
+   this.showDocumentation();
+
 }; 
 
 
@@ -2314,6 +2317,8 @@ Xplug.prototype.deinstallSidekick = function()
       .trigger('resize');
 
   xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
+
+  $(document).off('modelReady', this.showDocumentation);
 }; 
 
 
@@ -2323,10 +2328,26 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oMarkDownConverter = new showdown.Converter();
-  var sMarkdown          = xplug.getFilteredComponentProperties(4)[0]._value;
-  var sHTML              = oMarkDownConverter.makeHtml(sMarkdown);
+  var oProp, oProps_arr, l_app_id, sPageComment, sHTML;
+
+  l_app_id     = pe.getCurrentAppId();                     
+  oProps_arr   = xplug.getFilteredComponentProperties(4);  
+  sPageComment = 'none';
+
+  for (var key in oProps_arr) {
+      oProp = oProps_arr[key];
+
+      if (oProp.component.parentId == l_app_id) {
+         sPageComment = oProp.getDisplayValue();
+
+         sHTML = '<h2>Page Comments</h2>'
+               +  '<pre>'
+               +  sPageComment
+               + '</pre>';
+      }
+  }
   $('div#xplug_pb_docu').html(sHTML);
+
 }; 
 
 

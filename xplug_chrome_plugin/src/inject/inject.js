@@ -18,12 +18,6 @@ chrome.extension.sendMessage({}, function(response) {
 
         document.body.appendChild(l_script);    // Inject javascript code into the DOM
 
-
-        l_script       = document.createElement("script");
-        l_script.type  = "text/javascript";
-        l_script.src   = chrome.runtime.getURL('/libs/showdown.min.js');
-        document.body.appendChild(l_script);    // Inject javascript code into the DOM
-
         }
 	}, 10);
 });
