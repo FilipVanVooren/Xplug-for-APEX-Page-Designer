@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Sep 18 2016 20:48:53
+// Built using Gulp. Built date: Tue Sep 20 2016 21:00:17
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -2283,6 +2283,16 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
    return l_svg;
 }  // get_svg_icon
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// xplug_model.js
+// 2016-09-20 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+
 
 
 /***************************************************************************
@@ -2295,7 +2305,11 @@ Xplug.prototype.getComponentProperties = function (pPropTypeEnum) {
    var oProp, oCompProp, oComp_arr, oCompRef_arr, oCompProp_arr;
    var oResultProp_arr = [];                        // Our resultset array
 
-   oProp        = pe.getProperty(pPropTypeEnum);    // Get property
+   try {
+        oProp = pe.getProperty(pPropTypeEnum);      // Get property
+   } catch(e) {
+        return;
+   }
    oCompRef_arr = oProp.refByComponentTypes;        // Get component types that reference specified property
 
    // Loop over result set
@@ -2326,7 +2340,7 @@ Xplug.prototype.getComponentProperties = function (pPropTypeEnum) {
 * Add custom method to Xplug
 * METHOD: getFilterComponentProperties
 ***************************************************************************/
-Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum) {
+Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum, pParentId) {
   'use strict';
 
   var oAllProp_arr    = this.getComponentProperties(pPropTypeEnum);
@@ -2335,12 +2349,24 @@ Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum) {
   // Loop over propteries
   for (var idx in oAllProp_arr) {
 
+      // Check if attribute _value has a value set
       if (    oAllProp_arr[idx].hasOwnProperty('_value')
            && oAllProp_arr[idx]._value.length > 0) {
 
-           oResultProp_arr.push(oAllProp_arr[idx]);
-      }
-  }
+           if ( (typeof(pParentid) !== undefined) && (pParentId !== undefined) ) {
+             // ParentId specified, so only save if it matches
+             if (    oAllProp_arr[idx].hasOwnProperty('component')
+                  && oAllProp_arr[idx].component.hasOwnProperty('parentId')
+                  && oAllProp_arr[idx].component.parentId == pParentId) {
+
+                  oResultProp_arr.push(oAllProp_arr[idx]);
+             }
+           } else {
+             // No parentId specified, so save
+             oResultProp_arr.push(oAllProp_arr[idx]);
+           }    // if
+      }         // if
+  }             // for
   return oResultProp_arr;
 }; // getFilteredComponentProperties
 
@@ -3131,25 +3157,37 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oProp, oProps_arr, l_app_id, sPageComment, sHTML;
+  var oProp, l_app_id, sChangedBy, sChangedOn, sPageComment, sHTML;
 
-  l_app_id     = pe.getCurrentAppId();                     // Appp-ID
-  oProps_arr   = xplug.getFilteredComponentProperties(4);  // Get all comments
-  sPageComment = 'none';
+  l_app_id     = pe.getCurrentAppId();                                     // Appp-ID
 
-  // Find page comment
-  for (var key in oProps_arr) {
-      oProp = oProps_arr[key];
 
-      if (oProp.component.parentId == l_app_id) {
-         sPageComment = oProp.getDisplayValue();
+  // Get Page changed By
+  oProp        = xplug.getFilteredComponentProperties(381,l_app_id)[0];    // 381=Changed By
+  sChangedBy   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                           : 'none';
 
-         sHTML = '<h2>Page Comments</h2>'
-               +  '<pre>'
-               +  sPageComment
-               + '</pre>';
-      }
-  }
+  // Get Page changed on
+  oProp        = xplug.getFilteredComponentProperties(382,l_app_id)[0];    // 382=Changed On
+  sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                           : 'none';
+
+  // Get Page Comment
+  //
+  oProp        = xplug.getFilteredComponentProperties(4,l_app_id)[0];      // 4=Comment
+  sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                            : '** NONE **';
+
+
+  // Build page details
+  sHTML = '<h2>Audit Information</h2>'
+        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
+        + '<br><br>'
+        + '<h2>Page Comments</h2>'
+        +  '<pre>'
+        +  sPageComment
+        + '</pre>';
+
   $('div#xplug_pb_docu').html(sHTML);
 
 }; // showDocumentation

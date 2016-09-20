@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Sep 18 2016 20:48:53
+// Built using Gulp. Built date: Tue Sep 20 2016 21:00:17
 
 
  function get_label(p_index)
@@ -1688,13 +1688,18 @@ function get_svg_icon(p_icon,p_width,p_height,p_color,p_is_css_background) {
 
 
 
+
 Xplug.prototype.getComponentProperties = function (pPropTypeEnum) {
    'use strict';
 
    var oProp, oCompProp, oComp_arr, oCompRef_arr, oCompProp_arr;
    var oResultProp_arr = [];                        
 
-   oProp        = pe.getProperty(pPropTypeEnum);    
+   try {
+        oProp = pe.getProperty(pPropTypeEnum);      
+   } catch(e) {
+        return;
+   }
    oCompRef_arr = oProp.refByComponentTypes;        
 
    for (var i=0; i < oCompRef_arr.length; i++) {
@@ -1715,7 +1720,7 @@ Xplug.prototype.getComponentProperties = function (pPropTypeEnum) {
 
 
 
-Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum) {
+Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum, pParentId) {
   'use strict';
 
   var oAllProp_arr    = this.getComponentProperties(pPropTypeEnum);
@@ -1726,9 +1731,18 @@ Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum) {
       if (    oAllProp_arr[idx].hasOwnProperty('_value')
            && oAllProp_arr[idx]._value.length > 0) {
 
-           oResultProp_arr.push(oAllProp_arr[idx]);
-      }
-  }
+           if ( (typeof(pParentid) !== undefined) && (pParentId !== undefined) ) {
+             if (    oAllProp_arr[idx].hasOwnProperty('component')
+                  && oAllProp_arr[idx].component.hasOwnProperty('parentId')
+                  && oAllProp_arr[idx].component.parentId == pParentId) {
+
+                  oResultProp_arr.push(oAllProp_arr[idx]);
+             }
+           } else {
+             oResultProp_arr.push(oAllProp_arr[idx]);
+           }    
+      }         
+  }             
   return oResultProp_arr;
 }; 
 
@@ -2328,24 +2342,32 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oProp, oProps_arr, l_app_id, sPageComment, sHTML;
+  var oProp, l_app_id, sChangedBy, sChangedOn, sPageComment, sHTML;
 
-  l_app_id     = pe.getCurrentAppId();                     
-  oProps_arr   = xplug.getFilteredComponentProperties(4);  
-  sPageComment = 'none';
+  l_app_id     = pe.getCurrentAppId();                                     
 
-  for (var key in oProps_arr) {
-      oProp = oProps_arr[key];
 
-      if (oProp.component.parentId == l_app_id) {
-         sPageComment = oProp.getDisplayValue();
+  oProp        = xplug.getFilteredComponentProperties(381,l_app_id)[0];    
+  sChangedBy   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                           : 'none';
 
-         sHTML = '<h2>Page Comments</h2>'
-               +  '<pre>'
-               +  sPageComment
-               + '</pre>';
-      }
-  }
+  oProp        = xplug.getFilteredComponentProperties(382,l_app_id)[0];    
+  sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                           : 'none';
+
+  oProp        = xplug.getFilteredComponentProperties(4,l_app_id)[0];      
+  sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                            : '** NONE **';
+
+
+  sHTML = '<h2>Audit Information</h2>'
+        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
+        + '<br><br>'
+        + '<h2>Page Comments</h2>'
+        +  '<pre>'
+        +  sPageComment
+        + '</pre>';
+
   $('div#xplug_pb_docu').html(sHTML);
 
 }; 

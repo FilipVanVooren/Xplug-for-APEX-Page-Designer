@@ -304,25 +304,37 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oProp, oProps_arr, l_app_id, sPageComment, sHTML;
+  var oProp, l_app_id, sChangedBy, sChangedOn, sPageComment, sHTML;
 
-  l_app_id     = pe.getCurrentAppId();                     // Appp-ID
-  oProps_arr   = xplug.getFilteredComponentProperties(4);  // Get all comments
-  sPageComment = 'none';
+  l_app_id     = pe.getCurrentAppId();                                     // Appp-ID
 
-  // Find page comment
-  for (var key in oProps_arr) {
-      oProp = oProps_arr[key];
 
-      if (oProp.component.parentId == l_app_id) {
-         sPageComment = oProp.getDisplayValue();
+  // Get Page changed By
+  oProp        = xplug.getFilteredComponentProperties(381,l_app_id)[0];    // 381=Changed By
+  sChangedBy   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                           : 'none';
 
-         sHTML = '<h2>Page Comments</h2>'
-               +  '<pre>'
-               +  sPageComment
-               + '</pre>';
-      }
-  }
+  // Get Page changed on
+  oProp        = xplug.getFilteredComponentProperties(382,l_app_id)[0];    // 382=Changed On
+  sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                           : 'none';
+
+  // Get Page Comment
+  //
+  oProp        = xplug.getFilteredComponentProperties(4,l_app_id)[0];      // 4=Comment
+  sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
+                                            : '** NONE **';
+
+
+  // Build page details
+  sHTML = '<h2>Audit Information</h2>'
+        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
+        + '<br><br>'
+        + '<h2>Page Comments</h2>'
+        +  '<pre>'
+        +  sPageComment
+        + '</pre>';
+
   $('div#xplug_pb_docu').html(sHTML);
 
 }; // showDocumentation
