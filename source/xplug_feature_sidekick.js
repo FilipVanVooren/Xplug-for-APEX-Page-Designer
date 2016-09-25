@@ -144,13 +144,24 @@ Xplug.prototype.installSidekick = function()
     }
 
 
+
+  // Sidekick tab "Page Details"
+  var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
+  var sPageDetailsLI    = '';
+  var sPageDetailsDIV   = '';
+  if (sEnablePageDetTab == 'YES') {
+     sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
+     sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
+  }
+
+
   // Add (simulated) vertical splitter bar and SIDEKICK DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
-       +       '<li><a href="#xplug_pb_docu">'     + get_label('TAB-PB-DOCU')        + '</a></li>'
+       +       sPageDetailsLI
        +       '<li><a href="#xplug_pb_msgview">'  + get_label('TAB-PB-MESSAGES')    + '</a></li>'
        +       '<li><a href="#xplug_pb_search">'   + get_label('TAB-PB-SEARCH')      + '</a></li>'
        +     '</ul>'
@@ -160,13 +171,11 @@ Xplug.prototype.installSidekick = function()
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-       +   '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>'
+       +   sPageDetailsDIV
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
        + '</div>'
   );
-
-
 
 
   // Add hamburger menu
@@ -261,13 +270,38 @@ Xplug.prototype.installSidekick = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 1);
+          $('div#xplug_pb_container')
+            .tabs( "option",
+                   "active",
+                   xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') == 'YES' ? 1 : 0);
           l_widget._update( pNotifications );
-      });
+      }
+   ); // pe.observer
 
-   $(document).on('modelReady', this.showDocumentation);
-   this.showDocumentation();
+   if (xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') == 'YES') {
+     $(document).on('modelReady', this.showDocumentation);
 
+     //
+     // Show page details if page was saved
+     //
+     // NOTE: Did not yet find an elegant way to detect when a page was saved
+     //       This fires too often, but bRefresh checks if it's ok to show
+     //       page details.
+     //
+     $( document ).on("commandHistoryChange", function() {
+       if  (pe.hasChanged() === false) {
+           // Page is clean, it is ok to show page Details (if enabled)
+           var bRefresh =    (xplug.getStorage('SHOW_SIDEKICK_PANE','NO')   == 'YES')
+                          && (xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') == 'YES');
+
+           if (bRefresh === true) {
+              xplug.showDocumentation();
+           }
+       }  // if
+     });  // commandHistoryChange
+
+     this.showDocumentation();
+   }
 }; // Xplug.prototype.installSidekick
 
 
@@ -284,7 +318,7 @@ Xplug.prototype.deinstallSidekick = function()
   $('body').off('splitterchange.xplug_namespace splittercreate.xplug_namespace');
   $( "div#editor_tabs, div#R1157688004078338241" ).tabs( { activate: null } );
 
-  // Remove SIDEKICK
+  // Remove Sidekick
   $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
 
   // Restore original gallery width and trigger redrawing/reposition of icons
@@ -292,7 +326,7 @@ Xplug.prototype.deinstallSidekick = function()
       .css('width', $('div#glv-viewport').css('width') )
       .trigger('resize');
 
-  xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
+  this.setStorage('SHOW_SIDEKICK_PANE','NO');
 
   $(document).off('modelReady', this.showDocumentation);
 }; // Xplug.prototype.deinstallSidekick
@@ -335,6 +369,6 @@ Xplug.prototype.showDocumentation = function ()
         +  sPageComment
         + '</pre>';
 
-  $('div#xplug_pb_docu').html(sHTML);
-
+  $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
+  $('div#xplug_pb_docu pre').css('display','inline');
 }; // showDocumentation

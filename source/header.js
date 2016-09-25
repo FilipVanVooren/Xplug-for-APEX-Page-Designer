@@ -242,7 +242,7 @@
 //                                  during page hopping.
 //                       - Bug-fix: Shortcut for swap grid pane was invalid, now solved by assigning new key Alt+M
 //
-//  V1.4.0.0 2016-09-16 * Multiple changes
+// V1.4.0.0 2016-09-16 * Multiple changes
 //                        - Some refactopring
 //                        - Renamed 'Powerbox pane' to 'Sidekick panme' and  rename  file xplug_powerbox.js
 //                          to xplug_feature_sidekick.js
@@ -250,8 +250,16 @@
 //                        - Added "Documentation" tab to the sidekick pane, used for showing page comments in
 //                          Markdown format
 //
-//   V1.4.0.0 2016-09-16 * Multiple changes
-//                         - Removed Markdown stuff again, risk for XSS injection is too high,
+// V1.4.0.0 2016-09-17 * Removed Markdown stuff again, risk for XSS injection is too high.
+//
+// V1.4.0.0 2016-09-25 * Multiple changes
+//                         - Configuration dialog - Hide certain options if APEX 5.1 is detected
+//                           (swap grid, page navigation buttons)
+//                         - Configuration dialog - Add new options group "Experimental" and added new option
+//                           "Enable 'Page Details' tab in sidekick pane
+//                         - Bug fix: Enable foreground/background color in new 'Page Details' tab in sidekick pane
+//                         - Bug fix: Fixed padding in Page Details tab in sidekick pane
+//                         - Bug fix: Refresh page details tab if page is saved (and sidekick + tab is enabled)
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

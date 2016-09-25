@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Tue Sep 20 2016 21:00:17
+// Built using Gulp. Built date: Sun Sep 25 2016 20:08:22
 
 
  function get_label(p_index)
@@ -53,8 +53,10 @@
                              , "LBL-OVERRIDE-CSS"    : "Override Xplug CSS"
                              , "LBL-CUST-CSS"        : "Custom CSS"
                              , "LBL-ADVANCED"        : "Advanced"
-                             , "LBL-EXPERIMENTAL"    : "Experimental features"
-                             , "LBL-SHOW-BUTTONS"    : "Show Buttons"
+                             , "LBL-EXPERIMENTAL"    : "Experimental"
+                             , "LBL-SHOW-BUTTONS"    : "Buttons"
+                             , "LBL-SHOW-APPID"      : "Show [app:page] info in window title"
+                             , "LBL-ENABLE-PAGEDET"  : "Enable 'Page Details' tab in sidekick pane"
                              , "LBL-DAYLIGHT"        : "Day mode"
                              , "LBL-MOONLIGHT"       : "Night mode"
                              , "LBL-DEFAULT-STYLES"  : "Default Themes"
@@ -128,8 +130,10 @@
                              , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"
                              , "LBL-CUST-CSS"        : "Eigenes CSS"
                              , "LBL-ADVANCED"        : "Fortgeschritten"
-                             , "LBL-EXPERIMENTAL"    : "Experimentelle Optionen"
+                             , "LBL-EXPERIMENTAL"    : "Experimentel"
                              , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
+                             , "LBL-SHOW-APPID"      : "Zeige [app:page] info in Fenstertitel"
+                             , "LBL-ENABLE-PAGEDET"  : "Aktiviere Reiter 'Seitendetails' in Sidekick bereich"
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Standard Themes"
@@ -607,8 +611,8 @@ window.pageDesigner.setStyle = function( p_style_name,
           + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          
           + l_lf;
 
-    l_css +=        ' div#xplug_pb_tabs, div#xplug_pb_msgview, div#xplug_pb_search { background-color : ' + l_c2 + '; }'  
-          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';                      
+    l_css += ' div#xplug_pb_tabs, div#xplug_pb_docu, div#xplug_pb_msgview, div#xplug_pb_search { background-color : ' + l_c2 + '; }'
+          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';              
 
     l_css +=       ' div#messages, div#search, div#help               { background-color : ' + l_c1 + '; }'
           + l_lf + ' div#help-container                               { background-color : ' + l_c1 + '; }'
@@ -622,7 +626,7 @@ window.pageDesigner.setStyle = function( p_style_name,
           +  l_lf + ' .a-AlertMessages-message.is-error:hover,'
                   + ' .a-AlertMessages-message.is-error:focus         {  background-color : ' + l_c7 + ' !important; }';
 
-    l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label, div#xplug_pb_search  .a-Form-label,'
+    l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label, div#xplug_pb_docu, div#xplug_pb_search  .a-Form-label,'
           +  l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
           +  l_lf + ' { color: ' + l_c7 + '; }';
 
@@ -2224,12 +2228,22 @@ Xplug.prototype.installSidekick = function()
     }
 
 
+
+  var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
+  var sPageDetailsLI    = '';
+  var sPageDetailsDIV   = '';
+  if (sEnablePageDetTab == 'YES') {
+     sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
+     sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
+  }
+
+
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter"></div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
-       +       '<li><a href="#xplug_pb_docu">'     + get_label('TAB-PB-DOCU')        + '</a></li>'
+       +       sPageDetailsLI
        +       '<li><a href="#xplug_pb_msgview">'  + get_label('TAB-PB-MESSAGES')    + '</a></li>'
        +       '<li><a href="#xplug_pb_search">'   + get_label('TAB-PB-SEARCH')      + '</a></li>'
        +     '</ul>'
@@ -2239,13 +2253,11 @@ Xplug.prototype.installSidekick = function()
        +   '<div ID="xplug_pb_right" class="a-Toolbar-items a-Toolbar-items--right"> '
        +   '</div>'
        +   '</div>'
-       +   '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>'
+       +   sPageDetailsDIV
        +   '<div ID="xplug_pb_msgview"></div>'
        +   '<div ID="xplug_pb_search" style="overflow-y: scroll; height: 100%;"></div>'
        + '</div>'
   );
-
-
 
 
   $('div#xplug_pb_right')
@@ -2306,13 +2318,30 @@ Xplug.prototype.installSidekick = function()
               pe.EVENT.REMOVE_PROP ]
       },
       function( pNotifications ) {
-          $('div#xplug_pb_container').tabs( "option", "active", 1);
+          $('div#xplug_pb_container')
+            .tabs( "option",
+                   "active",
+                   xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') == 'YES' ? 1 : 0);
           l_widget._update( pNotifications );
-      });
+      }
+   ); 
 
-   $(document).on('modelReady', this.showDocumentation);
-   this.showDocumentation();
+   if (xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') == 'YES') {
+     $(document).on('modelReady', this.showDocumentation);
 
+     $( document ).on("commandHistoryChange", function() {
+       if  (pe.hasChanged() === false) {
+           var bRefresh =    (xplug.getStorage('SHOW_SIDEKICK_PANE','NO')   == 'YES')
+                          && (xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') == 'YES');
+
+           if (bRefresh === true) {
+              xplug.showDocumentation();
+           }
+       }  
+     });  
+
+     this.showDocumentation();
+   }
 }; 
 
 
@@ -2330,7 +2359,7 @@ Xplug.prototype.deinstallSidekick = function()
       .css('width', $('div#glv-viewport').css('width') )
       .trigger('resize');
 
-  xplug.setStorage('SHOW_SIDEKICK_PANE','NO');
+  this.setStorage('SHOW_SIDEKICK_PANE','NO');
 
   $(document).off('modelReady', this.showDocumentation);
 }; 
@@ -2368,8 +2397,8 @@ Xplug.prototype.showDocumentation = function ()
         +  sPageComment
         + '</pre>';
 
-  $('div#xplug_pb_docu').html(sHTML);
-
+  $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
+  $('div#xplug_pb_docu pre').css('display','inline');
 }; 
 
 
@@ -2651,7 +2680,6 @@ Xplug.prototype.install_menu = function() {
     {
       items : [
         {
-
           type     : "subMenu",
           label    : get_label('DOCK-GRID'),
           icon     : "icon-region-native-sql-report",
@@ -2775,23 +2803,8 @@ Xplug.prototype.configureDialog = function()
 
                                l_dialogPE$ = $('#ConfigDlgPE');
 
-                               l_properties1[0] = {
-                                   propertyName: "show_prevnext_buttons",
-                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         '',
-                                       noValue:        "NO",
-                                       yesValue:       "YES",
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "buttons"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
-
-                               l_properties1[1] = {
+                               l_properties1.push(
+                                {
                                    propertyName: "show_moonlight_toggle",
                                    value:        xplug.getStorage('BTN-THEME-SWITCH','NO'),
                                    metaData: {
@@ -2805,26 +2818,48 @@ Xplug.prototype.configureDialog = function()
                                    },
                                    errors:   [],
                                    warnings: []
-                               };
-
-                               l_properties1[2] = {
-                                   propertyName: "show_swap_gridpane",
-                                   value:        xplug.getStorage('BTN-SWAP-GRID-PANE','NO'),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         '',
-                                       noValue:        "NO",
-                                       yesValue:       "YES",
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "buttons"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
+                                });
 
 
-                               l_properties2[0] = {
+                              if (xplug.apex_version.substring(0,3) == '5.0')  {
+                                 l_properties1.push(
+                                   {
+                                     propertyName: "show_prevnext_buttons",
+                                     value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
+                                     metaData: {
+                                         type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                         prompt:         '',
+                                         noValue:        "NO",
+                                         yesValue:       "YES",
+                                         isReadOnly:     false,
+                                         isRequired:     true,
+                                         displayGroupId: "buttons"
+                                     },
+                                     errors:   [],
+                                     warnings: []
+                                 });
+
+                                 l_properties1.push(
+                                   {
+                                     propertyName: "show_swap_gridpane",
+                                     value:        xplug.getStorage('BTN-SWAP-GRID-PANE','NO'),
+                                     metaData: {
+                                         type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                         prompt:         '',
+                                         noValue:        "NO",
+                                         yesValue:       "YES",
+                                         isReadOnly:     false,
+                                         isRequired:     true,
+                                         displayGroupId: "buttons"
+                                     },
+                                     errors:   [],
+                                     warnings: []
+                                });
+                              }  
+
+
+                               l_properties2.push(
+                                  {
                                    propertyName: "default_daylight_style",
                                    value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
                                    metaData: {
@@ -2837,9 +2872,10 @@ Xplug.prototype.configureDialog = function()
                                    },
                                    errors:   [],
                                    warnings: []
-                               };
+                               });
 
-                               l_properties2[1] = {
+                               l_properties2.push(
+                                 {
                                    propertyName: "default_moonlight_style",
                                    value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
                                    metaData: {
@@ -2852,14 +2888,15 @@ Xplug.prototype.configureDialog = function()
                                    },
                                    errors:   [],
                                    warnings: []
-                               };
+                               });
 
-                               l_properties3[0] = {
+                               l_properties3.push(
+                                 {
                                    propertyName: "enhance_pd_title",
                                    value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         "Show [app:page] info in window title",
+                                       prompt:         get_label('LBL-SHOW-APPID'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -2868,15 +2905,16 @@ Xplug.prototype.configureDialog = function()
                                    },
                                    errors:   [],
                                    warnings: []
-                               };
+                               });
 
 
-                               l_properties4[0] = {
-                                   propertyName: "enhance_pd_title",
-                                   value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
+                               l_properties4.push(
+                                 {
+                                   propertyName: "enable-tab-pagedet",
+                                   value:        xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         "Show [app:page] info in window title",
+                                       prompt:         get_label('LBL-ENABLE-PAGEDET'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -2885,11 +2923,11 @@ Xplug.prototype.configureDialog = function()
                                    },
                                    errors:   [],
                                    warnings: []
-                               };
+                               });
 
 
                                $('#ConfigDlgPE').propertyEditor( {
-                                 focusPropertyName: "show_prevnext_buttons",
+                                 focusPropertyName: "show_moonlight_toggle",
                                  data: {
                                    propertySet: [
                                      {
@@ -2907,6 +2945,11 @@ Xplug.prototype.configureDialog = function()
                                        displayGroupTitle : get_label('LBL-ADVANCED'),
                                        properties        : l_properties3
                                      },
+                                     {
+                                       displayGroupId    : "experimental",
+                                       displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
+                                       properties        : l_properties4
+                                     }
                                    ] 
                                  }   
                                });   
@@ -2916,19 +2959,22 @@ Xplug.prototype.configureDialog = function()
                                });
 
                               $('#ConfigDlgPE_1_label')
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
-                                            + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>'
+                                            + '/'
+                                            + '&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
 
-                              $('#ConfigDlgPE_2_label')
-                                     .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>'
-                                           + '/'
-                                           + '&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+                              if (xplug.apex_version.substring(0,3) == '5.0')  {
+                                  $('#ConfigDlgPE_2_label')
+                                          .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
+                                                + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
 
-                              $('#ConfigDlgPE_3_label')
-                                    .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
 
-                               $('div#ORATRONIK_XPLUG_CONFIG_DIALOG .a-Property-labelContainer')
-                                   .css('min-width','240px');
+                                  $('#ConfigDlgPE_3_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
+                              }
+
+                              $('div#ORATRONIK_XPLUG_CONFIG_DIALOG .a-Property-labelContainer')
+                                 .css('min-width','300px');
 
                             }, 
                   buttons : [
@@ -2940,22 +2986,51 @@ Xplug.prototype.configureDialog = function()
 
                               { text  : get_label('BTN-APPLY'),
                                 click : function() {
+                                  var sThemeSwitch, sPageNav, sSwapGrid, sStyle1, sStyle2, sPDTitle, sTabPageDet;
 
-                                  if ($('input[name=ConfigDlgPE_1_name]:checked').val() == 'YES')  { xplug.installPageButtons();   }
-                                                                                             else  { xplug.deinstallPageButtons(); }
+                                  if (xplug.apex_version.substring(0,3) == '5.0') {
+                                     sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
+                                     sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
+                                     sSwapGrid    = 'input[name=ConfigDlgPE_3_name]:checked';
+                                     sStyle1      = '#ConfigDlgPE_4';
+                                     sStyle2      = '#ConfigDlgPE_5';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_6_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_7_name]:checked';
+                                  } else {
+                                     sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
+                                     sPageNav     = '';
+                                     sSwapGrid    = '';
+                                     sStyle1      = '#ConfigDlgPE_2';
+                                     sStyle2      = '#ConfigDlgPE_3';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_4_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_5_name]:checked';
+                                  }
 
-                                  if ($('input[name=ConfigDlgPE_2_name]:checked').val() == 'YES')  { xplug.installThemeSwitch();   }
-                                                                                             else  { xplug.deinstallThemeSwitch(); }
+                                  if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
+                                                                else  { xplug.deinstallThemeSwitch(); }
 
-                                  if ($('input[name=ConfigDlgPE_3_name]:checked').val() == 'YES')  { xplug.installSwapGrid();   }
-                                                                                             else  { xplug.deinstallSwapGrid(); }
-
-                                  if ($('input[name=ConfigDlgPE_6_name]:checked').val() == 'YES')  { xplug.installPDTitle();   }
-                                                                                             else  { xplug.deinstallPDTitle(); }
+                                  if (xplug.apex_version.substring(0,3) == '5.0')  {
+                                      if ($(sPageNav).val() == 'YES') { xplug.installPageButtons();   }
+                                                                else  { xplug.deinstallPageButtons(); }
 
 
-                                  var l_style1 = $('#ConfigDlgPE_4').val();
-                                  var l_style2 = $('#ConfigDlgPE_5').val();
+                                      if ($(sSwapGrid).val() == 'YES') { xplug.installSwapGrid();   }
+                                                                 else  { xplug.deinstallSwapGrid(); }
+                                  }
+
+                                  if ($(sPDTitle).val() == 'YES') { xplug.installPDTitle();   }
+                                                            else  { xplug.deinstallPDTitle(); }
+
+
+                                  xplug.setStorage('SIDEKICK-TAB-PAGEDET',$(sTabPageDet).val());
+
+                                  if (xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES')   {
+                                      xplug.deinstallSidekick();
+                                      xplug.installSidekick();
+                                  }
+
+                                  var l_style1 = $(sStyle1).val();
+                                  var l_style2 = $(sStyle2).val();
                                   var l_class  = $('button#ORATRONIK_XPLUG_moonsun_button span').attr('class');
 
                                   xplug.setStorage('DEFAULT_STYLE1',l_style1,true);

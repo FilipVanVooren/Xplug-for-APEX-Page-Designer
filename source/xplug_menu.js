@@ -200,7 +200,6 @@ Xplug.prototype.install_menu = function() {
     {
       items : [
         {
-
           type     : "subMenu",
           label    : get_label('DOCK-GRID'),
           icon     : "icon-region-native-sql-report",
