@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Sep 25 2016 20:08:22
+// Built using Gulp. Built date: Tue Oct 04 2016 20:11:04
 
 
  function get_label(p_index)
@@ -2389,7 +2389,7 @@ Xplug.prototype.showDocumentation = function ()
                                             : '** NONE **';
 
 
-  sHTML = '<h2>Audit Information</h2>'
+  sHTML = '<h2>Page history</h2>'
         + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
         + '<br><br>'
         + '<h2>Page Comments</h2>'
@@ -2821,24 +2821,25 @@ Xplug.prototype.configureDialog = function()
                                 });
 
 
-                              if (xplug.apex_version.substring(0,3) == '5.0')  {
-                                 l_properties1.push(
-                                   {
-                                     propertyName: "show_prevnext_buttons",
-                                     value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
-                                     metaData: {
-                                         type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                         prompt:         '',
-                                         noValue:        "NO",
-                                         yesValue:       "YES",
-                                         isReadOnly:     false,
-                                         isRequired:     true,
-                                         displayGroupId: "buttons"
-                                     },
-                                     errors:   [],
-                                     warnings: []
-                                 });
+                              l_properties1.push(
+                                {
+                                  propertyName: "show_prevnext_buttons",
+                                  value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
+                                  metaData: {
+                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                      prompt:         '',
+                                      noValue:        "NO",
+                                      yesValue:       "YES",
+                                      isReadOnly:     false,
+                                      isRequired:     true,
+                                      displayGroupId: "buttons"
+                                  },
+                                  errors:   [],
+                                  warnings: []
+                              });
 
+
+                              if (xplug.apex_version.substring(0,3) == '5.0')  {
                                  l_properties1.push(
                                    {
                                      propertyName: "show_swap_gridpane",
@@ -2963,12 +2964,12 @@ Xplug.prototype.configureDialog = function()
                                             + '/'
                                             + '&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
 
+                              $('#ConfigDlgPE_2_label')
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
+                                            + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
+
+
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
-                                  $('#ConfigDlgPE_2_label')
-                                          .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
-                                                + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
-
-
                                   $('#ConfigDlgPE_3_label')
                                         .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
                               }
@@ -2998,22 +2999,22 @@ Xplug.prototype.configureDialog = function()
                                      sTabPageDet  = 'input[name=ConfigDlgPE_7_name]:checked';
                                   } else {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
-                                     sPageNav     = '';
+                                     sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
                                      sSwapGrid    = '';
-                                     sStyle1      = '#ConfigDlgPE_2';
-                                     sStyle2      = '#ConfigDlgPE_3';
-                                     sPDTitle     = 'input[name=ConfigDlgPE_4_name]:checked';
-                                     sTabPageDet  = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sStyle1      = '#ConfigDlgPE_3';
+                                     sStyle2      = '#ConfigDlgPE_4';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_6_name]:checked';
                                   }
 
                                   if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
                                                                 else  { xplug.deinstallThemeSwitch(); }
 
+                                  if ($(sPageNav).val() == 'YES') { xplug.installPageButtons();   }
+                                                            else  { xplug.deinstallPageButtons(); }
+
+
                                   if (xplug.apex_version.substring(0,3) == '5.0')  {
-                                      if ($(sPageNav).val() == 'YES') { xplug.installPageButtons();   }
-                                                                else  { xplug.deinstallPageButtons(); }
-
-
                                       if ($(sSwapGrid).val() == 'YES') { xplug.installSwapGrid();   }
                                                                  else  { xplug.deinstallSwapGrid(); }
                                   }

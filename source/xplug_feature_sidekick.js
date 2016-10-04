@@ -361,7 +361,7 @@ Xplug.prototype.showDocumentation = function ()
 
 
   // Build page details
-  sHTML = '<h2>Audit Information</h2>'
+  sHTML = '<h2>Page history</h2>'
         + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
         + '<br><br>'
         + '<h2>Page Comments</h2>'
@@ -372,3 +372,8 @@ Xplug.prototype.showDocumentation = function ()
   $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
   $('div#xplug_pb_docu pre').css('display','inline');
 }; // showDocumentation
+
+
+// TODO
+// To change a visible comment
+// $("textarea[data-property-id='4']").val('blabla').trigger('change')

@@ -261,6 +261,10 @@
 //                         - Bug fix: Fixed padding in Page Details tab in sidekick pane
 //                         - Bug fix: Refresh page details tab if page is saved (and sidekick + tab is enabled)
 //
+//
+// V1.4.0.0  2016-10-04 * Multiple changes
+//                          - Configuration dialog - Re-added page navigation buttons also on APEX 5.1
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
