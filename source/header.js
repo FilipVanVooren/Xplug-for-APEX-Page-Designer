@@ -265,6 +265,12 @@
 // V1.4.0.0  2016-10-04 * Multiple changes
 //                          - Configuration dialog - Re-added page navigation buttons also on APEX 5.1
 //
+//
+//  V1.4.0.0 2016-10-16 * Multiple changes
+//                         - Bug-fix: Sidekick resize handler was not call when resizing window/panes. Solved now.
+//                         - Added possibility to resize sidekick pane.
+//                         - Sidekick splitter is now a real draggable, possibility to resize pane via mouse
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

@@ -37,9 +37,112 @@ l_menu$.menu(
                  {
                    return false;
                  }
-    }
+    },
+    { type     : "separator" },
+    { type     : "toggle",
+    label    : "blabla",
+    get      : function()
+               {
+                  return 0;
+               },
+    set      : function()
+               {
+                  apex.actions.invoke('pd-xplug-remove-sidekick');
+               },
+    disabled : function()
+               {
+                 return false;
+               }
+  },
+
+
   ]
 });
+
+
+/***************************************************************************
+* Add custom method to Xplug
+* METHOD: installSidekick
+***************************************************************************/
+Xplug.prototype.resizeSidekick = function(p_factor)
+{
+  'use strict';
+
+  var c_min_factor = 0.25;
+  var c_max_factor = 0.50;
+  var l_factor     = c_max_factor;
+
+  if ( !isNaN(p_factor) && (p_factor >= 0)
+                        && (p_factor <= 0.75) ) {
+     xplug.setStorage('SIDEKICK_FACTOR', p_factor);
+     l_factor = p_factor;
+  } else {
+     l_factor = xplug.getStorage('SIDEKICK_FACTOR', c_max_factor);
+  }
+
+   var l_maxwidth = $('#glv-viewport').width();
+   var l_width    = l_maxwidth * l_factor;
+   var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
+   var l_display;
+
+   // Resize gallery
+   console.debug("resizeSidekick: Request for setting gallery width to: " + l_width + ' px');
+
+   if (l_width < 350) {
+     // Collapse Gallery if too small
+     l_width   = 0;
+     l_display = 'none';
+     $('div#xplug_pb_splitter').addClass('is-collapsed');
+   } else {
+     // Show Gallery
+     l_display = 'block';
+     $('div#xplug_pb_splitter').removeClass('is-collapsed');
+   }
+   $('#gallery-tabs')
+     .css(
+           { width   : l_width + 'px',
+             display : l_display
+           }
+         )
+     .trigger('resize');
+
+    // simulated vertical splitter at left of SIDEKICK
+    $('div#xplug_pb_splitter').css(
+        { 'position'          : 'absolute',
+          'top'               : '0px',
+          'left'              :  l_width + 'px',
+          'width'             : '8px',
+          'height'            : '100%',
+          'background-color'  : $('.a-Splitter-barH').css('background-color'),
+          'border-left'       : '1px solid #c0c0c0',
+          'border-right'      : '1px solid #c0c0c0',
+          'vertical-align'    : 'middle'
+        }
+    );
+
+    // SIDEKICK container DIV
+    $('div#xplug_pb_container').css(
+          { 'position'   : 'absolute',
+            'top'        : '0px',
+            'padding'    : '1px',
+            'left'       : (l_width + 8) + 'px',
+            'width'      : (l_maxwidth - l_width - 8) + 'px',
+            'height'     : l_height + 'px',
+            'display'    : 'block'
+          });
+
+    $('div#xplug_pb_tabs').css(
+          { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
+        });
+
+    $('div#xplug_pb_msgview').css(
+          {  'overflow-y' : 'scroll',
+             'height'     : l_height + 'px',
+
+        });
+}; // Xplug.prototype.resizeSidekick
+
+
 
 
 
@@ -47,62 +150,9 @@ l_menu$.menu(
 * Add custom method to Xplug
 * METHOD: installSidekick
 ***************************************************************************/
-Xplug.prototype.installSidekick = function()
+Xplug.prototype.installSidekick = function(p_factor)
 {
     'use strict';
-
-    var c_min_factor = 0.25;
-    var c_max_factor = 0.50;
-    var l_factor     = c_max_factor;                                                // Scaling factor
-
-
-    function xplug_pb_resize_handler() {
-       var l_maxwidth = $('#glv-viewport').width();
-       var l_width    = l_maxwidth * l_factor;
-       var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
-
-       $('#gallery-tabs')
-         .css(
-               { width : l_width + 'px' }
-             )
-         .trigger('resize');
-
-        // simulated vertical splitter at left of SIDEKICK
-        $('#xplug_pb_splitter').css(
-            { 'position'          : 'absolute',
-              'top'               : '0px',
-              'left'              :  l_width + 'px',
-              'width'             : '8px',
-              'height'            : '100%',
-              'background-color'  : $('.a-Splitter-barH').css('background-color'),
-              'border-left'       : '1px solid #c0c0c0',
-              'border-right'      : '1px solid #c0c0c0'
-            }
-        );
-
-        // SIDEKICK container DIV
-        $('#xplug_pb_container').css(
-              { 'position'   : 'absolute',
-                'top'        : '0px',
-                'padding'    : '1px',
-                'left'       : (l_width + 8) + 'px',
-                'width'      : (l_maxwidth - l_width - 8) + 'px',
-                'height'     : l_height + 'px',
-                'display'    : 'block'
-              });
-
-        $('#xplug_pb_tabs').css(
-              { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
-            });
-
-        $('#xplug_pb_msgview').css(
-              {  'overflow-y' : 'scroll',
-                 'height'     : l_height + 'px',
-
-            });
-    } // xplug_pb_resize_handler
-
-
 
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
@@ -157,7 +207,9 @@ Xplug.prototype.installSidekick = function()
 
   // Add (simulated) vertical splitter bar and SIDEKICK DIV to DOM
   $('#R1157688004078338241').append(
-         '<div ID="xplug_pb_splitter"></div>'
+         '<div ID="xplug_pb_splitter" class="a-Splitter-barH">'
+       +     '<button ID="xplug_pb_splitter_btn" role="separator" class="a-Splitter-thumb" type="button" aria-expanded="true" title="Collapse"></button>'
+       + '</div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
@@ -194,25 +246,52 @@ Xplug.prototype.installSidekick = function()
 
   // Create new tabs
   $('div#xplug_pb_container').tabs();   // jQuery UI tabs
-  xplug_pb_resize_handler();            // Show SIDEKICK
+  this.resizeSidekick(p_factor);        // Show SIDEKICK
 
 
   // Activate standard "Messages" tab if our own badge is clicked.
   $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
 
 
+  //
+  // Turn our fake splitter into a draggable
+  //
+  $('div#xplug_pb_splitter').draggable(
+       { axis : "x",
+         stop : function () {
+                  var l_factor = parseInt( $('div#xplug_pb_splitter').css('left').replace('px','') ) / $('#R1157688004078338241').width();
+                  console.log("Done dragging. Factor = " + l_factor);
+                  xplug.resizeSidekick(l_factor);
+                }
+       }
+  );
+
+  // Collapse or expand our fake splitter if button clicked
+  $('button#xplug_pb_splitter_btn').on('click',
+    function()
+      {
+        var l_factor = $('div#xplug_pb_splitter').hasClass('is-collapsed') ? 0.5 : 0;
+        xplug.resizeSidekick(l_factor);
+      }
+  );
+
   // Install "Search" tab
   installTabPowersearch();
 
   // Resize-redraw SIDEKICK when splitter(s) are moved/created
-  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
+  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug.resizeSidekick);
+   // ???????????????????????
+   // STIL VALID ?
+   // ???????????????????????
+
+
 
 
   // Resize-redraw SIDEKICK when switching tabs (Grid Layout, Messages, ...)
   // See jQuery UI tabs for details on 'activate' attribute
   $( "div#editor_tabs, div#R1157688004078338241" )
     .tabs(
-           { activate: xplug_pb_resize_handler }
+           { activate: xplug.resizeSidekick }
          );
 
   //
@@ -232,7 +311,9 @@ Xplug.prototype.installSidekick = function()
                       {
                          clearTimeout(l_timeout_handler);
                          l_timeout_handler = setTimeout(
-                           function() { xplug_pb_resize_handler; } , 300);
+                           function() {
+                              xplug.resizeSidekick();
+                         } , 300);
                       }
   );
 
@@ -323,7 +404,10 @@ Xplug.prototype.deinstallSidekick = function()
 
   // Restore original gallery width and trigger redrawing/reposition of icons
   $('div#gallery-tabs')
-      .css('width', $('div#glv-viewport').css('width') )
+      .css( {
+             width   : $('div#glv-viewport').css('width'),
+             display : 'block'
+            } )
       .trigger('resize');
 
   this.setStorage('SHOW_SIDEKICK_PANE','NO');

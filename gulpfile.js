@@ -16,7 +16,7 @@ gulp.task('Build Xplug', function() {
               'source/page_designer_style.js',
               'source/xplug_constructor.js',
               'source/xplug_util.js',
-              'source/xplug_model.js',              
+              'source/xplug_model.js',
               'source/xplug_feature_prevnext_page.js',
               'source/xplug_feature_daynight_mode.js',
               'source/xplug_feature_swap_grid.js',
@@ -36,12 +36,15 @@ gulp.task('Build Xplug', function() {
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(concat('xplug.js'))
+
+
          ///////////////////////////////////////////////////////////////////////
          // Build Google Chrome add-on
          ///////////////////////////////////////////////////////////////////////
         .pipe(header('// Built using Gulp. Built date: ${date}\n', {date : df() }))
         .pipe(gulp.dest('xplug_chrome_plugin/js'))
-         //
+
+
          ///////////////////////////////////////////////////////////////////////
          // Special treatment of Firefox version of Xplug add-on
          ///////////////////////////////////////////////////////////////////////

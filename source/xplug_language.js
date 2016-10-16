@@ -67,7 +67,7 @@
                              , "LBL-DAYLIGHT"        : "Day mode"
                              , "LBL-MOONLIGHT"       : "Night mode"
                              , "LBL-DEFAULT-STYLES"  : "Default Themes"
-                             , "LBL-ADD-SIDEKICK"    : "Show sidekick pane"
+                             , "LBL-ADD-SIDEKICK"    : "Enable Sidekick"
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
 
@@ -144,7 +144,7 @@
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Standard Themes"
-                             , "LBL-ADD-SIDEKICK"    : "Zeige Sidekick-Bereich"
+                             , "LBL-ADD-SIDEKICK"    : "Sidekick einschalten"
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
 

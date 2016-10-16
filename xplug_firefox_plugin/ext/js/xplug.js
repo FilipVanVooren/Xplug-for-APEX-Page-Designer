@@ -1,4 +1,5 @@
-// Built using Gulp. Built date: Tue Oct 04 2016 20:11:04
+// Built using Gulp. Built date: Sun Oct 16 2016 21:39:48
+
 
 
  function get_label(p_index)
@@ -60,7 +61,7 @@
                              , "LBL-DAYLIGHT"        : "Day mode"
                              , "LBL-MOONLIGHT"       : "Night mode"
                              , "LBL-DEFAULT-STYLES"  : "Default Themes"
-                             , "LBL-ADD-SIDEKICK"    : "Show sidekick pane"
+                             , "LBL-ADD-SIDEKICK"    : "Enable Sidekick"
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
 
@@ -137,7 +138,7 @@
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Standard Themes"
-                             , "LBL-ADD-SIDEKICK"    : "Zeige Sidekick-Bereich"
+                             , "LBL-ADD-SIDEKICK"    : "Sidekick einschalten"
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
 
@@ -1523,7 +1524,9 @@ var Xplug = function() {
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.installSidekick();
+                          var l_factor = xplug.getStorage('SIDEKICK_FACTOR', 0.5);
+                          if (l_factor === 0) l_factor = 0.5;
+                          return xplug.installSidekick(l_factor);
                        }
           },
 
@@ -2127,66 +2130,109 @@ l_menu$.menu(
                  {
                    return false;
                  }
-    }
+    },
+    { type     : "separator" },
+    { type     : "toggle",
+    label    : "blabla",
+    get      : function()
+               {
+                  return 0;
+               },
+    set      : function()
+               {
+                  apex.actions.invoke('pd-xplug-remove-sidekick');
+               },
+    disabled : function()
+               {
+                 return false;
+               }
+  },
+
+
   ]
 });
 
 
+Xplug.prototype.resizeSidekick = function(p_factor)
+{
+  'use strict';
 
-Xplug.prototype.installSidekick = function()
+  var c_min_factor = 0.25;
+  var c_max_factor = 0.50;
+  var l_factor     = c_max_factor;
+
+  if ( !isNaN(p_factor) && (p_factor >= 0)
+                        && (p_factor <= 0.75) ) {
+     xplug.setStorage('SIDEKICK_FACTOR', p_factor);
+     l_factor = p_factor;
+  } else {
+     l_factor = xplug.getStorage('SIDEKICK_FACTOR', c_max_factor);
+  }
+
+   var l_maxwidth = $('#glv-viewport').width();
+   var l_width    = l_maxwidth * l_factor;
+   var l_height   = $('div#cg-regions').height();                               
+   var l_display;
+
+   void 0;
+
+   if (l_width < 350) {
+     l_width   = 0;
+     l_display = 'none';
+     $('div#xplug_pb_splitter').addClass('is-collapsed');
+   } else {
+     l_display = 'block';
+     $('div#xplug_pb_splitter').removeClass('is-collapsed');
+   }
+   $('#gallery-tabs')
+     .css(
+           { width   : l_width + 'px',
+             display : l_display
+           }
+         )
+     .trigger('resize');
+
+    $('div#xplug_pb_splitter').css(
+        { 'position'          : 'absolute',
+          'top'               : '0px',
+          'left'              :  l_width + 'px',
+          'width'             : '8px',
+          'height'            : '100%',
+          'background-color'  : $('.a-Splitter-barH').css('background-color'),
+          'border-left'       : '1px solid #c0c0c0',
+          'border-right'      : '1px solid #c0c0c0',
+          'vertical-align'    : 'middle'
+        }
+    );
+
+    $('div#xplug_pb_container').css(
+          { 'position'   : 'absolute',
+            'top'        : '0px',
+            'padding'    : '1px',
+            'left'       : (l_width + 8) + 'px',
+            'width'      : (l_maxwidth - l_width - 8) + 'px',
+            'height'     : l_height + 'px',
+            'display'    : 'block'
+          });
+
+    $('div#xplug_pb_tabs').css(
+          { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
+        });
+
+    $('div#xplug_pb_msgview').css(
+          {  'overflow-y' : 'scroll',
+             'height'     : l_height + 'px',
+
+        });
+}; 
+
+
+
+
+
+Xplug.prototype.installSidekick = function(p_factor)
 {
     'use strict';
-
-    var c_min_factor = 0.25;
-    var c_max_factor = 0.50;
-    var l_factor     = c_max_factor;                                                
-
-
-    function xplug_pb_resize_handler() {
-       var l_maxwidth = $('#glv-viewport').width();
-       var l_width    = l_maxwidth * l_factor;
-       var l_height   = $('div#cg-regions').height();                               
-
-       $('#gallery-tabs')
-         .css(
-               { width : l_width + 'px' }
-             )
-         .trigger('resize');
-
-        $('#xplug_pb_splitter').css(
-            { 'position'          : 'absolute',
-              'top'               : '0px',
-              'left'              :  l_width + 'px',
-              'width'             : '8px',
-              'height'            : '100%',
-              'background-color'  : $('.a-Splitter-barH').css('background-color'),
-              'border-left'       : '1px solid #c0c0c0',
-              'border-right'      : '1px solid #c0c0c0'
-            }
-        );
-
-        $('#xplug_pb_container').css(
-              { 'position'   : 'absolute',
-                'top'        : '0px',
-                'padding'    : '1px',
-                'left'       : (l_width + 8) + 'px',
-                'width'      : (l_maxwidth - l_width - 8) + 'px',
-                'height'     : l_height + 'px',
-                'display'    : 'block'
-              });
-
-        $('#xplug_pb_tabs').css(
-              { 'height' : $('div#R1157688004078338241 div.a-Tabs-toolbar').height() + 'px'
-            });
-
-        $('#xplug_pb_msgview').css(
-              {  'overflow-y' : 'scroll',
-                 'height'     : l_height + 'px',
-
-            });
-    } 
-
-
 
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
@@ -2239,7 +2285,9 @@ Xplug.prototype.installSidekick = function()
 
 
   $('#R1157688004078338241').append(
-         '<div ID="xplug_pb_splitter"></div>'
+         '<div ID="xplug_pb_splitter" class="a-Splitter-barH">'
+       +     '<button ID="xplug_pb_splitter_btn" role="separator" class="a-Splitter-thumb" type="button" aria-expanded="true" title="Collapse"></button>'
+       + '</div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
@@ -2274,20 +2322,40 @@ Xplug.prototype.installSidekick = function()
 
 
   $('div#xplug_pb_container').tabs();   
-  xplug_pb_resize_handler();            
+  this.resizeSidekick(p_factor);        
 
 
   $('#xplug_pb_badge').on('click', function () { $('div#editor_tabs').tabs( "option", "active", 1); });
 
 
+  $('div#xplug_pb_splitter').draggable(
+       { axis : "x",
+         stop : function () {
+                  var l_factor = parseInt( $('div#xplug_pb_splitter').css('left').replace('px','') ) / $('#R1157688004078338241').width();
+                  void 0;
+                  xplug.resizeSidekick(l_factor);
+                }
+       }
+  );
+
+  $('button#xplug_pb_splitter_btn').on('click',
+    function()
+      {
+        var l_factor = $('div#xplug_pb_splitter').hasClass('is-collapsed') ? 0.5 : 0;
+        xplug.resizeSidekick(l_factor);
+      }
+  );
+
   installTabPowersearch();
 
-  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug_pb_resize_handler);
+  $( "body" ).on( "splitterchange.xplug_namespace splittercreate.xplug_namespace", xplug.resizeSidekick);
+
+
 
 
   $( "div#editor_tabs, div#R1157688004078338241" )
     .tabs(
-           { activate: xplug_pb_resize_handler }
+           { activate: xplug.resizeSidekick }
          );
 
   var l_timeout_handler;
@@ -2296,7 +2364,9 @@ Xplug.prototype.installSidekick = function()
                       {
                          clearTimeout(l_timeout_handler);
                          l_timeout_handler = setTimeout(
-                           function() { xplug_pb_resize_handler; } , 300);
+                           function() {
+                              xplug.resizeSidekick();
+                         } , 300);
                       }
   );
 
@@ -2356,7 +2426,10 @@ Xplug.prototype.deinstallSidekick = function()
   $('div#xplug_pb_splitter,div#xplug_pb_container').remove();
 
   $('div#gallery-tabs')
-      .css('width', $('div#glv-viewport').css('width') )
+      .css( {
+             width   : $('div#glv-viewport').css('width'),
+             display : 'block'
+            } )
       .trigger('resize');
 
   this.setStorage('SHOW_SIDEKICK_PANE','NO');
@@ -2400,6 +2473,8 @@ Xplug.prototype.showDocumentation = function ()
   $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
   $('div#xplug_pb_docu pre').css('display','inline');
 }; 
+
+
 
 
 Xplug.prototype.setStorage = function(p_key, p_value, p_is_global)

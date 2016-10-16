@@ -149,7 +149,9 @@ var Xplug = function() {
             shortcut : "????",
             action   : function( event, focusElement )
                        {
-                          return xplug.installSidekick();
+                          var l_factor = xplug.getStorage('SIDEKICK_FACTOR', 0.5);
+                          if (l_factor === 0) l_factor = 0.5;
+                          return xplug.installSidekick(l_factor);
                        }
           },
 
