@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Oct 23 2016 19:32:33
+// Built using Gulp. Built date: Sun Oct 23 2016 19:48:47
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -276,12 +276,39 @@
 //                         - Bug-fix: swapping grid panes did not longer work after adding draggable. Is resolved now.
 //                         - Refactored: moved some funtions from page_designer_methods.js file
 //                           to xplug_feature_swap_grid.js and xplug_feature_prevnext_page.js
+//                         - Re-added support for markdown format. Using open source marked.js and XSS.js libraries
+//                           for parsing and XSS injection preventHideNotification
+//                         - Added LICENSE file. Using MIT license for Xplug now.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2015-2017 Filip van Vooren <filip.van-vooren at oratronik.de>
+// http://www.oratronik.de
+//
+// The MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
