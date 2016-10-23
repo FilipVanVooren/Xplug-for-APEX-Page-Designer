@@ -2,7 +2,7 @@
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_SIDEKICK.js
+// xplug_feature_sidekick.js
 // 2016-02-07 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
@@ -159,6 +159,10 @@ Xplug.prototype.installSidekick = function(p_factor)
 {
     'use strict';
 
+    var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
+    var sPageDetailsLI    = '';
+    var sPageDetailsDIV   = '';
+
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
             '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
@@ -199,17 +203,11 @@ Xplug.prototype.installSidekick = function(p_factor)
     }
 
 
-
   // Sidekick tab "Page Details"
-  var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
-  var sPageDetailsLI    = '';
-  var sPageDetailsDIV   = '';
-  var oMarked;
-
   if (sEnablePageDetTab == 'YES') {
      sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
-     oMarked         = marked.setOptions({ sanitize : true });
+
   }
 
 
@@ -422,49 +420,3 @@ Xplug.prototype.deinstallSidekick = function()
 
   $(document).off('modelReady', this.showDocumentation);
 }; // Xplug.prototype.deinstallSidekick
-
-
-
-
-Xplug.prototype.showDocumentation = function ()
-{
-  'use strict';
-
-  var oProp, sAppId, sChangedBy, sChangedOn, sPageComment, sHTML, sFragment;
-
-  // Get Page details
-  sAppId       = pe.getCurrentAppId();                                     // Appp-ID
-  oProp        = xplug.getFilteredComponentProperties(381,sAppId)[0];      // 381=Changed By
-  sChangedBy   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                           : 'none';
-
-  oProp        = xplug.getFilteredComponentProperties(382,sAppId)[0];      // 382=Changed On
-  sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                           : 'none';
-
-  oProp        = xplug.getFilteredComponentProperties(4,sAppId)[0];        // 4=Comment
-  sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                           : '** NONE **';
-
-  // Render markdown if enabled, but always sanitize output for avoiding XSS
-  if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
-    sFragment = marked(sPageComment);                                      // Using marked.js
-  } else {
-    sFragment = '<pre>' + sPageComment + '</pre>';
-  }
-  sFragment = filterXSS(sFragment);                                        // Using xss.js
-
-  // Build page details
-  sHTML = sFragment
-        + '<br><br>'
-        + '<h2>Page history</h2>'
-        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn;
-
-  $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
-  $('div#xplug_pb_docu pre').css('display','inline');
-}; // showDocumentation
-
-
-// TODO
-// To change a visible comment
-// $("textarea[data-property-id='4']").val('blabla').trigger('change')

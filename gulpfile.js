@@ -22,6 +22,7 @@ gulp.task('Build Xplug', function() {
               'source/xplug_feature_swap_grid.js',
               'source/xplug_feature_window_title.js',
               'source/xplug_feature_sidekick.js',
+              'source/xplug_feature_sidekick_markdown.js',              
               'source/xplug_storage.js',
               'source/xplug_menu.js',
               'source/xplug_configure.js',

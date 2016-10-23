@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Oct 23 2016 19:48:47
+// Built using Gulp. Built date: Sun Oct 23 2016 20:59:43
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -2932,7 +2932,7 @@ window.pageDesigner.dockGridMiddle = function()
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
-// xplug_SIDEKICK.js
+// xplug_feature_sidekick.js
 // 2016-02-07 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
@@ -3089,6 +3089,10 @@ Xplug.prototype.installSidekick = function(p_factor)
 {
     'use strict';
 
+    var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
+    var sPageDetailsLI    = '';
+    var sPageDetailsDIV   = '';
+
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
             '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
@@ -3129,17 +3133,11 @@ Xplug.prototype.installSidekick = function(p_factor)
     }
 
 
-
   // Sidekick tab "Page Details"
-  var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
-  var sPageDetailsLI    = '';
-  var sPageDetailsDIV   = '';
-  var oMarked;
-
   if (sEnablePageDetTab == 'YES') {
      sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
-     oMarked         = marked.setOptions({ sanitize : true });
+
   }
 
 
@@ -3353,6 +3351,15 @@ Xplug.prototype.deinstallSidekick = function()
   $(document).off('modelReady', this.showDocumentation);
 }; // Xplug.prototype.deinstallSidekick
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// xplug_feature_sidekick_markdown.js
+// 2016-02-07 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
 
 
 
@@ -3360,7 +3367,7 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oProp, sAppId, sChangedBy, sChangedOn, sPageComment, sHTML, sFragment;
+  var oProp, sAppId, sChangedBy, sChangedOn, sPageComment, sHTML, sFragment, oRenderer;
 
   // Get Page details
   sAppId       = pe.getCurrentAppId();                                     // Appp-ID
@@ -3370,23 +3377,40 @@ Xplug.prototype.showDocumentation = function ()
 
   oProp        = xplug.getFilteredComponentProperties(382,sAppId)[0];      // 382=Changed On
   sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                           : 'none';
+                                           : '-';
 
   oProp        = xplug.getFilteredComponentProperties(4,sAppId)[0];        // 4=Comment
   sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                           : '** NONE **';
+                                           : '';
+
+
+  // Setup custom markdown link renderer
+  // Is required, because links always need to be opened in a new tab/window.
+  // Otherwise we would leave Page Designer
+  oRenderer = new marked.Renderer();
+  oRenderer.link  = function(shref, sTitle, sText) {
+                      var sURL =  '<a href="' + shref + '" target="_blank">' + sText + '</a>';
+                      return sURL;
+                    };
+
+  marked.setOptions({ sanitize : true,
+                      gfm      : true,                                     // Github markdown mode
+                      breaks   : true,                                     // GFM line break mode
+                      renderer : oRenderer });
+
 
   // Render markdown if enabled, but always sanitize output for avoiding XSS
   if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
     sFragment = marked(sPageComment);                                      // Using marked.js
   } else {
-    sFragment = '<pre>' + sPageComment + '</pre>';
+    sFragment = '<pre>' + sPageComment + '</pre><br>';
   }
   sFragment = filterXSS(sFragment);                                        // Using xss.js
 
+
   // Build page details
+  if (sFragment.length > 0) sFragment += '<br>';
   sHTML = sFragment
-        + '<br><br>'
         + '<h2>Page history</h2>'
         + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn;
 
