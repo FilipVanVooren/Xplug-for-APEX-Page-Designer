@@ -1,5 +1,4 @@
-// Built using Gulp. Built date: Sun Oct 16 2016 21:39:48
-
+// Built using Gulp. Built date: Sun Oct 23 2016 19:32:33
 
 
  function get_label(p_index)
@@ -58,6 +57,7 @@
                              , "LBL-SHOW-BUTTONS"    : "Buttons"
                              , "LBL-SHOW-APPID"      : "Show [app:page] info in window title"
                              , "LBL-ENABLE-PAGEDET"  : "Enable 'Page Details' tab in sidekick pane"
+                             , "LBL-ENABLE-MARKDOWN" : "Enable markdown format"
                              , "LBL-DAYLIGHT"        : "Day mode"
                              , "LBL-MOONLIGHT"       : "Night mode"
                              , "LBL-DEFAULT-STYLES"  : "Default Themes"
@@ -135,6 +135,7 @@
                              , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
                              , "LBL-SHOW-APPID"      : "Zeige [app:page] info in Fenstertitel"
                              , "LBL-ENABLE-PAGEDET"  : "Aktiviere Reiter 'Seitendetails' in Sidekick bereich"
+                             , "LBL-ENABLE-MARKDOWN" : "Aktiviere markdown Format"                             
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Standard Themes"
@@ -182,150 +183,6 @@
 
     return 1;
   }; 
-
-
-
-window.pageDesigner.goToPrevPage = function () {
-  var l_page  = pe.getCurrentPageId();   
-  var l_index = -1;
-  var l_prev  = -1;
-
-  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
-      if (xplug.arr_page_list[i].id == l_page) l_index = i;
-  }
-
-  if (l_index > -1) {
-    l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
-                                             : l_index].id;
-  } else {
-    return;
-  }
-
-  if (l_prev != l_page) {
-    apex.actions.disable('pd-xplug-goto-previous-page');
-    apex.actions.disable('pd-xplug-goto-next-page');
-
-    var l_deferred = window.pageDesigner.goToPage( l_prev );
-    $.when( l_deferred )
-            .done( function()
-                   {
-                      apex.actions.enable('pd-xplug-goto-previous-page');
-                      apex.actions.enable('pd-xplug-goto-next-page');
-                   })
-            .fail( function(reason)
-                   {
-                      apex.actions.enable('pd-xplug-goto-previous-page');
-                      apex.actions.enable('pd-xplug-goto-next-page');
-                   });
-
-    return;
-  }
-}; 
-
-
-
-window.pageDesigner.goToNextPage = function () {
-  var l_page  = pe.getCurrentPageId();   
-  var l_index = -1;
-  var l_next  = -1;
-
-  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
-      if (xplug.arr_page_list[i].id == l_page) l_index = i;
-  }
-
-  if (l_index > -1) {
-     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
-                                                                           : l_index].id;
-  } else {
-    return;
-  }
-
-  if (l_next != l_page) {
-    apex.actions.disable('pd-xplug-goto-previous-page');
-    apex.actions.disable('pd-xplug-goto-next-page');
-
-    var l_deferred = window.pageDesigner.goToPage( l_next );
-    $.when( l_deferred )
-            .done( function()
-                   {
-                      apex.actions.enable('pd-xplug-goto-previous-page');
-                      apex.actions.enable('pd-xplug-goto-next-page');
-                   })
-            .fail( function(reason)
-                   {
-                      apex.actions.enable('pd-xplug-goto-previous-page');
-                      apex.actions.enable('pd-xplug-goto-next-page');
-                   });
-
-    return;
-  }
-}; 
-
-
-
-window.pageDesigner.dockGridRight = function()
-{
-    'use strict';
-
-    if (typeof(window.pageDesigner) != 'object') {
-       return 0;
-    }
-
-    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 
-        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               
-        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   
-        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           
-
-    $(C_PROP_PANE).insertBefore(C_SPLIT_HANDLE);
-    $(C_MIDDLE_PANE).insertAfter(C_SPLIT_HANDLE);
-
-    var l_width_visual    = $(C_MIDDLE_PANE).width();
-    var l_width_props     = $(C_PROP_PANE).width();
-    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         
-    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          
-
-    l_split_options.positionedFrom = "begin";                                                  
-    l_split_options.position       = l_width_props;                                            
-    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 
-    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 
-
-    xplug.setStorage('PANES_SWITCHED','YES');                                                  
-
-    return 1;
-}; 
-
-
-
-window.pageDesigner.dockGridMiddle = function()
-{
-    'use strict';
-
-    if (typeof(window.pageDesigner) != 'object') {
-       return 0;
-    }
-
-    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 
-        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               
-        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   
-        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           
-
-    $(C_PROP_PANE).insertAfter(C_SPLIT_HANDLE);
-    $(C_MIDDLE_PANE).insertBefore(C_SPLIT_HANDLE);
-
-    var l_width_visual    = $(C_MIDDLE_PANE).width();
-    var l_width_props     = $(C_PROP_PANE).width();
-    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         
-    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          
-
-    l_split_options.positionedFrom = "end";                                                    
-    l_split_options.position       = l_width_props;                                            
-    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 
-    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 
-
-    xplug.setStorage('PANES_SWITCHED','NO');                                                   
-
-    return 1;
-}; 
 
 
 window.pageDesigner.disableTooltips = function()
@@ -1755,6 +1612,83 @@ Xplug.prototype.getFilteredComponentProperties = function (pPropTypeEnum, pParen
 
 
 
+window.pageDesigner.goToPrevPage = function () {
+  var l_page  = pe.getCurrentPageId();   
+  var l_index = -1;
+  var l_prev  = -1;
+
+  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
+      if (xplug.arr_page_list[i].id == l_page) l_index = i;
+  }
+
+  if (l_index > -1) {
+    l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
+                                             : l_index].id;
+  } else {
+    return;
+  }
+
+  if (l_prev != l_page) {
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
+
+    var l_deferred = window.pageDesigner.goToPage( l_prev );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
+  }
+}; 
+
+
+
+window.pageDesigner.goToNextPage = function () {
+  var l_page  = pe.getCurrentPageId();   
+  var l_index = -1;
+  var l_next  = -1;
+
+  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
+      if (xplug.arr_page_list[i].id == l_page) l_index = i;
+  }
+
+  if (l_index > -1) {
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
+                                                                           : l_index].id;
+  } else {
+    return;
+  }
+
+  if (l_next != l_page) {
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
+
+    var l_deferred = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
+  }
+}; 
+
+
 Xplug.prototype._get_page_list = function(pCallback)
 {
   'use strict';
@@ -2028,6 +1962,87 @@ Xplug.prototype.deinstallPageButtons = function ()
 
 
 
+
+window.pageDesigner.dockGridRight = function()
+{
+    'use strict';
+
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+    var sClass = $('div#xplug_pb_splitter').attr('class');
+    $('div#xplug_pb_splitter').removeAttr('class');
+
+
+
+    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 
+        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               
+        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   
+        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           
+
+    $(C_PROP_PANE).insertBefore(C_SPLIT_HANDLE);
+    $(C_MIDDLE_PANE).insertAfter(C_SPLIT_HANDLE);
+
+    var l_width_visual    = $(C_MIDDLE_PANE).width();
+    var l_width_props     = $(C_PROP_PANE).width();
+    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         
+    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          
+
+    l_split_options.positionedFrom = "begin";                                                  
+    l_split_options.position       = l_width_props;                                            
+    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 
+    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 
+
+    xplug.setStorage('PANES_SWITCHED','YES');                                                  
+
+    $('div#xplug_pb_splitter').attr('class',sClass);
+
+    return 1;
+}; 
+
+
+
+window.pageDesigner.dockGridMiddle = function()
+{
+    'use strict';
+
+    if (typeof(window.pageDesigner) != 'object') {
+       return 0;
+    }
+
+
+    var sClass = $('div#xplug_pb_splitter').attr('class');
+    $('div#xplug_pb_splitter').removeAttr('class');
+
+    var C_MIDDLE_PANE      = 'div#a_PageDesigner div#top_col',                                 
+        C_PROP_PANE        = 'div#a_PageDesigner div#right_col',                               
+        C_SPLIT_HANDLE     = 'div#a_PageDesigner div.a-Splitter-barH:eq(1)',                   
+        C_SP_RIGHT_CONTENT = 'div#sp_right_content';                                           
+
+    $(C_PROP_PANE).insertAfter(C_SPLIT_HANDLE);
+    $(C_MIDDLE_PANE).insertBefore(C_SPLIT_HANDLE);
+
+    var l_width_visual    = $(C_MIDDLE_PANE).width();
+    var l_width_props     = $(C_PROP_PANE).width();
+    var l_width_separator = $(C_SPLIT_HANDLE).width();                                         
+    var l_split_options   = $(C_SP_RIGHT_CONTENT).splitter('option');                          
+
+    l_split_options.positionedFrom = "end";                                                    
+    l_split_options.position       = l_width_props;                                            
+    $(C_SP_RIGHT_CONTENT).splitter('destroy');                                                 
+    apex.jQuery(C_SP_RIGHT_CONTENT).splitter(l_split_options);                                 
+
+    xplug.setStorage('PANES_SWITCHED','NO');                                                   
+
+    $('div#xplug_pb_splitter').attr('class',sClass);
+
+    return 1;
+}; 
+
+
+
+
  Xplug.prototype._set_button_tooltip_swap_grid = function()
 {
   var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
@@ -2133,14 +2148,19 @@ l_menu$.menu(
     },
     { type     : "separator" },
     { type     : "toggle",
-    label    : "blabla",
+    label    : get_label('LBL-ENABLE-MARKDOWN'),
     get      : function()
                {
-                  return 0;
+                  return xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES';
                },
     set      : function()
                {
-                  apex.actions.invoke('pd-xplug-remove-sidekick');
+                  var sMode = xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES'
+                            ? 'NO'
+                            : 'YES';
+
+                  xplug.setStorage('MARKDOWN_ENABLED',sMode,true);
+                  xplug.showDocumentation();
                },
     disabled : function()
                {
@@ -2278,9 +2298,12 @@ Xplug.prototype.installSidekick = function(p_factor)
   var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
   var sPageDetailsLI    = '';
   var sPageDetailsDIV   = '';
+  var oMarked;
+
   if (sEnablePageDetTab == 'YES') {
      sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
+     oMarked         = marked.setOptions({ sanitize : true });
   }
 
 
@@ -2444,31 +2467,32 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oProp, l_app_id, sChangedBy, sChangedOn, sPageComment, sHTML;
+  var oProp, sAppId, sChangedBy, sChangedOn, sPageComment, sHTML, sFragment;
 
-  l_app_id     = pe.getCurrentAppId();                                     
-
-
-  oProp        = xplug.getFilteredComponentProperties(381,l_app_id)[0];    
+  sAppId       = pe.getCurrentAppId();                                     
+  oProp        = xplug.getFilteredComponentProperties(381,sAppId)[0];      
   sChangedBy   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
                                            : 'none';
 
-  oProp        = xplug.getFilteredComponentProperties(382,l_app_id)[0];    
+  oProp        = xplug.getFilteredComponentProperties(382,sAppId)[0];      
   sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
                                            : 'none';
 
-  oProp        = xplug.getFilteredComponentProperties(4,l_app_id)[0];      
+  oProp        = xplug.getFilteredComponentProperties(4,sAppId)[0];        
   sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                            : '** NONE **';
+                                           : '** NONE **';
 
+  if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
+    sFragment = marked(sPageComment);                                      
+  } else {
+    sFragment = '<pre>' + sPageComment + '</pre>';
+  }
+  sFragment = filterXSS(sFragment);                                        
 
-  sHTML = '<h2>Page history</h2>'
-        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
+  sHTML = sFragment
         + '<br><br>'
-        + '<h2>Page Comments</h2>'
-        +  '<pre>'
-        +  sPageComment
-        + '</pre>';
+        + '<h2>Page history</h2>'
+        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn;
 
   $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
   $('div#xplug_pb_docu pre').css('display','inline');

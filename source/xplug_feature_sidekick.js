@@ -40,14 +40,19 @@ l_menu$.menu(
     },
     { type     : "separator" },
     { type     : "toggle",
-    label    : "blabla",
+    label    : get_label('LBL-ENABLE-MARKDOWN'),
     get      : function()
                {
-                  return 0;
+                  return xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES';
                },
     set      : function()
                {
-                  apex.actions.invoke('pd-xplug-remove-sidekick');
+                  var sMode = xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES'
+                            ? 'NO'
+                            : 'YES';
+
+                  xplug.setStorage('MARKDOWN_ENABLED',sMode,true);
+                  xplug.showDocumentation();
                },
     disabled : function()
                {
@@ -199,9 +204,12 @@ Xplug.prototype.installSidekick = function(p_factor)
   var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
   var sPageDetailsLI    = '';
   var sPageDetailsDIV   = '';
+  var oMarked;
+
   if (sEnablePageDetTab == 'YES') {
      sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
+     oMarked         = marked.setOptions({ sanitize : true });
   }
 
 
@@ -422,36 +430,35 @@ Xplug.prototype.showDocumentation = function ()
 {
   'use strict';
 
-  var oProp, l_app_id, sChangedBy, sChangedOn, sPageComment, sHTML;
+  var oProp, sAppId, sChangedBy, sChangedOn, sPageComment, sHTML, sFragment;
 
-  l_app_id     = pe.getCurrentAppId();                                     // Appp-ID
-
-
-  // Get Page changed By
-  oProp        = xplug.getFilteredComponentProperties(381,l_app_id)[0];    // 381=Changed By
+  // Get Page details
+  sAppId       = pe.getCurrentAppId();                                     // Appp-ID
+  oProp        = xplug.getFilteredComponentProperties(381,sAppId)[0];      // 381=Changed By
   sChangedBy   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
                                            : 'none';
 
-  // Get Page changed on
-  oProp        = xplug.getFilteredComponentProperties(382,l_app_id)[0];    // 382=Changed On
+  oProp        = xplug.getFilteredComponentProperties(382,sAppId)[0];      // 382=Changed On
   sChangedOn   = typeof(oProp) == 'object' ? oProp.getDisplayValue()
                                            : 'none';
 
-  // Get Page Comment
-  //
-  oProp        = xplug.getFilteredComponentProperties(4,l_app_id)[0];      // 4=Comment
+  oProp        = xplug.getFilteredComponentProperties(4,sAppId)[0];        // 4=Comment
   sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
-                                            : '** NONE **';
+                                           : '** NONE **';
 
+  // Render markdown if enabled, but always sanitize output for avoiding XSS
+  if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
+    sFragment = marked(sPageComment);                                      // Using marked.js
+  } else {
+    sFragment = '<pre>' + sPageComment + '</pre>';
+  }
+  sFragment = filterXSS(sFragment);                                        // Using xss.js
 
   // Build page details
-  sHTML = '<h2>Page history</h2>'
-        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn
+  sHTML = sFragment
         + '<br><br>'
-        + '<h2>Page Comments</h2>'
-        +  '<pre>'
-        +  sPageComment
-        + '</pre>';
+        + '<h2>Page history</h2>'
+        + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn;
 
   $('div#xplug_pb_docu').html(sHTML).css('padding','5px');
   $('div#xplug_pb_docu pre').css('display','inline');

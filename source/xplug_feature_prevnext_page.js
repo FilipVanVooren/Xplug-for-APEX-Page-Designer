@@ -11,6 +11,115 @@
 
 
 /****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: Go to previous page
+ ***************************************************************************/
+window.pageDesigner.goToPrevPage = function () {
+  var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
+  var l_index = -1;
+  var l_prev  = -1;
+
+  //
+  // Look for index of page in array
+  //
+  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
+      if (xplug.arr_page_list[i].id == l_page) l_index = i;
+  }
+
+  //
+  // Found previous page, now goto page
+  //
+  if (l_index > -1) {
+    l_prev = xplug.arr_page_list[l_index > 0 ? l_index - 1
+                                             : l_index].id;
+  } else {
+    return;
+  }
+
+  if (l_prev != l_page) {
+    //
+    // Temporary disable actions until new page has loaded completely
+    //
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
+
+    //
+    // Get page and re-enable buttons/actions
+    //
+    var l_deferred = window.pageDesigner.goToPage( l_prev );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
+  }
+}; //  window.pageDesigner.goToPrevPage
+
+
+
+/****************************************************************************
+ * Add custom method to pageDesigner Object
+ * METHOD: Go to next page
+ ***************************************************************************/
+window.pageDesigner.goToNextPage = function () {
+  var l_page  = pe.getCurrentPageId();   // get Currrent page from PageDesigner model
+  var l_index = -1;
+  var l_next  = -1;
+
+  //
+  // Look for index of page in array
+  //
+  for (var i=0; l_index == -1 && i<xplug.arr_page_list.length; i++) {
+      if (xplug.arr_page_list[i].id == l_page) l_index = i;
+  }
+
+  //
+  // Found next page, now goto page
+  //
+  if (l_index > -1) {
+     l_next = xplug.arr_page_list[l_index < xplug.arr_page_list.length - 1 ? l_index + 1
+                                                                           : l_index].id;
+  } else {
+    return;
+  }
+
+  if (l_next != l_page) {
+    //
+    // Temporary disable actions until new page has loaded completely
+    //
+    apex.actions.disable('pd-xplug-goto-previous-page');
+    apex.actions.disable('pd-xplug-goto-next-page');
+
+    //
+    // Get page and re-enable buttons/actions
+    //
+    var l_deferred = window.pageDesigner.goToPage( l_next );
+    $.when( l_deferred )
+            .done( function()
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   })
+            .fail( function(reason)
+                   {
+                      apex.actions.enable('pd-xplug-goto-previous-page');
+                      apex.actions.enable('pd-xplug-goto-next-page');
+                   });
+
+    return;
+  }
+}; // window.pageDesigner.goToNextPage
+
+
+/****************************************************************************
  * Private helper function
  * Get page list
  ***************************************************************************/
