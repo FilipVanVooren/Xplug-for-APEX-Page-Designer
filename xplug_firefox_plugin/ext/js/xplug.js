@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Oct 23 2016 20:59:43
+// Built using Gulp. Built date: Wed Oct 26 2016 20:32:44
 
 
  function get_label(p_index)
@@ -1245,7 +1245,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.4.0.0';
+   var C_version = 'Xplug v1.4.0.0 beta 1';
    var C_author  = 'Filip van Vooren';
 
    this.version       = C_version;

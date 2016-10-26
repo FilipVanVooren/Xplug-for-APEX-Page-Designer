@@ -30,7 +30,7 @@ chrome.extension.sendMessage({}, function(response) {
        document.body.appendChild(oScript);
 
     // ----------------------------------------------------------
-  	// Inject marked (Markdown parser) into page
+  	// Inject XSS scanner into page
     // ----------------------------------------------------------
        oScript       = document.createElement("script");
        oScript.type  = "text/javascript";

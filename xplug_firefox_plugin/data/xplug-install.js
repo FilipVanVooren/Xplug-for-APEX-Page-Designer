@@ -5,14 +5,28 @@
   l_div.setAttribute('xplug-background','resource://xplug/ext/images/grid_4k_3840_2160_dark.png');
   document.body.appendChild(l_div);
 
-  var l_script   = document.createElement("script");
-  l_script.type  = "text/javascript";
-  l_script.src   = "resource://xplug/ext/js/xplug.js";
-  document.body.appendChild(l_script);
 
+  // ----------------------------------------------------------
+  // Inject Xplug into page
+  // ----------------------------------------------------------
+     var oScript   = document.createElement("script");
+     oScript.type  = "text/javascript";
+     oScript.src   = "resource://xplug/ext/js/xplug.js";
+     document.body.appendChild(oScript);
 
-  l_script       = document.createElement("script");
-  l_script.type  = "text/javascript";
-  l_script.src   = chrome.runtime.getURL('/libs/showdown.min.js');
-  document.body.appendChild(l_script);   
+  // ----------------------------------------------------------
+  // Inject marked (Markdown parser) into page
+  // ----------------------------------------------------------
+     oScript       = document.createElement("script");
+     oScript.type  = "text/javascript";
+     oScript.src   = "resource://xplug/ext/lib/marked.min.js";
+     document.body.appendChild(oScript);
+
+  // ----------------------------------------------------------
+  // Inject XSS scanner into page
+  // ----------------------------------------------------------
+     oScript       = document.createElement("script");
+     oScript.type  = "text/javascript";
+     oScript.src   = "resource://xplug/ext/lib/xss.min.js";
+     document.body.appendChild(oScript);
 }
