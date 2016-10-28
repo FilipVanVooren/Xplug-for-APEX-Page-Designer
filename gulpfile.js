@@ -6,9 +6,12 @@ var df              = require('dateFormat');
 var strip_comments  = require('gulp-strip-comments');
 var strip_debug     = require('gulp-strip-debug');
 var notify          = require('gulp-notify');
+var run             = require('gulp-run');
 
-gulp.task('Build Xplug', function() {
-
+gulp.task('1-Build Xplug plugin source', function() {
+  ///////////////////////////////////////////////////////////////////////
+  // Build Xplug source code
+  ///////////////////////////////////////////////////////////////////////
   return gulp.src(
             [ 'source/header.js',
               'source/xplug_language.js',
@@ -22,7 +25,7 @@ gulp.task('Build Xplug', function() {
               'source/xplug_feature_swap_grid.js',
               'source/xplug_feature_window_title.js',
               'source/xplug_feature_sidekick.js',
-              'source/xplug_feature_sidekick_markdown.js',              
+              'source/xplug_feature_sidekick_markdown.js',
               'source/xplug_storage.js',
               'source/xplug_menu.js',
               'source/xplug_configure.js',
@@ -68,4 +71,26 @@ gulp.task('Build Xplug', function() {
 
          // Built completed
          .pipe(notify('Built completed'));
+});
+
+
+
+gulp.task('2-Build Firefox addon XPI file', function() {
+          ///////////////////////////////////////////////////////////////////////
+          // Run Firefox package maanger
+          ///////////////////////////////////////////////////////////////////////
+          var oCmd = new run.Command(
+                        'jpm xpi -v',
+                         { cwd       : "D:/Dropbox/__work/apex_xplug/xplug/xplug_firefox_plugin",
+                           verbosity : 2
+                          }
+          );
+          oCmd.exec();
+});
+
+
+gulp.task('default', function() {
+          ///////////////////////////////////////////////////////////////////////
+          // Default task
+          ///////////////////////////////////////////////////////////////////////});
 });

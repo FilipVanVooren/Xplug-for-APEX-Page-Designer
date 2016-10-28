@@ -98,10 +98,12 @@ Xplug.prototype.resizeSidekick = function(p_factor)
      l_width   = 0;
      l_display = 'none';
      $('div#xplug_pb_splitter').addClass('is-collapsed');
+     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-EXPAND'));
    } else {
      // Show Gallery
      l_display = 'block';
      $('div#xplug_pb_splitter').removeClass('is-collapsed');
+     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));     
    }
    $('#gallery-tabs')
      .css(
@@ -214,7 +216,7 @@ Xplug.prototype.installSidekick = function(p_factor)
   // Add (simulated) vertical splitter bar and SIDEKICK DIV to DOM
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter" class="a-Splitter-barH">'
-       +     '<button ID="xplug_pb_splitter_btn" role="separator" class="a-Splitter-thumb" type="button" aria-expanded="true" title="Collapse"></button>'
+       +     '<button ID="xplug_pb_splitter_btn" role="separator" class="a-Splitter-thumb" type="button" aria-expanded="true"></button>'
        + '</div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
@@ -235,6 +237,7 @@ Xplug.prototype.installSidekick = function(p_factor)
        + '</div>'
   );
 
+  $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
 
   // Add hamburger menu
   $('div#xplug_pb_right')

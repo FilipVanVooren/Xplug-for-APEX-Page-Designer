@@ -266,18 +266,22 @@
 //                          - Configuration dialog - Re-added page navigation buttons also on APEX 5.1
 //
 //
-//  V1.4.0.0 2016-10-16 * Multiple changes
+// V1.4.0.0 2016-10-16 * Multiple changes
 //                         - Bug-fix: Sidekick resize handler was not called when resizing window/panes. Solved now.
 //                         - Added possibility to resize sidekick pane.
 //                         - Sidekick splitter is now a real draggable, possibility to resize pane via mouse
 //
-//   V1.4.0.0 2016-10-23 * Multiple changes
+// V1.4.0.0 2016-10-23 * Multiple changes
 //                         - Bug-fix: swapping grid panes did not longer work after adding draggable. Is resolved now.
 //                         - Refactored: moved some funtions from page_designer_methods.js file
 //                           to xplug_feature_swap_grid.js and xplug_feature_prevnext_page.js
 //                         - Re-added support for markdown format. Using open source marked.js and XSS.js libraries
 //                           for parsing and XSS injection preventHideNotification
 //                         - Added LICENSE file. Using MIT license for Xplug now.
+//
+// V1.4.0.0 2016-10-28 * Multiple changes
+//                         - Bug-fix: Adjust splitter button title so that it says 'Collapse' or 'Expand' as needed.
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

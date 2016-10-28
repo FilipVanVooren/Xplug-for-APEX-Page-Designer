@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Wed Oct 26 2016 20:32:44
+// Built using Gulp. Built date: Fri Oct 28 2016 13:30:16
 
 
  function get_label(p_index)
@@ -64,6 +64,8 @@
                              , "LBL-ADD-SIDEKICK"    : "Enable Sidekick"
                              , "LBL-CLOSE"           : "Close"
                              , "LBL-HIDE"            : "Hide"
+                             , "LBL-COLLAPSE"        : "Collapse"
+                             , "LBL-EXPAND"          : "Expand"
 
                              , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
@@ -135,13 +137,15 @@
                              , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
                              , "LBL-SHOW-APPID"      : "Zeige [app:page] info in Fenstertitel"
                              , "LBL-ENABLE-PAGEDET"  : "Aktiviere Reiter 'Seitendetails' in Sidekick bereich"
-                             , "LBL-ENABLE-MARKDOWN" : "Aktiviere markdown Format"                             
+                             , "LBL-ENABLE-MARKDOWN" : "Aktiviere markdown Format"
                              , "LBL-DAYLIGHT"        : "Tag Modus"
                              , "LBL-MOONLIGHT"       : "Nacht Modus"
                              , "LBL-DEFAULT-STYLES"  : "Standard Themes"
                              , "LBL-ADD-SIDEKICK"    : "Sidekick einschalten"
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
+                             , "LBL-COLLAPSE"        : "Zuklappen"
+                             , "LBL-EXPAND"          : "Aufklappen"
 
                              , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
@@ -2200,9 +2204,11 @@ Xplug.prototype.resizeSidekick = function(p_factor)
      l_width   = 0;
      l_display = 'none';
      $('div#xplug_pb_splitter').addClass('is-collapsed');
+     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-EXPAND'));
    } else {
      l_display = 'block';
      $('div#xplug_pb_splitter').removeClass('is-collapsed');
+     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));     
    }
    $('#gallery-tabs')
      .css(
@@ -2307,7 +2313,7 @@ Xplug.prototype.installSidekick = function(p_factor)
 
   $('#R1157688004078338241').append(
          '<div ID="xplug_pb_splitter" class="a-Splitter-barH">'
-       +     '<button ID="xplug_pb_splitter_btn" role="separator" class="a-Splitter-thumb" type="button" aria-expanded="true" title="Collapse"></button>'
+       +     '<button ID="xplug_pb_splitter_btn" role="separator" class="a-Splitter-thumb" type="button" aria-expanded="true"></button>'
        + '</div>'
        + '<div ID="xplug_pb_container" class="a-TabsContainer ui-tabs--subTabButtons">'
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
@@ -2328,6 +2334,7 @@ Xplug.prototype.installSidekick = function(p_factor)
        + '</div>'
   );
 
+  $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
 
   $('div#xplug_pb_right')
             .append( '<button'
