@@ -279,9 +279,20 @@
 //                           for parsing and XSS injection preventHideNotification
 //                         - Added LICENSE file. Using MIT license for Xplug now.
 //
-// V1.4.0.0 2016-10-28 * Multiple changes
+// V1.4.0.0 2016-10-29 * Multiple changes
 //                         - Bug-fix: Adjust splitter button title so that it says 'Collapse' or 'Expand' as needed.
-//
+//                         - Sidekick: Adjust button captions and input field length so that it also fits for small
+//                           screen resolutions.
+//                         - More agressive default settings:
+//                             *  Show sidekick pane: yes
+//                             *  Show 'Page Details' tab in sidekick pane: yes
+//                             *  Previous/Next page buttons: yes
+//                             *  Daylight / Nighttime toggle: yes
+//                             *  Swap grid pane: yes
+//                             *  Window title: yes
+//                          - Added startup animation on Xplug SVG icon
+//                          - Bug-fix: Small delay before showing Page Details, required for firefox
+//                                     because otherwise it complains if marked.min library is not yet fully laoded.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

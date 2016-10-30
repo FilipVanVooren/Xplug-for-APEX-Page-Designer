@@ -226,7 +226,7 @@ var Xplug = function() {
                        + l_aria
                        + ' onClick="void(0); return false;"'
                        + '>'
-                       + '<svg viewBox="0 0 1024 1024" width="16px" preserveAspectRatio="xMidYMin">' + C_svg + '</svg>'
+                       + '<svg ID="xplugSVG" viewBox="0 0 1024 1024" width="16px" preserveAspectRatio="xMidYMin">' + C_svg + '</svg>'
                        + l_menu_icon
                        + '</button>');
 
@@ -237,6 +237,15 @@ var Xplug = function() {
                .on('click', function()
                  { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
+        } else {
+
+           var iDegrees = 0;
+           var oHandle  = window.setInterval(
+                  function() {
+                    iDegrees = iDegrees + 2;
+                    $('svg#xplugSVG').css('transform', 'rotate(' + iDegrees + 'deg)');
+                    if (iDegrees > 180) window.clearInterval(oHandle);
+                  },1);
         }
 
 

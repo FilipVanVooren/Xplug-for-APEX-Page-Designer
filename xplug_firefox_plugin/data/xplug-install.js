@@ -14,6 +14,7 @@
      oScript.src   = "resource://xplug/ext/js/xplug.js";
      document.body.appendChild(oScript);
 
+
   // ----------------------------------------------------------
   // Inject marked (Markdown parser) into page
   // ----------------------------------------------------------
@@ -21,6 +22,7 @@
      oScript.type  = "text/javascript";
      oScript.src   = "resource://xplug/ext/lib/marked.min.js";
      document.body.appendChild(oScript);
+
 
   // ----------------------------------------------------------
   // Inject XSS scanner into page

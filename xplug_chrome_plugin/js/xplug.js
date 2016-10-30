@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Fri Oct 28 2016 13:30:16
+// Built using Gulp. Built date: Sun Oct 30 2016 22:34:24
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -280,9 +280,20 @@
 //                           for parsing and XSS injection preventHideNotification
 //                         - Added LICENSE file. Using MIT license for Xplug now.
 //
-// V1.4.0.0 2016-10-28 * Multiple changes
+// V1.4.0.0 2016-10-29 * Multiple changes
 //                         - Bug-fix: Adjust splitter button title so that it says 'Collapse' or 'Expand' as needed.
-//
+//                         - Sidekick: Adjust button captions and input field length so that it also fits for small
+//                           screen resolutions.
+//                         - More agressive default settings:
+//                             *  Show sidekick pane: yes
+//                             *  Show 'Page Details' tab in sidekick pane: yes
+//                             *  Previous/Next page buttons: yes
+//                             *  Daylight / Nighttime toggle: yes
+//                             *  Swap grid pane: yes
+//                             *  Window title: yes
+//                          - Added startup animation on Xplug SVG icon
+//                          - Bug-fix: Small delay before showing Page Details, required for firefox
+//                                     because otherwise it complains if marked.min library is not yet fully laoded.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -1997,7 +2008,7 @@ var Xplug = function() {
                        + l_aria
                        + ' onClick="void(0); return false;"'
                        + '>'
-                       + '<svg viewBox="0 0 1024 1024" width="16px" preserveAspectRatio="xMidYMin">' + C_svg + '</svg>'
+                       + '<svg ID="xplugSVG" viewBox="0 0 1024 1024" width="16px" preserveAspectRatio="xMidYMin">' + C_svg + '</svg>'
                        + l_menu_icon
                        + '</button>');
 
@@ -2008,6 +2019,15 @@ var Xplug = function() {
                .on('click', function()
                  { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
+        } else {
+
+           var iDegrees = 0;
+           var oHandle  = window.setInterval(
+                  function() {
+                    iDegrees = iDegrees + 2;
+                    $('svg#xplugSVG').css('transform', 'rotate(' + iDegrees + 'deg)');
+                    if (iDegrees > 180) window.clearInterval(oHandle);
+                  },1);
         }
 
 
@@ -3016,7 +3036,7 @@ Xplug.prototype.resizeSidekick = function(p_factor)
   var l_factor     = c_max_factor;
 
   if ( !isNaN(p_factor) && (p_factor >= 0)
-                        && (p_factor <= 0.75) ) {
+                        && (p_factor <= 0.70) ) {
      xplug.setStorage('SIDEKICK_FACTOR', p_factor);
      l_factor = p_factor;
   } else {
@@ -3027,6 +3047,7 @@ Xplug.prototype.resizeSidekick = function(p_factor)
    var l_width    = l_maxwidth * l_factor;
    var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
    var l_display;
+   var sCaption1, sCaption2, sCaption3;
 
    // Resize gallery
    console.debug("resizeSidekick: Request for setting gallery width to: " + l_width + ' px');
@@ -3041,7 +3062,7 @@ Xplug.prototype.resizeSidekick = function(p_factor)
      // Show Gallery
      l_display = 'block';
      $('div#xplug_pb_splitter').removeClass('is-collapsed');
-     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));     
+     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
    }
    $('#gallery-tabs')
      .css(
@@ -3058,7 +3079,6 @@ Xplug.prototype.resizeSidekick = function(p_factor)
           'left'              :  l_width + 'px',
           'width'             : '8px',
           'height'            : '100%',
-          'background-color'  : $('.a-Splitter-barH').css('background-color'),
           'border-left'       : '1px solid #c0c0c0',
           'border-right'      : '1px solid #c0c0c0',
           'vertical-align'    : 'middle'
@@ -3085,6 +3105,22 @@ Xplug.prototype.resizeSidekick = function(p_factor)
              'height'     : l_height + 'px',
 
         });
+
+    // Set button captions corresponding to pane size (use abbreviation if too small)
+    sCaption1 = get_label('TAB-PB-DOCU');
+    sCaption2 = get_label('TAB-PB-MESSAGES');
+    sCaption3 = get_label('TAB-PB-SEARCH');
+    if (l_maxwidth - l_width < 350) {
+       $('input#xplug_search_field').attr('size',20);
+       sCaption1 = sCaption1.substring(0,1) + '..';
+       sCaption2 = sCaption2.substring(0,1) + '..';
+       sCaption3 = sCaption3.substring(0,1) + '..';
+    } else {
+      $('input#xplug_search_field').attr('size',35);
+    }
+    $("a[href='#xplug_pb_docu']").text(sCaption1);
+    $("a[href='#xplug_pb_msgview']").text(sCaption2);
+    $("a[href='#xplug_pb_search']").text(sCaption3);
 }; // Xplug.prototype.resizeSidekick
 
 
@@ -3099,14 +3135,14 @@ Xplug.prototype.installSidekick = function(p_factor)
 {
     'use strict';
 
-    var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
+    var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','YES');
     var sPageDetailsLI    = '';
     var sPageDetailsDIV   = '';
 
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
             '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
-          + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
+          + '<input type="text" size=35 maxlength=255 ID=xplug_search_field>'
 
           + '<div'
                  + ' ID="ORATRONIK_XPLUG_clear_search_button"'
@@ -3147,7 +3183,7 @@ Xplug.prototype.installSidekick = function(p_factor)
   if (sEnablePageDetTab == 'YES') {
      sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
-
+     xplug.setStorage('SIDEKICK-TAB-PAGEDET','YES');
   }
 
 
@@ -3205,11 +3241,16 @@ Xplug.prototype.installSidekick = function(p_factor)
   //
   $('div#xplug_pb_splitter').draggable(
        { axis : "x",
+
+         start: function () {
+                  $('#xplug_pb_splitter').addClass('is-focused is-active');
+         },
          stop : function () {
                   var l_factor = parseInt( $('div#xplug_pb_splitter').css('left').replace('px','') ) / $('#R1157688004078338241').width();
                   console.log("Done dragging. Factor = " + l_factor);
                   xplug.resizeSidekick(l_factor);
-                }
+                  $('#xplug_pb_splitter').removeClass('is-focused is-active');
+         }
        }
   );
 
@@ -3328,7 +3369,11 @@ Xplug.prototype.installSidekick = function(p_factor)
        }  // if
      });  // commandHistoryChange
 
-     this.showDocumentation();
+     // Adding a small delay before showing Page Details
+     // Required for Firefox, because otherwise it chockes if marked.min is not yet
+     // fully loaded.
+     // In the future we'll check if the library has fully loaded, before calling.
+     window.setTimeout( function() { xplug.showDocumentation(); },100);
    }
 }; // Xplug.prototype.installSidekick
 
@@ -3535,6 +3580,27 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
              return p_default;
           }
         }; // Xplug.prototype.delStorage
+
+
+
+
+    /*****************************************************************************
+     * Load Xplug settings from localStorage
+     ****************************************************************************/
+     Xplug.prototype.loadSettings = function ()
+     {
+       window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
+
+       xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+       xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+
+       xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
+       xplug.getStorage('SHOW_SIDEKICK_PANE','YES') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
+       xplug.getStorage('BTN-PRVNEXT-PAGE','YES')   == 'YES' && xplug.installPageButtons();
+       xplug.getStorage('BTN-THEME-SWITCH','YES')   == 'YES' && xplug.installThemeSwitch();
+       xplug.getStorage('BTN-SWAP-GRID-PANE','YES') == 'YES' && xplug.installSwapGrid();
+       xplug.getStorage('APP+ID-IN-PD-TITLE','YES') == 'YES' && xplug.installPDTitle();
+     }; // Xplug.prototype.loadSettings
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -4151,28 +4217,6 @@ Xplug.prototype.configureDialog = function()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
-
-
-
-
-
-/*****************************************************************************
- * Load Xplug settings from localStorage
- ****************************************************************************/
- Xplug.prototype.loadSettings = function ()
- {
-   window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
-
-   xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-   xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-   xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
-
-   xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
-   xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installPageButtons();
-   xplug.getStorage('BTN-THEME-SWITCH','NO')   == 'YES' && xplug.installThemeSwitch();
-   xplug.getStorage('BTN-SWAP-GRID-PANE','NO') == 'YES' && xplug.installSwapGrid();
-   xplug.getStorage('APP+ID-IN-PD-TITLE','NO') == 'YES' && xplug.installPDTitle();
- }; // Xplug.prototype.loadSettings
 
 
 

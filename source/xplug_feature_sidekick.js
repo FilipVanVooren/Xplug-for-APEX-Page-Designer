@@ -78,7 +78,7 @@ Xplug.prototype.resizeSidekick = function(p_factor)
   var l_factor     = c_max_factor;
 
   if ( !isNaN(p_factor) && (p_factor >= 0)
-                        && (p_factor <= 0.75) ) {
+                        && (p_factor <= 0.70) ) {
      xplug.setStorage('SIDEKICK_FACTOR', p_factor);
      l_factor = p_factor;
   } else {
@@ -89,6 +89,7 @@ Xplug.prototype.resizeSidekick = function(p_factor)
    var l_width    = l_maxwidth * l_factor;
    var l_height   = $('div#cg-regions').height();                               // DIV Gallery icons
    var l_display;
+   var sCaption1, sCaption2, sCaption3;
 
    // Resize gallery
    console.debug("resizeSidekick: Request for setting gallery width to: " + l_width + ' px');
@@ -103,7 +104,7 @@ Xplug.prototype.resizeSidekick = function(p_factor)
      // Show Gallery
      l_display = 'block';
      $('div#xplug_pb_splitter').removeClass('is-collapsed');
-     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));     
+     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
    }
    $('#gallery-tabs')
      .css(
@@ -120,7 +121,6 @@ Xplug.prototype.resizeSidekick = function(p_factor)
           'left'              :  l_width + 'px',
           'width'             : '8px',
           'height'            : '100%',
-          'background-color'  : $('.a-Splitter-barH').css('background-color'),
           'border-left'       : '1px solid #c0c0c0',
           'border-right'      : '1px solid #c0c0c0',
           'vertical-align'    : 'middle'
@@ -147,6 +147,22 @@ Xplug.prototype.resizeSidekick = function(p_factor)
              'height'     : l_height + 'px',
 
         });
+
+    // Set button captions corresponding to pane size (use abbreviation if too small)
+    sCaption1 = get_label('TAB-PB-DOCU');
+    sCaption2 = get_label('TAB-PB-MESSAGES');
+    sCaption3 = get_label('TAB-PB-SEARCH');
+    if (l_maxwidth - l_width < 350) {
+       $('input#xplug_search_field').attr('size',20);
+       sCaption1 = sCaption1.substring(0,1) + '..';
+       sCaption2 = sCaption2.substring(0,1) + '..';
+       sCaption3 = sCaption3.substring(0,1) + '..';
+    } else {
+      $('input#xplug_search_field').attr('size',35);
+    }
+    $("a[href='#xplug_pb_docu']").text(sCaption1);
+    $("a[href='#xplug_pb_msgview']").text(sCaption2);
+    $("a[href='#xplug_pb_search']").text(sCaption3);
 }; // Xplug.prototype.resizeSidekick
 
 
@@ -161,14 +177,14 @@ Xplug.prototype.installSidekick = function(p_factor)
 {
     'use strict';
 
-    var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO');
+    var sEnablePageDetTab = xplug.getStorage('SIDEKICK-TAB-PAGEDET','YES');
     var sPageDetailsLI    = '';
     var sPageDetailsDIV   = '';
 
     function installTabPowersearch() {
         $('#xplug_pb_search').html(
             '<label for="xplug_search_field" class="a-Form-label" style="margin-right: 5px;">Search</label>'
-          + '<input type="text" size=40 maxlength=255 ID=xplug_search_field>'
+          + '<input type="text" size=35 maxlength=255 ID=xplug_search_field>'
 
           + '<div'
                  + ' ID="ORATRONIK_XPLUG_clear_search_button"'
@@ -209,7 +225,7 @@ Xplug.prototype.installSidekick = function(p_factor)
   if (sEnablePageDetTab == 'YES') {
      sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
-
+     xplug.setStorage('SIDEKICK-TAB-PAGEDET','YES');
   }
 
 
@@ -267,11 +283,16 @@ Xplug.prototype.installSidekick = function(p_factor)
   //
   $('div#xplug_pb_splitter').draggable(
        { axis : "x",
+
+         start: function () {
+                  $('#xplug_pb_splitter').addClass('is-focused is-active');
+         },
          stop : function () {
                   var l_factor = parseInt( $('div#xplug_pb_splitter').css('left').replace('px','') ) / $('#R1157688004078338241').width();
                   console.log("Done dragging. Factor = " + l_factor);
                   xplug.resizeSidekick(l_factor);
-                }
+                  $('#xplug_pb_splitter').removeClass('is-focused is-active');
+         }
        }
   );
 
@@ -390,7 +411,11 @@ Xplug.prototype.installSidekick = function(p_factor)
        }  // if
      });  // commandHistoryChange
 
-     this.showDocumentation();
+     // Adding a small delay before showing Page Details
+     // Required for Firefox, because otherwise it chockes if marked.min is not yet
+     // fully loaded.
+     // In the future we'll check if the library has fully loaded, before calling.
+     window.setTimeout( function() { xplug.showDocumentation(); },100);
    }
 }; // Xplug.prototype.installSidekick
 

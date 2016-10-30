@@ -99,3 +99,24 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
              return p_default;
           }
         }; // Xplug.prototype.delStorage
+
+
+
+
+    /*****************************************************************************
+     * Load Xplug settings from localStorage
+     ****************************************************************************/
+     Xplug.prototype.loadSettings = function ()
+     {
+       window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
+
+       xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
+       xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
+
+       xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
+       xplug.getStorage('SHOW_SIDEKICK_PANE','YES') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
+       xplug.getStorage('BTN-PRVNEXT-PAGE','YES')   == 'YES' && xplug.installPageButtons();
+       xplug.getStorage('BTN-THEME-SWITCH','YES')   == 'YES' && xplug.installThemeSwitch();
+       xplug.getStorage('BTN-SWAP-GRID-PANE','YES') == 'YES' && xplug.installSwapGrid();
+       xplug.getStorage('APP+ID-IN-PD-TITLE','YES') == 'YES' && xplug.installPDTitle();
+     }; // Xplug.prototype.loadSettings

@@ -10,28 +10,6 @@
 
 
 
-
-
-/*****************************************************************************
- * Load Xplug settings from localStorage
- ****************************************************************************/
- Xplug.prototype.loadSettings = function ()
- {
-   window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','NONE',true));
-
-   xplug.getStorage('PANES_SWITCHED','NO')     == 'YES' && apex.actions.invoke('pd-xplug-dock-grid-right');
-   xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
-   xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
-
-   xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
-   xplug.getStorage('BTN-PRVNEXT-PAGE','NO')   == 'YES' && xplug.installPageButtons();
-   xplug.getStorage('BTN-THEME-SWITCH','NO')   == 'YES' && xplug.installThemeSwitch();
-   xplug.getStorage('BTN-SWAP-GRID-PANE','NO') == 'YES' && xplug.installSwapGrid();
-   xplug.getStorage('APP+ID-IN-PD-TITLE','NO') == 'YES' && xplug.installPDTitle();
- }; // Xplug.prototype.loadSettings
-
-
-
 Xplug.prototype.getVersion = function ()
 {
  return xplug.version;
