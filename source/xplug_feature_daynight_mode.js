@@ -18,7 +18,7 @@
   var l_shortcut = apex.actions.lookup('pd-xplug-toggle-day-night-mode').shortcut;
 
   $("button#ORATRONIK_XPLUG_moonsun_button")
-     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-TGL-DAY-MOON') );
+     .attr('title', '[' + l_shortcut + '] ' + xplug.get_label('BTN-TGL-DAY-MOON') );
 
 }; // _set_button_tooltip_daynight_mode
 

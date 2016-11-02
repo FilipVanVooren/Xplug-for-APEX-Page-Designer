@@ -165,7 +165,7 @@ window.pageDesigner.dockGridMiddle = function()
   var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
 
   $("button#ORATRONIK_XPLUG_swap_panes_button")
-     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
+     .attr('title', '[' + l_shortcut + '] ' + xplug.get_label('BTN-SWAP-GRID-PANE') );
 
 }; // _set_button_tooltip_swap_grid
 

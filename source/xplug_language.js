@@ -8,11 +8,9 @@
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
 
- function get_label(p_index)
- {
-   var C_lang  = gBuilderLang ? gBuilderLang : 'en';
 
-   var C_label =  { 'en' : {   "DOCK-GRID"    : "Dock grid"
+ function loadLabels() {
+   return         { 'en' : {   "DOCK-GRID"    : "Dock grid"
                              , "DOCKRIGHT"    : "Dock grid on right side"
                              , "DOCKMID"      : "Dock grid in middle"
                              , "PREVPAGE"     : "Go to previous page"
@@ -23,6 +21,7 @@
                              , "PRETTYGRID"   : "Grid background image"
                              , "SETUP"        : "Setup"
                              , "CONFIGURE"    : "Configure"
+                             , "BUG"          : "Report bug"
                              , "CUSTOMIZE"    : "Customize"
                              , "QUICK-CTRL"   : "Quick Controls"
 
@@ -73,6 +72,7 @@
                              , "LBL-HIDE"            : "Hide"
                              , "LBL-COLLAPSE"        : "Collapse"
                              , "LBL-EXPAND"          : "Expand"
+                             , "LBL-LANGUAGE"        : "Language"
 
                              , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
@@ -88,11 +88,11 @@
                              , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
                              , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
                              , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
-                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Style can't be saved. Please first change the style name."
-
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer theme can't be saved. Please first change the theme name."
+                             , "MSG-RELOAD-LANG"     : "Xplug language changed. Please reload page to activate."
                            },
 
-                    'de' : {   "DOCK-GRID"    : "Grid Position"
+                    'de' : {   "DOCK-GRID"    : "Grid positionieren"
                              , "DOCKRIGHT"    : "Grid rechts außen positionieren"
                              , "DOCKMID"      : "Grid in der Mitte positionieren"
                              , "PREVPAGE"     : "Gehe zu vorherige Seite"
@@ -103,6 +103,7 @@
                              , "PRETTYGRID"   : "Hintergrundbild"
                              , "SETUP"        : "Setup"
                              , "CONFIGURE"    : "Konfigurieren"
+                             , "BUG"          : "Bug melden"
                              , "CUSTOMIZE"    : "Anpassen"
                              , "QUICK-CTRL"   : "Schnelleinstellungen"
 
@@ -145,14 +146,15 @@
                              , "LBL-SHOW-APPID"      : "Zeige [app:page] info in Fenstertitel"
                              , "LBL-ENABLE-PAGEDET"  : "Aktiviere Reiter 'Seitendetails' in Sidekick bereich"
                              , "LBL-ENABLE-MARKDOWN" : "Aktiviere markdown Format"
-                             , "LBL-DAYLIGHT"        : "Tag Modus"
-                             , "LBL-MOONLIGHT"       : "Nacht Modus"
-                             , "LBL-DEFAULT-STYLES"  : "Standard Themes"
+                             , "LBL-DAYLIGHT"        : "Tagmodus"
+                             , "LBL-MOONLIGHT"       : "Nachtmodus"
+                             , "LBL-DEFAULT-STYLES"  : "Standardthemes"
                              , "LBL-ADD-SIDEKICK"    : "Sidekick einschalten"
                              , "LBL-CLOSE"           : "Schliessen"
                              , "LBL-HIDE"            : "Ausblenden"
                              , "LBL-COLLAPSE"        : "Zuklappen"
                              , "LBL-EXPAND"          : "Aufklappen"
+                             , "LBL-LANGUAGE"        : "Sprache"
 
                              , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
@@ -167,12 +169,20 @@
                              , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
                              , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
                              , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
-                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatible. Bitte prüfen."
-                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Stil kann nicht gespeichert werden. Bitte zuerst Stilnamen ändern."
-
-
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatibel. Bitte prüfen."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Theme kann nicht gespeichert werden. Bitte zuerst Themenamen ändern."
+                             , "MSG-RELOAD-LANG"     : "Xplug Spracheinstellungen geändert. Bitte Seite neu laden um zu aktivieren."
                            },
                   };
+ } // loadLabels
 
-     return C_label[C_lang][p_index];
- }
+
+ Xplug.prototype.setLanguage = function() {
+     this.language = this.getStorage('LANGUAGE','en', true);
+ }; // setLanguage
+
+
+ Xplug.prototype.get_label = function(p_index, p_lang) {
+      var sLang = (p_lang === undefined) ? this.language : p_lang;
+      return this.labels[sLang][p_index];
+ }; // get_label

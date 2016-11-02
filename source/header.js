@@ -229,7 +229,6 @@
 //                       - Bug-fix: When loading Page Designer in Dark-Mode, the sun-icon was shown.
 //                                  Is solved now, moon-icon is shown.
 //
-//
 // V1.4.0.0 2016-08-30 * Multiple changes
 //                       - Added probeAPEXVersion() function to xplug_prototypes.js
 //                       - Adjusted message level from debug to info for some console log messages
@@ -261,10 +260,8 @@
 //                         - Bug fix: Fixed padding in Page Details tab in sidekick pane
 //                         - Bug fix: Refresh page details tab if page is saved (and sidekick + tab is enabled)
 //
-//
 // V1.4.0.0  2016-10-04 * Multiple changes
 //                          - Configuration dialog - Re-added page navigation buttons also on APEX 5.1
-//
 //
 // V1.4.0.0 2016-10-16 * Multiple changes
 //                         - Bug-fix: Sidekick resize handler was not called when resizing window/panes. Solved now.
@@ -293,6 +290,14 @@
 //                          - Added startup animation on Xplug SVG icon
 //                          - Bug-fix: Small delay before showing Page Details, required for firefox
 //                                     because otherwise it complains if marked.min library is not yet fully laoded.
+//
+//  V1.4.0.0 2016-11-01 * Multiple changes
+//                         - Bug-fix: disable 'Enable markdown' option in sidekick hamburger menu if 'Page Details'
+//                                    tab is deactivated.
+//                         - Added possibility to anonymously report bugs on GitHub by using Git reports service.
+//                         - Added possibility to select the GUI language in the configuration dialog
+//                         - Some serious refactoring in constructor and language part of Xplug.
+//                           Probably introduced some bugs now, but it's required for multi-language support.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

@@ -30,33 +30,33 @@ Xplug.prototype.showDocumentation = function ()
   sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
                                            : '';
 
+  // Performance. Return early if there's nothing to show anyway.
+  sFragment = '';
+  if (sPageComment.length > 0) {
+     if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
+        // Setup custom markdown link renderer
+        // Is required, because links always need to be opened in a new tab/window.
+        // Otherwise we would leave Page Designer
+        oRenderer = new marked.Renderer();
+        oRenderer.link  = function(shref, sTitle, sText) {
+                            var sURL =  '<a href="' + shref + '" target="_blank">' + sText + '</a>';
+                            return sURL;
+                          };
 
-  // Setup custom markdown link renderer
-  // Is required, because links always need to be opened in a new tab/window.
-  // Otherwise we would leave Page Designer
-  oRenderer = new marked.Renderer();
-  oRenderer.link  = function(shref, sTitle, sText) {
-                      var sURL =  '<a href="' + shref + '" target="_blank">' + sText + '</a>';
-                      return sURL;
-                    };
+        marked.setOptions({ sanitize : true,
+                            gfm      : true,                                     // Github markdown mode
+                            breaks   : true,                                     // GFM line break mode
+                            renderer : oRenderer });
 
-  marked.setOptions({ sanitize : true,
-                      gfm      : true,                                     // Github markdown mode
-                      breaks   : true,                                     // GFM line break mode
-                      renderer : oRenderer });
-
-
-  // Render markdown if enabled, but always sanitize output for avoiding XSS
-  if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
-    sFragment = marked(sPageComment);                                      // Using marked.js
-  } else {
-    sFragment = '<pre>' + sPageComment + '</pre><br>';
+        sFragment = marked(sPageComment);                                        // Using marked.js
+     } else {
+        sFragment = '<pre>' + sPageComment + '</pre><br>';
+     }
+     sFragment = filterXSS(sFragment);                                           // Sanitize with xss.js
+     sFragment += '<br>';
   }
-  sFragment = filterXSS(sFragment);                                        // Using xss.js
-
 
   // Build page details
-  if (sFragment.length > 0) sFragment += '<br>';
   sHTML = sFragment
         + '<h2>Page history</h2>'
         + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn;

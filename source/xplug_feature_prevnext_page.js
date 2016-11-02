@@ -160,10 +160,10 @@ Xplug.prototype._set_button_tooltip_prevnext_page = function()
   var l_shortcut_next_page = apex.actions.lookup('pd-xplug-goto-next-page').shortcut;
 
   $("button#ORATRONIK_XPLUG_prev_page_button")
-     .attr('title', '[' + l_shortcut_prev_page + '] ' + get_label('PREVPAGE') );
+     .attr('title', '[' + l_shortcut_prev_page + '] ' + xplug.get_label('PREVPAGE') );
 
   $("button#ORATRONIK_XPLUG_next_page_button")
-     .attr('title', '[' + l_shortcut_next_page + '] ' + get_label('NEXTPAGE') );
+     .attr('title', '[' + l_shortcut_next_page + '] ' + xplug.get_label('NEXTPAGE') );
 }; // _set_button_tooltip_prevnext_page
 
 

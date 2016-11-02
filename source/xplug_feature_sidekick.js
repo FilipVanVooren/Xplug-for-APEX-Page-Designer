@@ -16,58 +16,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $('#ORATRONIK_XPLUG_SIDEKICK_MENU').remove();
 
-var l_menu$ = $("<div id='ORATRONIK_XPLUG_SIDEKICK_MENU'></div>");
-$("body").append(l_menu$);
-
-l_menu$.menu(
-{
-  items : [
-    {
-      type     : "toggle",
-      label    : get_label('LBL-HIDE'),
-      get      : function()
-                 {
-                    return 0;
-                 },
-      set      : function()
-                 {
-                    apex.actions.invoke('pd-xplug-remove-sidekick');
-                 },
-      disabled : function()
-                 {
-                   return false;
-                 }
-    },
-    { type     : "separator" },
-    { type     : "toggle",
-    label    : get_label('LBL-ENABLE-MARKDOWN'),
-    get      : function()
-               {
-                  return xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES';
-               },
-    set      : function()
-               {
-                  var sMode = xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES'
-                            ? 'NO'
-                            : 'YES';
-
-                  xplug.setStorage('MARKDOWN_ENABLED',sMode,true);
-                  xplug.showDocumentation();
-               },
-    disabled : function()
-               {
-                 return false;
-               }
-  },
-
-
-  ]
-});
 
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: installSidekick
+* METHOD: resizeSidekick
 ***************************************************************************/
 Xplug.prototype.resizeSidekick = function(p_factor)
 {
@@ -94,17 +47,19 @@ Xplug.prototype.resizeSidekick = function(p_factor)
    // Resize gallery
    console.debug("resizeSidekick: Request for setting gallery width to: " + l_width + ' px');
 
-   if (l_width < 350) {
+   if (l_width < 340) {
      // Collapse Gallery if too small
+     console.debug("resizeSidekick: Gallery width too smal. Collapsing.");
+
      l_width   = 0;
      l_display = 'none';
      $('div#xplug_pb_splitter').addClass('is-collapsed');
-     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-EXPAND'));
+     $('button#xplug_pb_splitter_btn').attr('title', xplug.get_label('LBL-EXPAND'));
    } else {
      // Show Gallery
      l_display = 'block';
      $('div#xplug_pb_splitter').removeClass('is-collapsed');
-     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
+     $('button#xplug_pb_splitter_btn').attr('title', xplug.get_label('LBL-COLLAPSE'));
    }
    $('#gallery-tabs')
      .css(
@@ -149,9 +104,9 @@ Xplug.prototype.resizeSidekick = function(p_factor)
         });
 
     // Set button captions corresponding to pane size (use abbreviation if too small)
-    sCaption1 = get_label('TAB-PB-DOCU');
-    sCaption2 = get_label('TAB-PB-MESSAGES');
-    sCaption3 = get_label('TAB-PB-SEARCH');
+    sCaption1 = xplug.get_label('TAB-PB-DOCU');
+    sCaption2 = xplug.get_label('TAB-PB-MESSAGES');
+    sCaption3 = xplug.get_label('TAB-PB-SEARCH');
     if (l_maxwidth - l_width < 350) {
        $('input#xplug_search_field').attr('size',20);
        sCaption1 = sCaption1.substring(0,1) + '..';
@@ -221,9 +176,59 @@ Xplug.prototype.installSidekick = function(p_factor)
     }
 
 
+    // Initialize menu
+    $('div#ORATRONIK_XPLUG_SIDEKICK_MENU').remove();
+    var l_menu$ = $("<div id='ORATRONIK_XPLUG_SIDEKICK_MENU'></div>");
+    $("body").append(l_menu$);
+
+      l_menu$.menu(
+      {
+        items : [
+          {
+            type     : "toggle",
+            label    : xplug.get_label('LBL-HIDE'),
+            get      : function()
+                       {
+                          return 0;
+                       },
+            set      : function()
+                       {
+                          apex.actions.invoke('pd-xplug-remove-sidekick');
+                       },
+            disabled : function()
+                       {
+                         return false;
+                       }
+          },
+
+          { type     : "separator" },
+          { type     : "toggle",
+            label    : xplug.get_label('LBL-ENABLE-MARKDOWN'),
+            get      : function()
+                       {
+                          return xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES';
+                       },
+            set      : function()
+                       {
+                         var sMode = xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES'
+                                   ? 'NO'
+                                   : 'YES';
+
+                         xplug.setStorage('MARKDOWN_ENABLED',sMode,true);
+                         xplug.showDocumentation();
+                       },
+          disabled : function()
+                     {
+                       return (xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') === 'NO');
+                     }
+          }
+        ]
+      });
+
+
   // Sidekick tab "Page Details"
   if (sEnablePageDetTab == 'YES') {
-     sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
+     sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + xplug.get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
      xplug.setStorage('SIDEKICK-TAB-PAGEDET','YES');
   }
@@ -238,8 +243,8 @@ Xplug.prototype.installSidekick = function(p_factor)
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
        +       sPageDetailsLI
-       +       '<li><a href="#xplug_pb_msgview">'  + get_label('TAB-PB-MESSAGES')    + '</a></li>'
-       +       '<li><a href="#xplug_pb_search">'   + get_label('TAB-PB-SEARCH')      + '</a></li>'
+       +       '<li><a href="#xplug_pb_msgview">'  + xplug.get_label('TAB-PB-MESSAGES')    + '</a></li>'
+       +       '<li><a href="#xplug_pb_search">'   + xplug.get_label('TAB-PB-SEARCH')      + '</a></li>'
        +     '</ul>'
        +    '<div style="text-align: right">'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
@@ -253,7 +258,7 @@ Xplug.prototype.installSidekick = function(p_factor)
        + '</div>'
   );
 
-  $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
+  $('button#xplug_pb_splitter_btn').attr('title', xplug.get_label('LBL-COLLAPSE'));
 
   // Add hamburger menu
   $('div#xplug_pb_right')

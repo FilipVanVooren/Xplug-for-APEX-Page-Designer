@@ -14,10 +14,10 @@ gulp.task('1-Build Xplug plugin source', function() {
   ///////////////////////////////////////////////////////////////////////
   return gulp.src(
             [ 'source/header.js',
-              'source/xplug_language.js',
               'source/page_designer_methods.js',
               'source/page_designer_style.js',
               'source/xplug_constructor.js',
+              'source/xplug_language.js',
               'source/xplug_util.js',
               'source/xplug_model.js',
               'source/xplug_feature_prevnext_page.js',
@@ -27,6 +27,7 @@ gulp.task('1-Build Xplug plugin source', function() {
               'source/xplug_feature_sidekick.js',
               'source/xplug_feature_sidekick_markdown.js',
               'source/xplug_storage.js',
+              'source/xplug_actions.js',              
               'source/xplug_menu.js',
               'source/xplug_configure.js',
               'source/xplug_prototypes.js',

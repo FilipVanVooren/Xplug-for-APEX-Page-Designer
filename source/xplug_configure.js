@@ -44,7 +44,7 @@ Xplug.prototype.configureDialog = function()
     l_dialog$ = $(l_out.html)
         .dialog(
                 { modal   : false,
-                  title   : get_label('LBL-XPLUG-SETTINGS'),
+                  title   : xplug.get_label('LBL-XPLUG-SETTINGS'),
                   width   : 450,
 
                   close   : function(pEvent) {
@@ -145,7 +145,7 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-DAYLIGHT'),
+                                       prompt:         xplug.get_label('LBL-DAYLIGHT'),
                                        lovValues:      getStyleLOV('DAYLIGHT'),
                                        isReadOnly:     false,
                                        isRequired:     true,
@@ -161,7 +161,7 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-MOONLIGHT'),
+                                       prompt:         xplug.get_label('LBL-MOONLIGHT'),
                                        lovValues:      getStyleLOV('MOONLIGHT'),
                                        isReadOnly:     false,
                                        isRequired:     true,
@@ -180,7 +180,7 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-SHOW-APPID'),
+                                       prompt:         xplug.get_label('LBL-SHOW-APPID'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -201,9 +201,26 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-ENABLE-PAGEDET'),
+                                       prompt:         xplug.get_label('LBL-ENABLE-PAGEDET'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "experimental"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               });
+
+                               l_properties4.push(
+                                 {
+                                   propertyName: "language",
+                                   value:        xplug.getStorage('LANGUAGE','en',true),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         xplug.get_label('LBL-LANGUAGE'),
+                                       lovValues:      [ { d: "English", r: "en" },
+                                                         { d: "German",  r: "de" } ],
                                        isReadOnly:     false,
                                        isRequired:     true,
                                        displayGroupId: "experimental"
@@ -222,22 +239,22 @@ Xplug.prototype.configureDialog = function()
                                    propertySet: [
                                      {
                                        displayGroupId    : "buttons",
-                                       displayGroupTitle : get_label('LBL-SHOW-BUTTONS'),
+                                       displayGroupTitle : xplug.get_label('LBL-SHOW-BUTTONS'),
                                        properties        : l_properties1
                                      },
                                      {
                                        displayGroupId    : "style_id",
-                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
+                                       displayGroupTitle : xplug.get_label('LBL-DEFAULT-STYLES'),
                                        properties        : l_properties2
                                      },
                                      {
                                        displayGroupId    : "advanced",
-                                       displayGroupTitle : get_label('LBL-ADVANCED'),
+                                       displayGroupTitle : xplug.get_label('LBL-ADVANCED'),
                                        properties        : l_properties3
                                      },
                                      {
                                        displayGroupId    : "experimental",
-                                       displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
+                                       displayGroupTitle : xplug.get_label('LBL-EXPERIMENTAL'),
                                        properties        : l_properties4
                                      }
                                    ] // propertySet
@@ -268,15 +285,16 @@ Xplug.prototype.configureDialog = function()
 
                             }, // open
                   buttons : [
-                              { text  : get_label('BTN-CANCEL'),
+                              { text  : xplug.get_label('BTN-CANCEL'),
                                 click : function() {
                                     $( this ).dialog( "close" );
                                 }
                               },
 
-                              { text  : get_label('BTN-APPLY'),
+                              { text  : xplug.get_label('BTN-APPLY'),
                                 click : function() {
-                                  var sThemeSwitch, sPageNav, sSwapGrid, sStyle1, sStyle2, sPDTitle, sTabPageDet;
+                                  var sThemeSwitch, sPageNav, sSwapGrid, sStyle1, sStyle2, sPDTitle,
+                                      sTabPageDet, sLanguage, sOldLangVal, sNewLangVal;
 
                                   if (xplug.apex_version.substring(0,3) == '5.0') {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
@@ -286,6 +304,7 @@ Xplug.prototype.configureDialog = function()
                                      sStyle2      = '#ConfigDlgPE_5';
                                      sPDTitle     = 'input[name=ConfigDlgPE_6_name]:checked';
                                      sTabPageDet  = 'input[name=ConfigDlgPE_7_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_8';
                                   } else {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
                                      sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
@@ -294,6 +313,7 @@ Xplug.prototype.configureDialog = function()
                                      sStyle2      = '#ConfigDlgPE_4';
                                      sPDTitle     = 'input[name=ConfigDlgPE_5_name]:checked';
                                      sTabPageDet  = 'input[name=ConfigDlgPE_6_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_7';
                                   }
 
                                   if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
@@ -333,7 +353,17 @@ Xplug.prototype.configureDialog = function()
                                     );
                                   }
 
-                                  $( this ).dialog( "close" );
+
+                                  sOldLangVal = xplug.getStorage('LANGUAGE','en', true);
+                                  sNewLangVal = $(sLanguage).val();
+                                  if (sOldLangVal != sNewLangVal) {
+                                     xplug.setStorage('LANGUAGE',$(sLanguage).val(),true);
+                                     $(this).dialog("close");
+                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));
+                                  } else {
+                                    $(this).dialog("close");
+                                  }
+
                                 },
                                 disabled : false
                               }

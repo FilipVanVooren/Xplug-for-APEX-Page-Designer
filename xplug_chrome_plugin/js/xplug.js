@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Oct 30 2016 22:34:24
+// Built using Gulp. Built date: Wed Nov 02 2016 01:09:58
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -230,7 +230,6 @@
 //                       - Bug-fix: When loading Page Designer in Dark-Mode, the sun-icon was shown.
 //                                  Is solved now, moon-icon is shown.
 //
-//
 // V1.4.0.0 2016-08-30 * Multiple changes
 //                       - Added probeAPEXVersion() function to xplug_prototypes.js
 //                       - Adjusted message level from debug to info for some console log messages
@@ -262,10 +261,8 @@
 //                         - Bug fix: Fixed padding in Page Details tab in sidekick pane
 //                         - Bug fix: Refresh page details tab if page is saved (and sidekick + tab is enabled)
 //
-//
 // V1.4.0.0  2016-10-04 * Multiple changes
 //                          - Configuration dialog - Re-added page navigation buttons also on APEX 5.1
-//
 //
 // V1.4.0.0 2016-10-16 * Multiple changes
 //                         - Bug-fix: Sidekick resize handler was not called when resizing window/panes. Solved now.
@@ -294,6 +291,14 @@
 //                          - Added startup animation on Xplug SVG icon
 //                          - Bug-fix: Small delay before showing Page Details, required for firefox
 //                                     because otherwise it complains if marked.min library is not yet fully laoded.
+//
+//  V1.4.0.0 2016-11-01 * Multiple changes
+//                         - Bug-fix: disable 'Enable markdown' option in sidekick hamburger menu if 'Page Details'
+//                                    tab is deactivated.
+//                         - Added possibility to anonymously report bugs on GitHub by using Git reports service.
+//                         - Added possibility to select the GUI language in the configuration dialog
+//                         - Some serious refactoring in constructor and language part of Xplug.
+//                           Probably introduced some bugs now, but it's required for multi-language support.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -324,185 +329,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
-// www.oratronik.de - Author Filip van Vooren
-//
-// xplug_language.js
-// 2016-01-03 * Initial version
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
-/* jshint -W030 */
-
- function get_label(p_index)
- {
-   var C_lang  = gBuilderLang ? gBuilderLang : 'en';
-
-   var C_label =  { 'en' : {   "DOCK-GRID"    : "Dock grid"
-                             , "DOCKRIGHT"    : "Dock grid on right side"
-                             , "DOCKMID"      : "Dock grid in middle"
-                             , "PREVPAGE"     : "Go to previous page"
-                             , "NEXTPAGE"     : "Go to next page"
-                             , "SHORTCUTS"    : "Customize shortcuts"
-                             , "NOTOOLTIPS"   : "Disable tooltips"
-                             , "TOOLTIPS"     : "Enable tooltips"
-                             , "PRETTYGRID"   : "Grid background image"
-                             , "SETUP"        : "Setup"
-                             , "CONFIGURE"    : "Configure"
-                             , "CUSTOMIZE"    : "Customize"
-                             , "QUICK-CTRL"   : "Quick Controls"
-
-                             , "BTN-NEW"             : "New"
-                             , "BTN-SAVE"            : "Save"
-                             , "BTN-APPLY"           : "Apply"
-                             , "BTN-OK"              : "OK"
-                             , "BTN-CANCEL"          : "Cancel"
-                             , "BTN-DELETE"          : "Delete"
-                             , "BTN-CLEAR"           : "Clear"
-                             , "BTN-EXPORT"          : "Export"
-                             , "BTN-IMPORT"          : "Import"
-                             , "BTN-TGL-DAY-MOON"    : "Toggle day/night mode"
-                             , "BTN-SWAP-GRID-PANE"  : "Swap grid position (middle/right)"
-
-                             , "LBL-STYLE"           : "Theme"
-                             , "LBL-STYLE-DEFAULT"   : "Default themes"
-                             , "LBL-STYLE-GALLERY"   : "Themes Gallery"
-                             , "LBL-STYLE-CUSTOM"    : "Customize theme"
-                             , "LBL-STYLE-EXPORT"    : "Export theme"
-                             , "LBL-STYLE-IMPORT"    : "Import theme"
-                             , "LBL-XPLUG"           : "Xplug"
-                             , "LBL-XPLUG-SETTINGS"  : "Xplug settings"
-                             , "LBL-LEFT"            : "Left"
-                             , "LBL-MIDDLE"          : "Middle"
-                             , "LBL-RIGHT"           : "Right"
-                             , "LBL-NAME"            : "Name"
-                             , "LBL-DARK-STYLE"      : "Night Mode"
-                             , "LBL-CRNTLY-ACTIVE"   : "Currently Active"
-                             , "LBL-PROTECTED"       : "Protected"
-                             , "LBL-SHOW-GRID"       : "Show Grid"
-                             , "LBL-COLOR"           : "Color"
-                             , "LBL-IDENTIFICATION"  : "Identification"
-                             , "LBL-CUST-COLORS"     : "Customize Colors"
-                             , "LBL-OVERRIDE-CSS"    : "Override Xplug CSS"
-                             , "LBL-CUST-CSS"        : "Custom CSS"
-                             , "LBL-ADVANCED"        : "Advanced"
-                             , "LBL-EXPERIMENTAL"    : "Experimental"
-                             , "LBL-SHOW-BUTTONS"    : "Buttons"
-                             , "LBL-SHOW-APPID"      : "Show [app:page] info in window title"
-                             , "LBL-ENABLE-PAGEDET"  : "Enable 'Page Details' tab in sidekick pane"
-                             , "LBL-ENABLE-MARKDOWN" : "Enable markdown format"
-                             , "LBL-DAYLIGHT"        : "Day mode"
-                             , "LBL-MOONLIGHT"       : "Night mode"
-                             , "LBL-DEFAULT-STYLES"  : "Default Themes"
-                             , "LBL-ADD-SIDEKICK"    : "Enable Sidekick"
-                             , "LBL-CLOSE"           : "Close"
-                             , "LBL-HIDE"            : "Hide"
-                             , "LBL-COLLAPSE"        : "Collapse"
-                             , "LBL-EXPAND"          : "Expand"
-
-                             , "TAB-PB-DOCU"         : "Page Details"
-                             , "TAB-PB-MESSAGES"     : "Messages"
-                             , "TAB-PB-SEARCH"       : "Search"
-                             , "TAB-PB-CONSOLE"      : "Console"
-                             , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
-                             , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
-                             , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
-                             , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
-                             , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
-                             , "MSG-STYLE-EXPORT"    : "Please mark, copy and save the Xplug JSON code in a text file and press 'OK'"
-                             , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
-                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
-                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
-                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
-                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Style can't be saved. Please first change the style name."
-
-                           },
-
-                    'de' : {   "DOCK-GRID"    : "Grid Position"
-                             , "DOCKRIGHT"    : "Grid rechts außen positionieren"
-                             , "DOCKMID"      : "Grid in der Mitte positionieren"
-                             , "PREVPAGE"     : "Gehe zu vorherige Seite"
-                             , "NEXTPAGE"     : "Gehe zu nächste Seite"
-                             , "SHORTCUTS"    : "Tastenkürzel einrichten"
-                             , "NOTOOLTIPS"   : "Tooltips deaktivieren"
-                             , "TOOLTIPS"     : "Tooltips aktivieren"
-                             , "PRETTYGRID"   : "Hintergrundbild"
-                             , "SETUP"        : "Setup"
-                             , "CONFIGURE"    : "Konfigurieren"
-                             , "CUSTOMIZE"    : "Anpassen"
-                             , "QUICK-CTRL"   : "Schnelleinstellungen"
-
-                             , "BTN-NEW"             : "Neu"
-                             , "BTN-SAVE"            : "Speichern"
-                             , "BTN-APPLY"           : "Anwenden"
-                             , "BTN-OK"              : "OK"
-                             , "BTN-CANCEL"          : "Abbrechen"
-                             , "BTN-DELETE"          : "Löschen"
-                             , "BTN-CLEAR"           : "Leeren"
-                             , "BTN-EXPORT"          : "Exportieren"
-                             , "BTN-IMPORT"          : "Importieren"
-                             , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
-                             , "BTN-SWAP-GRID-PANE"  : "Ansicht umschalten"
-
-                             , "LBL-STYLE"           : "Theme"
-                             , "LBL-STYLE-DEFAULT"   : "Standardtheme"
-                             , "LBL-STYLE-GALLERY"   : "Theme Gallerie"
-                             , "LBL-STYLE-CUSTOM"    : "Theme anpassen"
-                             , "LBL-STYLE-EXPORT"    : "Theme exportieren"
-                             , "LBL-STYLE-IMPORT"    : "Theme importieren"
-                             , "LBL-XPLUG"           : "Xplug"
-                             , "LBL-XPLUG-SETTINGS"  : "Xplug Einstellungen"
-                             , "LBL-LEFT"            : "Links"
-                             , "LBL-MIDDLE"          : "Mittig"
-                             , "LBL-RIGHT"           : "Rechts"
-                             , "LBL-NAME"            : "Name"
-                             , "LBL-DARK-STYLE"      : "Dunkler Stil"
-                             , "LBL-CRNTLY-ACTIVE"   : "Ist im Moment aktiv"
-                             , "LBL-PROTECTED"       : "Gesperrt"
-                             , "LBL-SHOW-GRID"       : "Grid anzeigen"
-                             , "LBL-COLOR"           : "Farbe"
-                             , "LBL-IDENTIFICATION"  : "Identifizierung"
-                             , "LBL-CUST-COLORS"     : "Farben anpassen"
-                             , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"
-                             , "LBL-CUST-CSS"        : "Eigenes CSS"
-                             , "LBL-ADVANCED"        : "Fortgeschritten"
-                             , "LBL-EXPERIMENTAL"    : "Experimentel"
-                             , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
-                             , "LBL-SHOW-APPID"      : "Zeige [app:page] info in Fenstertitel"
-                             , "LBL-ENABLE-PAGEDET"  : "Aktiviere Reiter 'Seitendetails' in Sidekick bereich"
-                             , "LBL-ENABLE-MARKDOWN" : "Aktiviere markdown Format"
-                             , "LBL-DAYLIGHT"        : "Tag Modus"
-                             , "LBL-MOONLIGHT"       : "Nacht Modus"
-                             , "LBL-DEFAULT-STYLES"  : "Standard Themes"
-                             , "LBL-ADD-SIDEKICK"    : "Sidekick einschalten"
-                             , "LBL-CLOSE"           : "Schliessen"
-                             , "LBL-HIDE"            : "Ausblenden"
-                             , "LBL-COLLAPSE"        : "Zuklappen"
-                             , "LBL-EXPAND"          : "Aufklappen"
-
-                             , "TAB-PB-DOCU"         : "Details der Seite"
-                             , "TAB-PB-MESSAGES"     : "Nachrichten"
-                             , "TAB-PB-SEARCH"       : "Suchen"
-                             , "TAB-PB-CONSOLE"      : "Konsole"
-                             , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
-                             , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
-                             , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
-                             , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
-                             , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
-                             , "MSG-STYLE-EXPORT"    : "Bitte markieren, kopieren und Speichern Sie den Xplug JSON code als Textdatei und drücken Sie danach 'OK'"
-                             , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
-                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
-                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
-                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatible. Bitte prüfen."
-                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Stil kann nicht gespeichert werden. Bitte zuerst Stilnamen ändern."
-
-
-                           },
-                  };
-
-     return C_label[C_lang][p_index];
- }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -1137,13 +963,13 @@ window.pageDesigner.customizeStyle = function(p_title)
     $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV')
         .lovDialog(
                 { modal             : true,
-                  title             : get_label('LBL-STYLE-GALLERY'),
+                  title             : xplug.get_label('LBL-STYLE-GALLERY'),
                   resizable         : true,
 
-                  columnDefinitions : [ { name  : "STYLE_NAME",  title : get_label('LBL-NAME')          },
-                                        { name  : "DARK_STYLE",  title : get_label('LBL-DARK-STYLE')    },
-                                        { name  : "IS_CURRENT",  title : get_label('LBL-CRNTLY-ACTIVE') },
-                                        { name  : "PROTECTED",   title : get_label("LBL-PROTECTED")     },
+                  columnDefinitions : [ { name  : "STYLE_NAME",  title : xplug.get_label('LBL-NAME')          },
+                                        { name  : "DARK_STYLE",  title : xplug.get_label('LBL-DARK-STYLE')    },
+                                        { name  : "IS_CURRENT",  title : xplug.get_label('LBL-CRNTLY-ACTIVE') },
+                                        { name  : "PROTECTED",   title : xplug.get_label("LBL-PROTECTED")     },
                                        ],
 
                   filterLov         : function( pFilters, pRenderLovEntries ) {
@@ -1173,32 +999,32 @@ window.pageDesigner.customizeStyle = function(p_title)
                   valueSelected    : function( pEvent, pData ) {
                                          window.pageDesigner.customizeStyleDialog(
                                             pData.STYLE_NAME,
-                                            get_label('LBL-STYLE-CUSTOM'),
+                                            xplug.get_label('LBL-STYLE-CUSTOM'),
                                             p_title
                                          );
                                      },
 
                    buttons : [
-                               { text  : get_label('BTN-IMPORT'),
+                               { text  : xplug.get_label('BTN-IMPORT'),
                                  click : function(pEvent) {
                                             $( this ).lovDialog("close");
                                             window.pageDesigner.importStyleDialog(p_title);
                                          }
                                },
 
-                               { text  : get_label('BTN-NEW'),
+                               { text  : xplug.get_label('BTN-NEW'),
                                  click : function() {
                                    window.pageDesigner.setStyle('New custom style','SAVE_ONLY');
                                    window.pageDesigner.customizeStyleDialog(
                                       'New custom style',
-                                      get_label('LBL-STYLE-CUSTOM'),
+                                      xplug.get_label('LBL-STYLE-CUSTOM'),
                                       p_title
                                    );
                                    $( this ).lovDialog("close");
                                  }
                                },
 
-                               { text  : get_label('BTN-OK'),
+                               { text  : xplug.get_label('BTN-OK'),
                                  class : 'a-Button--hot',
                                  click : function() {
                                    $( this ).lovDialog("close");
@@ -1225,14 +1051,14 @@ window.pageDesigner.customizeStyle = function(p_title)
    var l_out = apex.util.htmlBuilder();
 
    l_out.markup('<div ID="ORATRONIK_XPLUG_EXPORT_DIALOG">')
-        .markup('<span>' + get_label('MSG-STYLE-EXPORT') + '</span>')
+        .markup('<span>' + xplug.get_label('MSG-STYLE-EXPORT') + '</span>')
         .markup('<div><textarea ID=ORATRONIK_XPLUG_TXTAREA_JSON width=80 height=15 style="width: 100%; height: 250px">')
         .markup('</textarea>')
         .markup('</div>');
 
    $(l_out.html).dialog({
        modal   : true,
-       title   : get_label('LBL-STYLE-EXPORT'),
+       title   : xplug.get_label('LBL-STYLE-EXPORT'),
        width   : 700,
        height  : 400,
        close   : function(pEvent) {
@@ -1241,7 +1067,7 @@ window.pageDesigner.customizeStyle = function(p_title)
                  },
 
        buttons : [
-                   { text  : get_label('BTN-OK'),
+                   { text  : xplug.get_label('BTN-OK'),
                      class : 'a-Button--hot',
                      click : function() {
                         $(this).dialog( "close" );
@@ -1332,23 +1158,23 @@ window.pageDesigner.customizeStyle = function(p_title)
 
     l_out = apex.util.htmlBuilder();
     l_out.markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG">')
-         .markup('<span>' + get_label('MSG-STYLE-IMPORT') + '</span>')
+         .markup('<span>' + xplug.get_label('MSG-STYLE-IMPORT') + '</span>')
          .markup('<div><textarea ID=ORATRONIK_XPLUG_TXTAREA_JSON width=80 height=15 style="width: 100%; height: 250px">')
          .markup('</textarea>')
          .markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG_MSG1" style="display:none; background-color:#0a8040;" width=100%>')
-         .markup('<span style="color: #ffffff;">' + get_label('MSG-STYLE-JSON-OK')   + '</span>')
+         .markup('<span style="color: #ffffff;">' + xplug.get_label('MSG-STYLE-JSON-OK')   + '</span>')
          .markup('</div>')
          .markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG_MSG2" style="display:none; background-color:#ff0000;" width=100%>')
-         .markup('<span style="color: #ffffff;">' + get_label('MSG-STYLE-JSON-NOK')  + '</span>')
+         .markup('<span style="color: #ffffff;">' + xplug.get_label('MSG-STYLE-JSON-NOK')  + '</span>')
          .markup('</div>')
          .markup('<div ID="ORATRONIK_XPLUG_IMPORT_DIALOG_MSG3" style="display:none; background-color:#ff0000;" width=100%>')
-         .markup('<span style="color: #ffffff;">' + get_label('MSG-STYLE-JSON-FAIL') + '</span>')
+         .markup('<span style="color: #ffffff;">' + xplug.get_label('MSG-STYLE-JSON-FAIL') + '</span>')
          .markup('</div>')
          .markup('</div>');
 
     $(l_out.html).dialog({
         modal   : true,
-        title   : get_label('LBL-STYLE-IMPORT'),
+        title   : xplug.get_label('LBL-STYLE-IMPORT'),
         width   : 700,
         height  : 400,
         close   : function(pEvent) {
@@ -1358,7 +1184,7 @@ window.pageDesigner.customizeStyle = function(p_title)
                   },
 
         buttons : [
-                    { text  : get_label('BTN-CLEAR'),
+                    { text  : xplug.get_label('BTN-CLEAR'),
                       click : function() {
                          $('textarea#ORATRONIK_XPLUG_TXTAREA_JSON')
                              .val('')
@@ -1366,13 +1192,13 @@ window.pageDesigner.customizeStyle = function(p_title)
                       },
                     },
 
-                    { text  : get_label('BTN-CANCEL'),
+                    { text  : xplug.get_label('BTN-CANCEL'),
                       click : function() {
                          $(this).dialog( "close" );
                       },
                     },
 
-                    { text     : get_label('BTN-OK'),
+                    { text     : xplug.get_label('BTN-OK'),
                       id       : 'ORATRONIK_XPLUG_STYLE_IMPORT_JSON',
                       class    : 'a-Button--hot',
                       disabled : true,
@@ -1571,7 +1397,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                    value:        l_settings_obj.STYLE_NAME,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.TEXT,
-                                       prompt:         get_label('LBL-NAME'),
+                                       prompt:         xplug.get_label('LBL-NAME'),
                                        isReadOnly:     false,
                                        isRequired:     true,
                                        displayGroupId: "style_id"
@@ -1585,7 +1411,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                    value:        l_settings_obj.DARK_STYLE,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-DARK-STYLE'),
+                                       prompt:         xplug.get_label('LBL-DARK-STYLE'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -1601,7 +1427,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                    value:        l_settings_obj.SHOW_GRID,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-SHOW-GRID'),
+                                       prompt:         xplug.get_label('LBL-SHOW-GRID'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -1622,7 +1448,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                        value:        typeof(l_settings_obj["C"+l]) == 'undefined' ? '' : l_settings_obj["C"+l],
                                        metaData: {
                                            type:           $.apex.propertyEditor.PROP_TYPE.COLOR,
-                                           prompt:         get_label('LBL-COLOR') + ' ' + l,
+                                           prompt:         xplug.get_label('LBL-COLOR') + ' ' + l,
                                            isReadOnly:     false,
                                            isRequired:     true,
                                            displayGroupId: "cust_colors"
@@ -1640,7 +1466,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                    value:        l_settings_obj.OVERRIDE_CSS,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-OVERRIDE-CSS'),
+                                       prompt:         xplug.get_label('LBL-OVERRIDE-CSS'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -1675,17 +1501,17 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                    propertySet: [
                                      {
                                        displayGroupId    : "style_id",
-                                       displayGroupTitle : get_label('LBL-IDENTIFICATION'),
+                                       displayGroupTitle : xplug.get_label('LBL-IDENTIFICATION'),
                                        properties        : l_properties1
                                      },
                                      {
                                        displayGroupId    : "cust_colors",
-                                       displayGroupTitle : get_label('LBL-CUST-COLORS'),
+                                       displayGroupTitle : xplug.get_label('LBL-CUST-COLORS'),
                                        properties        : l_properties2
                                      },
                                      {
                                        displayGroupId    : "advanced",
-                                       displayGroupTitle : get_label('LBL-ADVANCED'),
+                                       displayGroupTitle : xplug.get_label('LBL-ADVANCED'),
                                        collapsed         : true,
                                        properties        : l_properties3
                                      }
@@ -1721,13 +1547,13 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
                             }, // open
                   buttons : [
-                              { text  : get_label('BTN-EXPORT'),
+                              { text  : xplug.get_label('BTN-EXPORT'),
                                 click : function() {
                                             window.pageDesigner.exportStyleDialog(l_style_name);
                                         }
                               },
 
-                              { text  : get_label('BTN-DELETE'),
+                              { text  : xplug.get_label('BTN-DELETE'),
                                 click : function() {
                                   xplug.delStorage(l_style_name_orig,true);
                                   console.debug('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
@@ -1737,7 +1563,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                               },
 
 
-                              { text  : get_label('BTN-APPLY'),
+                              { text  : xplug.get_label('BTN-APPLY'),
                                 click : function() {
                                   //
                                   // Apply style but don't save
@@ -1747,21 +1573,21 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                 disabled : is_protected()
                               },
 
-                              { text  : get_label('BTN-CANCEL'),
+                              { text  : xplug.get_label('BTN-CANCEL'),
                                 click : function() {
                                     $( this ).dialog( "close" );
                                 }
                               },
 
 
-                              { text  : get_label('BTN-SAVE'),
+                              { text  : xplug.get_label('BTN-SAVE'),
                                 class : 'a-Button--hot',
                                 click : function() {
 
                                   // Prevent saving a draft template
                                   var l_new_name = $('input[data-property-id=style_name]').val();
                                   if (l_new_name == 'New custom style') {
-                                     pageDesigner.showError(get_label('MSG-STYLE-IS-DRAFT'));
+                                     pageDesigner.showError(xplug.get_label('MSG-STYLE-IS-DRAFT'));
                                      return;
                                   }
 
@@ -1794,162 +1620,21 @@ var Xplug = function() {
    var C_version = 'Xplug v1.4.0.0 beta 1';
    var C_author  = 'Filip van Vooren';
 
-   this.version       = C_version;
-   this.author        = C_author;
-   this.arr_page_list = [];
-   this.darkmode      = false;
-   this.apex_version  = '?.?.?.?';
-
-
    // Exit if not in APEX Page Designer
    if (typeof(window.pageDesigner) != 'object') {
       return 0;
    }
 
+   this.version       = C_version;
+   this.author        = C_author;
+   this.arr_page_list = [];
+   this.language      = 'en';
+   this.labels        = loadLabels();
+   this.darkmode      = false;
+   this.apex_version  = '?.?.?.?';
 
-  /****************************************************************************
-   * Install XPLUG custom actions
-   ***************************************************************************/
-    function __install_actions()
-    {
-       apex.actions.add(
-        [
-         {
-            name     : "pd-xplug-goto-previous-page",
-            label    : get_label('PREVPAGE'),
-            title    : get_label('PREVPAGE'),
-            shortcut : "Alt+B",
-            action   : function( event, focusElement )
-                       {
-                           window.pageDesigner.goToPrevPage();
-                           return true;
-                       }
-          },
 
-          {
-            name     : "pd-xplug-goto-next-page",
-            label    : get_label('NEXTPAGE'),
-            title    : get_label('NEXTPAGE'),
-            shortcut : "Alt+N",
-            action   : function( event, focusElement )
-                       {
-                           window.pageDesigner.goToNextPage();
-                           return true;
-                       }
-          },
 
-          {
-            name     : "pd-xplug-dock-grid-right",
-            label    : get_label('DOCKRIGHT'),
-            action   : function( event, focusElement )
-                       {
-                           return window.pageDesigner.dockGridRight();
-                       }
-          },
-
-          {
-            name     : "pd-xplug-dock-grid-middle",
-            label    : get_label('DOCKMID'),
-            action   : function( event, focusElement )
-                       {
-                           return window.pageDesigner.dockGridMiddle();
-                       }
-          },
-
-          {
-            name     : "pd-xplug-swap-grid-pane",
-            label    : get_label('BTN-SWAP-GRID-PANE'),
-            title    : get_label('BTN-SWAP-GRID-PANE'),
-            shortcut : "Alt+M",
-            action   : function( event, focusElement )
-                       {
-                         var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
-                         if (l_switched == 'NO') {
-                            return window.pageDesigner.dockGridRight();
-                         } else {
-                            return window.pageDesigner.dockGridMiddle();
-                         }
-                       }
-          },
-
-          {
-            name     : "pd-xplug-disable-tooltips",
-            label    : get_label('NOTOOLTIPS'),
-            action   : function( event, focusElement )
-                       {
-                           return window.pageDesigner.disableTooltips();
-                       }
-          },
-
-          {
-            name     : "pd-xplug-enable-tooltips",
-            label    : get_label('TOOLTIPS'),
-            action   : function( event, focusElement )
-                       {
-                           return window.pageDesigner.enableTooltips();
-                       }
-          },
-
-          {
-            name     : "pd-xplug-set-night-mode",
-            label    : get_label('LBL-MOONLIGHT'),
-            action   : function( event, focusElement )
-                       {
-                           return window.pageDesigner.setNightMode();
-                       }
-          },
-
-          {
-            name     : "pd-xplug-set-day-mode",
-            label    : get_label('LBL-DAYLIGHT'),
-            action   : function( event, focusElement )
-                       {
-                           return window.pageDesigner.setDayMode();
-                       }
-          },
-
-          {
-            name     : "pd-xplug-toggle-day-night-mode",
-            label    : get_label('BTN-TGL-DAY-MOON'),
-            shortcut : "Alt+F10",
-            action   : function( event, focusElement )
-                       {
-                          var l_style2_is_on = $('button#ORATRONIK_XPLUG_moonsun_button span')
-                                                     .attr('class').indexOf('icon-xplug-moon') >= 0;
-
-                          if (l_style2_is_on === true) {
-                             return  apex.actions.invoke('pd-xplug-set-day-mode');
-                          } else {
-                             return  apex.actions.invoke('pd-xplug-set-night-mode');
-                          }
-                       }
-          },
-
-          {
-            name     : "pd-xplug-add-sidekick",
-            label    : get_label('LBL-ADD-SIDEKICK'),
-            shortcut : "????",
-            action   : function( event, focusElement )
-                       {
-                          var l_factor = xplug.getStorage('SIDEKICK_FACTOR', 0.5);
-                          if (l_factor === 0) l_factor = 0.5;
-                          return xplug.installSidekick(l_factor);
-                       }
-          },
-
-          {
-            name     : "pd-xplug-remove-sidekick",
-            label    : get_label('LBL-REMOVE-SIDEKICK'),
-            shortcut : "????",
-            action   : function( event, focusElement )
-                       {
-                          return xplug.deinstallSidekick();
-                       }
-          }
-
-        ]
-       );
-    } // install_actions
 
 
    /****************************************************************************
@@ -2012,15 +1697,13 @@ var Xplug = function() {
                        + l_menu_icon
                        + '</button>');
 
-        __install_actions();
-
         if (localStorage === null) {
            $('#ORATRONIK_XPLUG')
                .on('click', function()
                  { pageDesigner.showError( get_label('MSG-ERR-STORAGE-NOK') ); }
                );
         } else {
-
+           // Rotate xplug icon on startup
            var iDegrees = 0;
            var oHandle  = window.setInterval(
                   function() {
@@ -2030,12 +1713,199 @@ var Xplug = function() {
                   },1);
         }
 
-
-
    } // __init
 
    __init();
 }; // constructor Xplug
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
+// xplug_language.js
+// 2016-01-03 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+
+
+ function loadLabels() {
+   return         { 'en' : {   "DOCK-GRID"    : "Dock grid"
+                             , "DOCKRIGHT"    : "Dock grid on right side"
+                             , "DOCKMID"      : "Dock grid in middle"
+                             , "PREVPAGE"     : "Go to previous page"
+                             , "NEXTPAGE"     : "Go to next page"
+                             , "SHORTCUTS"    : "Customize shortcuts"
+                             , "NOTOOLTIPS"   : "Disable tooltips"
+                             , "TOOLTIPS"     : "Enable tooltips"
+                             , "PRETTYGRID"   : "Grid background image"
+                             , "SETUP"        : "Setup"
+                             , "CONFIGURE"    : "Configure"
+                             , "BUG"          : "Report bug"
+                             , "CUSTOMIZE"    : "Customize"
+                             , "QUICK-CTRL"   : "Quick Controls"
+
+                             , "BTN-NEW"             : "New"
+                             , "BTN-SAVE"            : "Save"
+                             , "BTN-APPLY"           : "Apply"
+                             , "BTN-OK"              : "OK"
+                             , "BTN-CANCEL"          : "Cancel"
+                             , "BTN-DELETE"          : "Delete"
+                             , "BTN-CLEAR"           : "Clear"
+                             , "BTN-EXPORT"          : "Export"
+                             , "BTN-IMPORT"          : "Import"
+                             , "BTN-TGL-DAY-MOON"    : "Toggle day/night mode"
+                             , "BTN-SWAP-GRID-PANE"  : "Swap grid position (middle/right)"
+
+                             , "LBL-STYLE"           : "Theme"
+                             , "LBL-STYLE-DEFAULT"   : "Default themes"
+                             , "LBL-STYLE-GALLERY"   : "Themes Gallery"
+                             , "LBL-STYLE-CUSTOM"    : "Customize theme"
+                             , "LBL-STYLE-EXPORT"    : "Export theme"
+                             , "LBL-STYLE-IMPORT"    : "Import theme"
+                             , "LBL-XPLUG"           : "Xplug"
+                             , "LBL-XPLUG-SETTINGS"  : "Xplug settings"
+                             , "LBL-LEFT"            : "Left"
+                             , "LBL-MIDDLE"          : "Middle"
+                             , "LBL-RIGHT"           : "Right"
+                             , "LBL-NAME"            : "Name"
+                             , "LBL-DARK-STYLE"      : "Night Mode"
+                             , "LBL-CRNTLY-ACTIVE"   : "Currently Active"
+                             , "LBL-PROTECTED"       : "Protected"
+                             , "LBL-SHOW-GRID"       : "Show Grid"
+                             , "LBL-COLOR"           : "Color"
+                             , "LBL-IDENTIFICATION"  : "Identification"
+                             , "LBL-CUST-COLORS"     : "Customize Colors"
+                             , "LBL-OVERRIDE-CSS"    : "Override Xplug CSS"
+                             , "LBL-CUST-CSS"        : "Custom CSS"
+                             , "LBL-ADVANCED"        : "Advanced"
+                             , "LBL-EXPERIMENTAL"    : "Experimental"
+                             , "LBL-SHOW-BUTTONS"    : "Buttons"
+                             , "LBL-SHOW-APPID"      : "Show [app:page] info in window title"
+                             , "LBL-ENABLE-PAGEDET"  : "Enable 'Page Details' tab in sidekick pane"
+                             , "LBL-ENABLE-MARKDOWN" : "Enable markdown format"
+                             , "LBL-DAYLIGHT"        : "Day mode"
+                             , "LBL-MOONLIGHT"       : "Night mode"
+                             , "LBL-DEFAULT-STYLES"  : "Default Themes"
+                             , "LBL-ADD-SIDEKICK"    : "Enable Sidekick"
+                             , "LBL-CLOSE"           : "Close"
+                             , "LBL-HIDE"            : "Hide"
+                             , "LBL-COLLAPSE"        : "Collapse"
+                             , "LBL-EXPAND"          : "Expand"
+                             , "LBL-LANGUAGE"        : "Language"
+
+                             , "TAB-PB-DOCU"         : "Page Details"
+                             , "TAB-PB-MESSAGES"     : "Messages"
+                             , "TAB-PB-SEARCH"       : "Search"
+                             , "TAB-PB-CONSOLE"      : "Console"
+                             , "MSG-TT-ENABLE-OK"    : "Tooltips are enabled."
+                             , "MSG-TT-DISABLE-OK"   : "Tooltips are disabled."
+                             , "MSG-TT-ENABLE-NOK"   : "Could not enable tooltips."
+                             , "MSG-TT-DISABLE-NOK"  : "Could not disable tooltips."
+                             , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
+                             , "MSG-STYLE-EXPORT"    : "Please mark, copy and save the Xplug JSON code in a text file and press 'OK'"
+                             , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
+                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
+                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer theme can't be saved. Please first change the theme name."
+                             , "MSG-RELOAD-LANG"     : "Xplug language changed. Please reload page to activate."
+                           },
+
+                    'de' : {   "DOCK-GRID"    : "Grid positionieren"
+                             , "DOCKRIGHT"    : "Grid rechts außen positionieren"
+                             , "DOCKMID"      : "Grid in der Mitte positionieren"
+                             , "PREVPAGE"     : "Gehe zu vorherige Seite"
+                             , "NEXTPAGE"     : "Gehe zu nächste Seite"
+                             , "SHORTCUTS"    : "Tastenkürzel einrichten"
+                             , "NOTOOLTIPS"   : "Tooltips deaktivieren"
+                             , "TOOLTIPS"     : "Tooltips aktivieren"
+                             , "PRETTYGRID"   : "Hintergrundbild"
+                             , "SETUP"        : "Setup"
+                             , "CONFIGURE"    : "Konfigurieren"
+                             , "BUG"          : "Bug melden"
+                             , "CUSTOMIZE"    : "Anpassen"
+                             , "QUICK-CTRL"   : "Schnelleinstellungen"
+
+                             , "BTN-NEW"             : "Neu"
+                             , "BTN-SAVE"            : "Speichern"
+                             , "BTN-APPLY"           : "Anwenden"
+                             , "BTN-OK"              : "OK"
+                             , "BTN-CANCEL"          : "Abbrechen"
+                             , "BTN-DELETE"          : "Löschen"
+                             , "BTN-CLEAR"           : "Leeren"
+                             , "BTN-EXPORT"          : "Exportieren"
+                             , "BTN-IMPORT"          : "Importieren"
+                             , "BTN-TGL-DAY-MOON"    : "Zwischen Tageslicht / Mondlicht-Modus hin und herschalten."
+                             , "BTN-SWAP-GRID-PANE"  : "Ansicht umschalten"
+
+                             , "LBL-STYLE"           : "Theme"
+                             , "LBL-STYLE-DEFAULT"   : "Standardtheme"
+                             , "LBL-STYLE-GALLERY"   : "Theme Gallerie"
+                             , "LBL-STYLE-CUSTOM"    : "Theme anpassen"
+                             , "LBL-STYLE-EXPORT"    : "Theme exportieren"
+                             , "LBL-STYLE-IMPORT"    : "Theme importieren"
+                             , "LBL-XPLUG"           : "Xplug"
+                             , "LBL-XPLUG-SETTINGS"  : "Xplug Einstellungen"
+                             , "LBL-LEFT"            : "Links"
+                             , "LBL-MIDDLE"          : "Mittig"
+                             , "LBL-RIGHT"           : "Rechts"
+                             , "LBL-NAME"            : "Name"
+                             , "LBL-DARK-STYLE"      : "Dunkler Stil"
+                             , "LBL-CRNTLY-ACTIVE"   : "Ist im Moment aktiv"
+                             , "LBL-PROTECTED"       : "Gesperrt"
+                             , "LBL-SHOW-GRID"       : "Grid anzeigen"
+                             , "LBL-COLOR"           : "Farbe"
+                             , "LBL-IDENTIFICATION"  : "Identifizierung"
+                             , "LBL-CUST-COLORS"     : "Farben anpassen"
+                             , "LBL-OVERRIDE-CSS"    : "Xplug CSS übersteuern"
+                             , "LBL-CUST-CSS"        : "Eigenes CSS"
+                             , "LBL-ADVANCED"        : "Fortgeschritten"
+                             , "LBL-EXPERIMENTAL"    : "Experimentel"
+                             , "LBL-SHOW-BUTTONS"    : "Schaltflächen anzeigen"
+                             , "LBL-SHOW-APPID"      : "Zeige [app:page] info in Fenstertitel"
+                             , "LBL-ENABLE-PAGEDET"  : "Aktiviere Reiter 'Seitendetails' in Sidekick bereich"
+                             , "LBL-ENABLE-MARKDOWN" : "Aktiviere markdown Format"
+                             , "LBL-DAYLIGHT"        : "Tagmodus"
+                             , "LBL-MOONLIGHT"       : "Nachtmodus"
+                             , "LBL-DEFAULT-STYLES"  : "Standardthemes"
+                             , "LBL-ADD-SIDEKICK"    : "Sidekick einschalten"
+                             , "LBL-CLOSE"           : "Schliessen"
+                             , "LBL-HIDE"            : "Ausblenden"
+                             , "LBL-COLLAPSE"        : "Zuklappen"
+                             , "LBL-EXPAND"          : "Aufklappen"
+                             , "LBL-LANGUAGE"        : "Sprache"
+
+                             , "TAB-PB-DOCU"         : "Details der Seite"
+                             , "TAB-PB-MESSAGES"     : "Nachrichten"
+                             , "TAB-PB-SEARCH"       : "Suchen"
+                             , "TAB-PB-CONSOLE"      : "Konsole"
+                             , "MSG-TT-ENABLE-OK"    : "Tooltips sind aktiviert."
+                             , "MSG-TT-DISABLE-OK"   : "Tooltips sind deaktiviert."
+                             , "MSG-TT-ENABLE-NOK"   : "Konnte Tooltips nicht aktivieren."
+                             , "MSG-TT-DISABLE-NOK"  : "Konnte Tooltips nicht deaktivieren."
+                             , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
+                             , "MSG-STYLE-EXPORT"    : "Bitte markieren, kopieren und Speichern Sie den Xplug JSON code als Textdatei und drücken Sie danach 'OK'"
+                             , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
+                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
+                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
+                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatibel. Bitte prüfen."
+                             , "MSG-STYLE-IS-DRAFT"  : "Page Designer Theme kann nicht gespeichert werden. Bitte zuerst Themenamen ändern."
+                             , "MSG-RELOAD-LANG"     : "Xplug Spracheinstellungen geändert. Bitte Seite neu laden um zu aktivieren."
+                           },
+                  };
+ } // loadLabels
+
+
+ Xplug.prototype.setLanguage = function() {
+     this.language = this.getStorage('LANGUAGE','en', true);
+ }; // setLanguage
+
+
+ Xplug.prototype.get_label = function(p_index, p_lang) {
+      var sLang = (p_lang === undefined) ? this.language : p_lang;
+      return this.labels[sLang][p_index];
+ }; // get_label
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -2381,10 +2251,10 @@ Xplug.prototype._set_button_tooltip_prevnext_page = function()
   var l_shortcut_next_page = apex.actions.lookup('pd-xplug-goto-next-page').shortcut;
 
   $("button#ORATRONIK_XPLUG_prev_page_button")
-     .attr('title', '[' + l_shortcut_prev_page + '] ' + get_label('PREVPAGE') );
+     .attr('title', '[' + l_shortcut_prev_page + '] ' + xplug.get_label('PREVPAGE') );
 
   $("button#ORATRONIK_XPLUG_next_page_button")
-     .attr('title', '[' + l_shortcut_next_page + '] ' + get_label('NEXTPAGE') );
+     .attr('title', '[' + l_shortcut_next_page + '] ' + xplug.get_label('NEXTPAGE') );
 }; // _set_button_tooltip_prevnext_page
 
 
@@ -2601,7 +2471,7 @@ Xplug.prototype.deinstallPageButtons = function ()
   var l_shortcut = apex.actions.lookup('pd-xplug-toggle-day-night-mode').shortcut;
 
   $("button#ORATRONIK_XPLUG_moonsun_button")
-     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-TGL-DAY-MOON') );
+     .attr('title', '[' + l_shortcut + '] ' + xplug.get_label('BTN-TGL-DAY-MOON') );
 
 }; // _set_button_tooltip_daynight_mode
 
@@ -2862,7 +2732,7 @@ window.pageDesigner.dockGridMiddle = function()
   var l_shortcut = apex.actions.lookup('pd-xplug-swap-grid-pane').shortcut;
 
   $("button#ORATRONIK_XPLUG_swap_panes_button")
-     .attr('title', '[' + l_shortcut + '] ' + get_label('BTN-SWAP-GRID-PANE') );
+     .attr('title', '[' + l_shortcut + '] ' + xplug.get_label('BTN-SWAP-GRID-PANE') );
 
 }; // _set_button_tooltip_swap_grid
 
@@ -2974,58 +2844,11 @@ window.pageDesigner.dockGridMiddle = function()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $('#ORATRONIK_XPLUG_SIDEKICK_MENU').remove();
 
-var l_menu$ = $("<div id='ORATRONIK_XPLUG_SIDEKICK_MENU'></div>");
-$("body").append(l_menu$);
-
-l_menu$.menu(
-{
-  items : [
-    {
-      type     : "toggle",
-      label    : get_label('LBL-HIDE'),
-      get      : function()
-                 {
-                    return 0;
-                 },
-      set      : function()
-                 {
-                    apex.actions.invoke('pd-xplug-remove-sidekick');
-                 },
-      disabled : function()
-                 {
-                   return false;
-                 }
-    },
-    { type     : "separator" },
-    { type     : "toggle",
-    label    : get_label('LBL-ENABLE-MARKDOWN'),
-    get      : function()
-               {
-                  return xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES';
-               },
-    set      : function()
-               {
-                  var sMode = xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES'
-                            ? 'NO'
-                            : 'YES';
-
-                  xplug.setStorage('MARKDOWN_ENABLED',sMode,true);
-                  xplug.showDocumentation();
-               },
-    disabled : function()
-               {
-                 return false;
-               }
-  },
-
-
-  ]
-});
 
 
 /***************************************************************************
 * Add custom method to Xplug
-* METHOD: installSidekick
+* METHOD: resizeSidekick
 ***************************************************************************/
 Xplug.prototype.resizeSidekick = function(p_factor)
 {
@@ -3052,17 +2875,19 @@ Xplug.prototype.resizeSidekick = function(p_factor)
    // Resize gallery
    console.debug("resizeSidekick: Request for setting gallery width to: " + l_width + ' px');
 
-   if (l_width < 350) {
+   if (l_width < 340) {
      // Collapse Gallery if too small
+     console.debug("resizeSidekick: Gallery width too smal. Collapsing.");
+
      l_width   = 0;
      l_display = 'none';
      $('div#xplug_pb_splitter').addClass('is-collapsed');
-     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-EXPAND'));
+     $('button#xplug_pb_splitter_btn').attr('title', xplug.get_label('LBL-EXPAND'));
    } else {
      // Show Gallery
      l_display = 'block';
      $('div#xplug_pb_splitter').removeClass('is-collapsed');
-     $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
+     $('button#xplug_pb_splitter_btn').attr('title', xplug.get_label('LBL-COLLAPSE'));
    }
    $('#gallery-tabs')
      .css(
@@ -3107,9 +2932,9 @@ Xplug.prototype.resizeSidekick = function(p_factor)
         });
 
     // Set button captions corresponding to pane size (use abbreviation if too small)
-    sCaption1 = get_label('TAB-PB-DOCU');
-    sCaption2 = get_label('TAB-PB-MESSAGES');
-    sCaption3 = get_label('TAB-PB-SEARCH');
+    sCaption1 = xplug.get_label('TAB-PB-DOCU');
+    sCaption2 = xplug.get_label('TAB-PB-MESSAGES');
+    sCaption3 = xplug.get_label('TAB-PB-SEARCH');
     if (l_maxwidth - l_width < 350) {
        $('input#xplug_search_field').attr('size',20);
        sCaption1 = sCaption1.substring(0,1) + '..';
@@ -3179,9 +3004,59 @@ Xplug.prototype.installSidekick = function(p_factor)
     }
 
 
+    // Initialize menu
+    $('div#ORATRONIK_XPLUG_SIDEKICK_MENU').remove();
+    var l_menu$ = $("<div id='ORATRONIK_XPLUG_SIDEKICK_MENU'></div>");
+    $("body").append(l_menu$);
+
+      l_menu$.menu(
+      {
+        items : [
+          {
+            type     : "toggle",
+            label    : xplug.get_label('LBL-HIDE'),
+            get      : function()
+                       {
+                          return 0;
+                       },
+            set      : function()
+                       {
+                          apex.actions.invoke('pd-xplug-remove-sidekick');
+                       },
+            disabled : function()
+                       {
+                         return false;
+                       }
+          },
+
+          { type     : "separator" },
+          { type     : "toggle",
+            label    : xplug.get_label('LBL-ENABLE-MARKDOWN'),
+            get      : function()
+                       {
+                          return xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES';
+                       },
+            set      : function()
+                       {
+                         var sMode = xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES'
+                                   ? 'NO'
+                                   : 'YES';
+
+                         xplug.setStorage('MARKDOWN_ENABLED',sMode,true);
+                         xplug.showDocumentation();
+                       },
+          disabled : function()
+                     {
+                       return (xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO') === 'NO');
+                     }
+          }
+        ]
+      });
+
+
   // Sidekick tab "Page Details"
   if (sEnablePageDetTab == 'YES') {
-     sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + get_label('TAB-PB-DOCU') + '</a></li>';
+     sPageDetailsLI  = '<li><a href="#xplug_pb_docu">' + xplug.get_label('TAB-PB-DOCU') + '</a></li>';
      sPageDetailsDIV = '<div ID="xplug_pb_docu"   style="overflow-y: scroll; height: 100%;"></div>';
      xplug.setStorage('SIDEKICK-TAB-PAGEDET','YES');
   }
@@ -3196,8 +3071,8 @@ Xplug.prototype.installSidekick = function(p_factor)
        +   '<div ID="xplug_pb_tabs" class="a-Tabs-toolbar a-Toolbar">'
        +     '<ul>'
        +       sPageDetailsLI
-       +       '<li><a href="#xplug_pb_msgview">'  + get_label('TAB-PB-MESSAGES')    + '</a></li>'
-       +       '<li><a href="#xplug_pb_search">'   + get_label('TAB-PB-SEARCH')      + '</a></li>'
+       +       '<li><a href="#xplug_pb_msgview">'  + xplug.get_label('TAB-PB-MESSAGES')    + '</a></li>'
+       +       '<li><a href="#xplug_pb_search">'   + xplug.get_label('TAB-PB-SEARCH')      + '</a></li>'
        +     '</ul>'
        +    '<div style="text-align: right">'
        +     '<span id="xplug_pb_badge" class="a-AlertBadge" style="margin-top: 10px; cursor: pointer;  "></span>'
@@ -3211,7 +3086,7 @@ Xplug.prototype.installSidekick = function(p_factor)
        + '</div>'
   );
 
-  $('button#xplug_pb_splitter_btn').attr('title', get_label('LBL-COLLAPSE'));
+  $('button#xplug_pb_splitter_btn').attr('title', xplug.get_label('LBL-COLLAPSE'));
 
   // Add hamburger menu
   $('div#xplug_pb_right')
@@ -3439,33 +3314,33 @@ Xplug.prototype.showDocumentation = function ()
   sPageComment = typeof(oProp) == 'object' ? oProp.getDisplayValue()
                                            : '';
 
+  // Performance. Return early if there's nothing to show anyway.
+  sFragment = '';
+  if (sPageComment.length > 0) {
+     if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
+        // Setup custom markdown link renderer
+        // Is required, because links always need to be opened in a new tab/window.
+        // Otherwise we would leave Page Designer
+        oRenderer = new marked.Renderer();
+        oRenderer.link  = function(shref, sTitle, sText) {
+                            var sURL =  '<a href="' + shref + '" target="_blank">' + sText + '</a>';
+                            return sURL;
+                          };
 
-  // Setup custom markdown link renderer
-  // Is required, because links always need to be opened in a new tab/window.
-  // Otherwise we would leave Page Designer
-  oRenderer = new marked.Renderer();
-  oRenderer.link  = function(shref, sTitle, sText) {
-                      var sURL =  '<a href="' + shref + '" target="_blank">' + sText + '</a>';
-                      return sURL;
-                    };
+        marked.setOptions({ sanitize : true,
+                            gfm      : true,                                     // Github markdown mode
+                            breaks   : true,                                     // GFM line break mode
+                            renderer : oRenderer });
 
-  marked.setOptions({ sanitize : true,
-                      gfm      : true,                                     // Github markdown mode
-                      breaks   : true,                                     // GFM line break mode
-                      renderer : oRenderer });
-
-
-  // Render markdown if enabled, but always sanitize output for avoiding XSS
-  if (xplug.getStorage('MARKDOWN_ENABLED','NO',true) == 'YES') {
-    sFragment = marked(sPageComment);                                      // Using marked.js
-  } else {
-    sFragment = '<pre>' + sPageComment + '</pre><br>';
+        sFragment = marked(sPageComment);                                        // Using marked.js
+     } else {
+        sFragment = '<pre>' + sPageComment + '</pre><br>';
+     }
+     sFragment = filterXSS(sFragment);                                           // Sanitize with xss.js
+     sFragment += '<br>';
   }
-  sFragment = filterXSS(sFragment);                                        // Using xss.js
-
 
   // Build page details
-  if (sFragment.length > 0) sFragment += '<br>';
   sHTML = sFragment
         + '<h2>Page history</h2>'
         + 'Latest change by ' + sChangedBy + ' on ' + sChangedOn;
@@ -3606,12 +3481,169 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
+// xplug_actions.js
+// 2016-01-03 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+/* jshint -W083 */
+
+
+/****************************************************************************
+ * Install XPLUG custom actions
+ ***************************************************************************/
+ Xplug.prototype.install_actions = function()
+  {
+     apex.actions.add(
+      [
+       {
+          name     : "pd-xplug-goto-previous-page",
+          label    : xplug.get_label('PREVPAGE'),
+          title    : xplug.get_label('PREVPAGE'),
+          shortcut : "Alt+B",
+          action   : function( event, focusElement )
+                     {
+                         window.pageDesigner.goToPrevPage();
+                         return true;
+                     }
+        },
+
+        {
+          name     : "pd-xplug-goto-next-page",
+          label    : xplug.get_label('NEXTPAGE'),
+          title    : xplug.get_label('NEXTPAGE'),
+          shortcut : "Alt+N",
+          action   : function( event, focusElement )
+                     {
+                         window.pageDesigner.goToNextPage();
+                         return true;
+                     }
+        },
+
+        {
+          name     : "pd-xplug-dock-grid-right",
+          label    : xplug.get_label('DOCKRIGHT'),
+          action   : function( event, focusElement )
+                     {
+                         return window.pageDesigner.dockGridRight();
+                     }
+        },
+
+        {
+          name     : "pd-xplug-dock-grid-middle",
+          label    : xplug.get_label('DOCKMID'),
+          action   : function( event, focusElement )
+                     {
+                         return window.pageDesigner.dockGridMiddle();
+                     }
+        },
+
+        {
+          name     : "pd-xplug-swap-grid-pane",
+          label    : xplug.get_label('BTN-SWAP-GRID-PANE'),
+          title    : xplug.get_label('BTN-SWAP-GRID-PANE'),
+          shortcut : "Alt+M",
+          action   : function( event, focusElement )
+                     {
+                       var l_switched = xplug.getStorage('PANES_SWITCHED','NO');
+                       if (l_switched == 'NO') {
+                          return window.pageDesigner.dockGridRight();
+                       } else {
+                          return window.pageDesigner.dockGridMiddle();
+                       }
+                     }
+        },
+
+        {
+          name     : "pd-xplug-disable-tooltips",
+          label    : xplug.get_label('NOTOOLTIPS'),
+          action   : function( event, focusElement )
+                     {
+                         return window.pageDesigner.disableTooltips();
+                     }
+        },
+
+        {
+          name     : "pd-xplug-enable-tooltips",
+          label    : xplug.get_label('TOOLTIPS'),
+          action   : function( event, focusElement )
+                     {
+                         return window.pageDesigner.enableTooltips();
+                     }
+        },
+
+        {
+          name     : "pd-xplug-set-night-mode",
+          label    : xplug.get_label('LBL-MOONLIGHT'),
+          action   : function( event, focusElement )
+                     {
+                         return window.pageDesigner.setNightMode();
+                     }
+        },
+
+        {
+          name     : "pd-xplug-set-day-mode",
+          label    : xplug.get_label('LBL-DAYLIGHT'),
+          action   : function( event, focusElement )
+                     {
+                         return window.pageDesigner.setDayMode();
+                     }
+        },
+
+        {
+          name     : "pd-xplug-toggle-day-night-mode",
+          label    : xplug.get_label('BTN-TGL-DAY-MOON'),
+          shortcut : "Alt+F10",
+          action   : function( event, focusElement )
+                     {
+                        var l_style2_is_on = $('button#ORATRONIK_XPLUG_moonsun_button span')
+                                                   .attr('class').indexOf('icon-xplug-moon') >= 0;
+
+                        if (l_style2_is_on === true) {
+                           return  apex.actions.invoke('pd-xplug-set-day-mode');
+                        } else {
+                           return  apex.actions.invoke('pd-xplug-set-night-mode');
+                        }
+                     }
+        },
+
+        {
+          name     : "pd-xplug-add-sidekick",
+          label    : xplug.get_label('LBL-ADD-SIDEKICK'),
+          shortcut : "????",
+          action   : function( event, focusElement )
+                     {
+                        var l_factor = xplug.getStorage('SIDEKICK_FACTOR', 0.5);
+                        if (l_factor === 0) l_factor = 0.5;
+                        return xplug.installSidekick(l_factor);
+                     }
+        },
+
+        {
+          name     : "pd-xplug-remove-sidekick",
+          label    : xplug.get_label('LBL-REMOVE-SIDEKICK'),
+          shortcut : "????",
+          action   : function( event, focusElement )
+                     {
+                        return xplug.deinstallSidekick();
+                     }
+        }
+
+      ]
+     );
+}; // install_actions
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
 // xplug_menu.js
 // 2016-01-03 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* jshint laxbreak: true, laxcomma: true */
 /* jshint -W030 */
 /* jshint -W083 */
+
 
 Xplug.prototype.install_menu = function() {
 
@@ -3673,11 +3705,11 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "action",
-           label    : get_label('LBL-STYLE-GALLERY'),
+           label    : xplug.get_label('LBL-STYLE-GALLERY'),
            icon    : "icon-theme-roller",
            action   : function()
                       {
-                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
+                         window.pageDesigner.customizeStyle(xplug.get_label('LBL-STYLE-CUSTOM'));
                       },
            disabled : function()
                       {
@@ -3715,9 +3747,9 @@ Xplug.prototype.install_menu = function() {
                    },
 
             choices : [
-                {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
-                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
-                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
+                {   label : xplug.get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
+                {   label : xplug.get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
+                {   label : xplug.get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
             ]
          }
        );
@@ -3732,7 +3764,7 @@ Xplug.prototype.install_menu = function() {
        l_arr_menu_items.push(
          {
            type     : "toggle",
-           label    : get_label('NOTOOLTIPS'),
+           label    : xplug.get_label('NOTOOLTIPS'),
            get      : function()
                       {
                          return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
@@ -3743,14 +3775,14 @@ Xplug.prototype.install_menu = function() {
                         if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
 
                            apex.actions.invoke('pd-xplug-enable-tooltips')
-                              ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
-                              : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
+                              ? pageDesigner.showSuccess(xplug.get_label('MSG-TT-ENABLE-OK'))
+                              : pageDesigner.showError(xplug.get_label('MSG-TT-ENABLE-NOK'));
 
                         } else {
 
                             apex.actions.invoke('pd-xplug-disable-tooltips')
-                            ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
-                            : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
+                            ? pageDesigner.showSuccess(xplug.get_label('MSG-TT-DISABLE-OK'))
+                            : pageDesigner.showError(xplug.get_label('MSG-TT-DISABLE-NOK'));
                         }
 
                         // Remove notification afer 1.5 seconds
@@ -3766,7 +3798,7 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "toggle",
-           label    : get_label('LBL-ADD-SIDEKICK'),
+           label    : xplug.get_label('LBL-ADD-SIDEKICK'),
            get      : function()
                       {
                          return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES';
@@ -3805,7 +3837,7 @@ Xplug.prototype.install_menu = function() {
       items : [
         {
           type     : "subMenu",
-          label    : get_label('DOCK-GRID'),
+          label    : xplug.get_label('DOCK-GRID'),
           icon     : "icon-region-native-sql-report",
           menu     : { items : install_SubmenuDockGrid() },
           disabled : function() {
@@ -3816,7 +3848,7 @@ Xplug.prototype.install_menu = function() {
         { type   : "separator" },
 
         { type     : "subMenu",
-          label    : get_label('QUICK-CTRL'),
+          label    : xplug.get_label('QUICK-CTRL'),
           menu     : { items : install_SubmenuQuickControls() },
           disabled : function()
                      {
@@ -3828,7 +3860,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type     : "subMenu",
-          label    : get_label('LBL-STYLE'),
+          label    : xplug.get_label('LBL-STYLE'),
           menu     : { items : __install_SubmenuPickStyles() },
           disabled : function()
                      {
@@ -3840,7 +3872,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "action",
-          label   : get_label('CONFIGURE'),
+          label   : xplug.get_label('CONFIGURE'),
           icon    : "icon-tools",
           action   : xplug.configureDialog,
           disabled : function()
@@ -3849,8 +3881,24 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
-        { type     : "separator"
+        { type     : "separator" },
+
+
+        { type    : "action",
+          label   : xplug.get_label('BUG'),
+          icon    : "icon-bug",
+          action  : function() {
+                         window.open('https://gitreports.com/issue/FilipVanVooren/Xplug-for-APEX-Page-Designer');
+                    },
+          disabled : function()
+                     {
+                       return 0;
+                     }
         },
+
+
+        { type     : "separator" },
+
         {
           type     : "action",
           label    : xplug.getVersion(),
@@ -3908,7 +3956,7 @@ Xplug.prototype.configureDialog = function()
     l_dialog$ = $(l_out.html)
         .dialog(
                 { modal   : false,
-                  title   : get_label('LBL-XPLUG-SETTINGS'),
+                  title   : xplug.get_label('LBL-XPLUG-SETTINGS'),
                   width   : 450,
 
                   close   : function(pEvent) {
@@ -4009,7 +4057,7 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('DEFAULT_STYLE1','NONE',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-DAYLIGHT'),
+                                       prompt:         xplug.get_label('LBL-DAYLIGHT'),
                                        lovValues:      getStyleLOV('DAYLIGHT'),
                                        isReadOnly:     false,
                                        isRequired:     true,
@@ -4025,7 +4073,7 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('DEFAULT_STYLE2','Moonlight',true),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
-                                       prompt:         get_label('LBL-MOONLIGHT'),
+                                       prompt:         xplug.get_label('LBL-MOONLIGHT'),
                                        lovValues:      getStyleLOV('MOONLIGHT'),
                                        isReadOnly:     false,
                                        isRequired:     true,
@@ -4044,7 +4092,7 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('APP+ID-IN-PD-TITLE','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-SHOW-APPID'),
+                                       prompt:         xplug.get_label('LBL-SHOW-APPID'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
                                        isReadOnly:     false,
@@ -4065,9 +4113,26 @@ Xplug.prototype.configureDialog = function()
                                    value:        xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO'),
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         get_label('LBL-ENABLE-PAGEDET'),
+                                       prompt:         xplug.get_label('LBL-ENABLE-PAGEDET'),
                                        noValue:        "NO",
                                        yesValue:       "YES",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "experimental"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               });
+
+                               l_properties4.push(
+                                 {
+                                   propertyName: "language",
+                                   value:        xplug.getStorage('LANGUAGE','en',true),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         xplug.get_label('LBL-LANGUAGE'),
+                                       lovValues:      [ { d: "English", r: "en" },
+                                                         { d: "German",  r: "de" } ],
                                        isReadOnly:     false,
                                        isRequired:     true,
                                        displayGroupId: "experimental"
@@ -4086,22 +4151,22 @@ Xplug.prototype.configureDialog = function()
                                    propertySet: [
                                      {
                                        displayGroupId    : "buttons",
-                                       displayGroupTitle : get_label('LBL-SHOW-BUTTONS'),
+                                       displayGroupTitle : xplug.get_label('LBL-SHOW-BUTTONS'),
                                        properties        : l_properties1
                                      },
                                      {
                                        displayGroupId    : "style_id",
-                                       displayGroupTitle : get_label('LBL-DEFAULT-STYLES'),
+                                       displayGroupTitle : xplug.get_label('LBL-DEFAULT-STYLES'),
                                        properties        : l_properties2
                                      },
                                      {
                                        displayGroupId    : "advanced",
-                                       displayGroupTitle : get_label('LBL-ADVANCED'),
+                                       displayGroupTitle : xplug.get_label('LBL-ADVANCED'),
                                        properties        : l_properties3
                                      },
                                      {
                                        displayGroupId    : "experimental",
-                                       displayGroupTitle : get_label('LBL-EXPERIMENTAL'),
+                                       displayGroupTitle : xplug.get_label('LBL-EXPERIMENTAL'),
                                        properties        : l_properties4
                                      }
                                    ] // propertySet
@@ -4132,15 +4197,16 @@ Xplug.prototype.configureDialog = function()
 
                             }, // open
                   buttons : [
-                              { text  : get_label('BTN-CANCEL'),
+                              { text  : xplug.get_label('BTN-CANCEL'),
                                 click : function() {
                                     $( this ).dialog( "close" );
                                 }
                               },
 
-                              { text  : get_label('BTN-APPLY'),
+                              { text  : xplug.get_label('BTN-APPLY'),
                                 click : function() {
-                                  var sThemeSwitch, sPageNav, sSwapGrid, sStyle1, sStyle2, sPDTitle, sTabPageDet;
+                                  var sThemeSwitch, sPageNav, sSwapGrid, sStyle1, sStyle2, sPDTitle,
+                                      sTabPageDet, sLanguage, sOldLangVal, sNewLangVal;
 
                                   if (xplug.apex_version.substring(0,3) == '5.0') {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
@@ -4150,6 +4216,7 @@ Xplug.prototype.configureDialog = function()
                                      sStyle2      = '#ConfigDlgPE_5';
                                      sPDTitle     = 'input[name=ConfigDlgPE_6_name]:checked';
                                      sTabPageDet  = 'input[name=ConfigDlgPE_7_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_8';
                                   } else {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
                                      sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
@@ -4158,6 +4225,7 @@ Xplug.prototype.configureDialog = function()
                                      sStyle2      = '#ConfigDlgPE_4';
                                      sPDTitle     = 'input[name=ConfigDlgPE_5_name]:checked';
                                      sTabPageDet  = 'input[name=ConfigDlgPE_6_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_7';
                                   }
 
                                   if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
@@ -4197,7 +4265,17 @@ Xplug.prototype.configureDialog = function()
                                     );
                                   }
 
-                                  $( this ).dialog( "close" );
+
+                                  sOldLangVal = xplug.getStorage('LANGUAGE','en', true);
+                                  sNewLangVal = $(sLanguage).val();
+                                  if (sOldLangVal != sNewLangVal) {
+                                     xplug.setStorage('LANGUAGE',$(sLanguage).val(),true);
+                                     $(this).dialog("close");
+                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));
+                                  } else {
+                                    $(this).dialog("close");
+                                  }
+
                                 },
                                 disabled : false
                               }
@@ -4259,6 +4337,8 @@ if (typeof(window.pageDesigner) == 'object') {
 
    console.info('XPLUG - Detected APEX version: ' + xplug.probeAPEXVersion() );
 
+   xplug.setLanguage();
+   xplug.install_actions();
    xplug.install_menu();
    xplug.loadSettings();
 }

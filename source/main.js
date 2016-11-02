@@ -13,6 +13,8 @@ if (typeof(window.pageDesigner) == 'object') {
 
    console.info('XPLUG - Detected APEX version: ' + xplug.probeAPEXVersion() );
 
+   xplug.setLanguage();
+   xplug.install_actions();
    xplug.install_menu();
    xplug.loadSettings();
 }
