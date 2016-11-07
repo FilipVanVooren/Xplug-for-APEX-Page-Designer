@@ -299,6 +299,11 @@
 //                         - Some serious refactoring in constructor and language part of Xplug.
 //                           Probably introduced some bugs now, but it's required for multi-language support.
 //
+//
+//   V1.4.0.0 2016-11-07 * Multiple changes
+//                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
+//                                    I want folks to use standard APEX 5.1 Page Designer functionality
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

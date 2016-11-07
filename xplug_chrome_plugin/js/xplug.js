@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Wed Nov 02 2016 01:09:58
+// Built using Gulp. Built date: Mon Nov 07 2016 20:29:26
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -299,6 +299,11 @@
 //                         - Added possibility to select the GUI language in the configuration dialog
 //                         - Some serious refactoring in constructor and language part of Xplug.
 //                           Probably introduced some bugs now, but it's required for multi-language support.
+//
+//
+//   V1.4.0.0 2016-11-07 * Multiple changes
+//                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
+//                                    I want folks to use standard APEX 5.1 Page Designer functionality
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -1617,7 +1622,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.4.0.0 beta 1';
+   var C_version = 'Xplug v1.4.0.0 beta 2';
    var C_author  = 'Filip van Vooren';
 
    // Exit if not in APEX Page Designer
@@ -1632,9 +1637,6 @@ var Xplug = function() {
    this.labels        = loadLabels();
    this.darkmode      = false;
    this.apex_version  = '?.?.?.?';
-
-
-
 
 
    /****************************************************************************
@@ -3832,21 +3834,10 @@ Xplug.prototype.install_menu = function() {
     var l_menu$ = $("<div id='ORATRONIK_XPLUG_PLUGIN_MENU'></div>");
     $("body").append(l_menu$);
 
-    l_menu$.menu(
+
+    var oItems =
     {
       items : [
-        {
-          type     : "subMenu",
-          label    : xplug.get_label('DOCK-GRID'),
-          icon     : "icon-region-native-sql-report",
-          menu     : { items : install_SubmenuDockGrid() },
-          disabled : function() {
-                        return false;
-                     },
-        },
-
-        { type   : "separator" },
-
         { type     : "subMenu",
           label    : xplug.get_label('QUICK-CTRL'),
           menu     : { items : install_SubmenuQuickControls() },
@@ -3907,7 +3898,31 @@ Xplug.prototype.install_menu = function() {
                      }
         }
       ]
-    });
+    };
+
+
+    // For APEX 5.0 only!
+    if (xplug.apex_version.substring(0,3) == '5.0') {
+
+        oItems.items.unshift(
+        {
+          type     : "subMenu",
+          label    : xplug.get_label('DOCK-GRID'),
+          icon     : "icon-region-native-sql-report",
+          menu     : { items : install_SubmenuDockGrid() },
+          disabled : function() {
+                        return false;
+                     },
+        },
+
+        { type   : "separator" }
+      );
+
+    } // if
+
+
+    // Build the menu
+    l_menu$.menu(oItems);
 }; // install_menu
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

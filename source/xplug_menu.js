@@ -197,21 +197,10 @@ Xplug.prototype.install_menu = function() {
     var l_menu$ = $("<div id='ORATRONIK_XPLUG_PLUGIN_MENU'></div>");
     $("body").append(l_menu$);
 
-    l_menu$.menu(
+
+    var oItems =
     {
       items : [
-        {
-          type     : "subMenu",
-          label    : xplug.get_label('DOCK-GRID'),
-          icon     : "icon-region-native-sql-report",
-          menu     : { items : install_SubmenuDockGrid() },
-          disabled : function() {
-                        return false;
-                     },
-        },
-
-        { type   : "separator" },
-
         { type     : "subMenu",
           label    : xplug.get_label('QUICK-CTRL'),
           menu     : { items : install_SubmenuQuickControls() },
@@ -272,5 +261,29 @@ Xplug.prototype.install_menu = function() {
                      }
         }
       ]
-    });
+    };
+
+
+    // For APEX 5.0 only!
+    if (xplug.apex_version.substring(0,3) == '5.0') {
+
+        oItems.items.unshift(
+        {
+          type     : "subMenu",
+          label    : xplug.get_label('DOCK-GRID'),
+          icon     : "icon-region-native-sql-report",
+          menu     : { items : install_SubmenuDockGrid() },
+          disabled : function() {
+                        return false;
+                     },
+        },
+
+        { type   : "separator" }
+      );
+
+    } // if
+
+
+    // Build the menu
+    l_menu$.menu(oItems);
 }; // install_menu
