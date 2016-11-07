@@ -265,7 +265,7 @@ Xplug.prototype.install_menu = function() {
 
 
     // For APEX 5.0 only!
-    if (xplug.apex_version.substring(0,3) == '5.0') {
+    if (xplug.apex_version.substring(0,4) === '5.0.') {
 
         oItems.items.unshift(
         {

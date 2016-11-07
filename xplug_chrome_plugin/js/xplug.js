@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Nov 07 2016 20:29:26
+// Built using Gulp. Built date: Mon Nov 07 2016 20:58:47
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -3902,7 +3902,7 @@ Xplug.prototype.install_menu = function() {
 
 
     // For APEX 5.0 only!
-    if (xplug.apex_version.substring(0,3) == '5.0') {
+    if (xplug.apex_version.substring(0,4) === '5.0.') {
 
         oItems.items.unshift(
         {
@@ -4348,9 +4348,10 @@ Xplug.prototype.probeAPEXVersion = function ()
 /* jshint -W030 */
 
 if (typeof(window.pageDesigner) == 'object') {
-   window.xplug = new Xplug();
+   window.xplug       = new Xplug();
+   xplug.apex_version = xplug.probeAPEXVersion();
 
-   console.info('XPLUG - Detected APEX version: ' + xplug.probeAPEXVersion() );
+   console.info('XPLUG - Detected APEX version: ' + xplug.apex_version);
 
    xplug.setLanguage();
    xplug.install_actions();
