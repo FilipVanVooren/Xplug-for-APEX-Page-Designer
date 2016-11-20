@@ -9,8 +9,13 @@
 /* jshint -W030 */
 
 if (typeof(window.pageDesigner) == 'object') {
-   window.xplug = new Xplug();
+   window.xplug       = new Xplug();
+   xplug.apex_version = xplug.probeAPEXVersion();
 
+   console.info('XPLUG - Detected APEX version: ' + xplug.apex_version);
+
+   xplug.setLanguage();
+   xplug.install_actions();
    xplug.install_menu();
    xplug.loadSettings();
 }

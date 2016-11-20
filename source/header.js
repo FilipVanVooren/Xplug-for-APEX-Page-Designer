@@ -131,38 +131,38 @@
 //                     - Bug-fix: fix problem with undefined variables while loading page in setWinTitle method.
 //                     - Bug-fix: removed hard code label parameter in xplug_menu.js
 //                     - Renamed submenu 'Customize' to 'Setup'
-//                     - Added xplug_powerbox.js for displaying errors and advisor stuff
+//                     - Added xplug_sidekick.js for displaying errors and advisor stuff
 //
 // V1.2.2 2016-02-09 * Multiple changes
-//                     - Bug-fix: Powerbox - Show Alertbadge when error is displayed
-//                     - Bug-Fix: Powerbox - Resize gallery when Powerbox is drawn for the first time, making
+//                     - Bug-fix: Sidekick - Show Alertbadge when error is displayed
+//                     - Bug-Fix: Sidekick - Resize gallery when Sidekick is drawn for the first time, making
 //                                           sure that correct height is taken.
 //
 // V1.2.2 2016-02-14 * Multiple changes
-//                     - Addded menu option for showing/hiding powerbox pane (Errors/Advisor)
+//                     - Addded menu option for showing/hiding sidekick pane (Errors/Advisor)
 //                     - Bug-fix: Registered additional observer in xplug_powebox.js for making sure messages
-//                                get tracked as soon as the powerbox is opened.
+//                                get tracked as soon as the sidekick is opened.
 //
 // V1.2.2 2016-02-17 * Multiple changes
 //                     - Bug-fix: Adjusted manifest for google chrome plugin (plug_chrome_plugin/manifest.json)
 //                                We only want the Xplug plugin to be activated when dealing with
 //                                page 4500 (Page Designer)
-//                     - Bug-Fix: The jQuery UI tabs were not yet working in the powerbox, due to invalid DIV
+//                     - Bug-Fix: The jQuery UI tabs were not yet working in the sidekick, due to invalid DIV
 //                                ordering. Is now resolved.
 //                     - Bug-fix: jQuery UI tab labels were hardcoded in English, now using xplug_language.js
 //
 // V1.2.2 2016-03-07 * Multiple Changes
-//                     - Removed Advisor/Console tabs in powerbox pane for now
-//                     - Added possibility to horizontally expand/restore size of powerbox pane
+//                     - Removed Advisor/Console tabs in sidekick pane for now
+//                     - Added possibility to horizontally expand/restore size of sidekick pane
 //
 // V1.2.2 2016-04-10 * Some minor Changes
 //                     - Introduced new button for swapping grid pane from middle<->right
-//                     - Worked on powerbox. Added possibility to horizontally expand/collaps pane
+//                     - Worked on sidekick. Added possibility to horizontally expand/collaps pane
 //
 // V1.2.2 2016-04-19 * Bug-Fixes
-//                     - Fixed wrong background color for buttons in powerbox, was particulary noticeable in
+//                     - Fixed wrong background color for buttons in sidekick, was particulary noticeable in
 //                       Moonlight mode.
-//                     - Adjusted size factor for powerbox, for making sure gallery still looks 'OK' if window
+//                     - Adjusted size factor for sidekick, for making sure gallery still looks 'OK' if window
 //                       gets too small.
 //                     - This version is not officially released, functionality will be part of upcoming v1.3
 //
@@ -192,17 +192,17 @@
 //
 //
 // V1.3.0 2016-05-24 * Multiple changes
-//                     - Added new 'Search' tab to Powerbox
+//                     - Added new 'Search' tab to Sidekick
 //                     - Renamed some labels
 //
 // V1.3.0.1 2016-06-25 * Several tweaks and Bug-Fixes
 //                       - Bug-fix: Configuration of page designer title wasn't working anymore. Fixed this.
 //                       - Bug-Fix: Added vertical scrollbar to Search function
-//                       - Change:  Temporarly removed possibility to resize Powerbox pane
-//                       - Change:  Completed work on search functionality in Powerbox pane
+//                       - Change:  Temporarly removed possibility to resize Sidekick pane
+//                       - Change:  Completed work on search functionality in Sidekick pane
 //
 // V1.3.0.1 2016-06-28 * Multiple changes
-//                       - Adjusted messages badge position in powerbox pane
+//                       - Adjusted messages badge position in sidekick pane
 //                       - This is the official released version
 //
 // V1.3.0.2 2016-07-01 * Bug-fix
@@ -214,12 +214,122 @@
 //                         Changes are in firefox packaging and GULP task file due to restrictiions set by
 //                         Firefox add-on reviewers.
 //                       - Bug-fix: to prevent security a vulnerability, a change was made to the setTimeout
-//                                  method in xplug_powerbox.js as weg got the below warning before:
+//                                  method in xplug_sidekick.js as weg got the below warning before:
 //                                  In order to prevent vulnerabilities, the `setTimeout` and `setInterval` functions
 //                                  should be called only with function expressions as their first argument.
+//
+// V1.4.0.0 2016-07-28 * Multiple changes
+//                       - Code refactoring for next/previous button handling. Moved to file xcplug_prevnext_page.js
+//                       - Code refactoring for day/night mode. Moved to file xplug_daynight_mode.js
+//                       - Removed some dead code in xplug_constructor.js
+//                       - Xplug buttons now have a mouseover title (including shortcut)
+//
+// V1.4.0.0 2016-07-29 * Multiple changes
+//                       - Refactored & renamed some script files
+//                       - Bug-fix: When loading Page Designer in Dark-Mode, the sun-icon was shown.
+//                                  Is solved now, moon-icon is shown.
+//
+// V1.4.0.0 2016-08-30 * Multiple changes
+//                       - Added probeAPEXVersion() function to xplug_prototypes.js
+//                       - Adjusted message level from debug to info for some console log messages
+//
+// V1.4.0.0 2016-09-04 * Multiple changes
+//                       - Adjust CSS of buttons depending on APEX version 5.1 or 5.0
+//                       - Code refactoring, introduced xplug_feature_window_title.js
+//                       - Bug-fix: Previous / Next page buttons did not work after new page was created.
+//                                  This is now resolved by refreshing the list of pages, if page can't be Found
+//                                  during page hopping.
+//                       - Bug-fix: Shortcut for swap grid pane was invalid, now solved by assigning new key Alt+M
+//
+// V1.4.0.0 2016-09-16 * Multiple changes
+//                        - Some refactopring
+//                        - Renamed 'Powerbox pane' to 'Sidekick panm' and rename file xplug_powerbox.js
+//                          to xplug_feature_sidekick.js
+//                        - Adjusted CSS of icon buttons for APEX 5.1
+//                        - Added "Documentation" tab to the sidekick pane, used for showing page comments in
+//                          Markdown format
+//
+// V1.4.0.0 2016-09-17 * Removed Markdown stuff again, risk for XSS injection is too high.
+//
+// V1.4.0.0 2016-09-25 * Multiple changes
+//                         - Configuration dialog - Hide certain options if APEX 5.1 is detected
+//                           (swap grid, page navigation buttons)
+//                         - Configuration dialog - Add new options group "Experimental" and added new option
+//                           "Enable 'Page Details' tab in sidekick pane
+//                         - Bug fix: Enable foreground/background color in new 'Page Details' tab in sidekick pane
+//                         - Bug fix: Fixed padding in Page Details tab in sidekick pane
+//                         - Bug fix: Refresh page details tab if page is saved (and sidekick + tab is enabled)
+//
+// V1.4.0.0  2016-10-04 * Multiple changes
+//                          - Configuration dialog - Re-added page navigation buttons also on APEX 5.1
+//
+// V1.4.0.0 2016-10-16 * Multiple changes
+//                         - Bug-fix: Sidekick resize handler was not called when resizing window/panes. Solved now.
+//                         - Added possibility to resize sidekick pane.
+//                         - Sidekick splitter is now a real draggable, possibility to resize pane via mouse
+//
+// V1.4.0.0 2016-10-23 * Multiple changes
+//                         - Bug-fix: swapping grid panes did not longer work after adding draggable. Is resolved now.
+//                         - Refactored: moved some funtions from page_designer_methods.js file
+//                           to xplug_feature_swap_grid.js and xplug_feature_prevnext_page.js
+//                         - Re-added support for markdown format. Using open source marked.js and XSS.js libraries
+//                           for parsing and XSS injection preventHideNotification
+//                         - Added LICENSE file. Using MIT license for Xplug now.
+//
+// V1.4.0.0 2016-10-29 * Multiple changes
+//                         - Bug-fix: Adjust splitter button title so that it says 'Collapse' or 'Expand' as needed.
+//                         - Sidekick: Adjust button captions and input field length so that it also fits for small
+//                           screen resolutions.
+//                         - More agressive default settings:
+//                             *  Show sidekick pane: yes
+//                             *  Show 'Page Details' tab in sidekick pane: yes
+//                             *  Previous/Next page buttons: yes
+//                             *  Daylight / Nighttime toggle: yes
+//                             *  Swap grid pane: yes
+//                             *  Window title: yes
+//                          - Added startup animation on Xplug SVG icon
+//                          - Bug-fix: Small delay before showing Page Details, required for firefox
+//                                     because otherwise it complains if marked.min library is not yet fully laoded.
+//
+//  V1.4.0.0 2016-11-01 * Multiple changes
+//                         - Bug-fix: disable 'Enable markdown' option in sidekick hamburger menu if 'Page Details'
+//                                    tab is deactivated.
+//                         - Added possibility to anonymously report bugs on GitHub by using Git reports service.
+//                         - Added possibility to select the GUI language in the configuration dialog
+//                         - Some serious refactoring in constructor and language part of Xplug.
+//                           Probably introduced some bugs now, but it's required for multi-language support.
+//
+//
+//   V1.4.0.0 2016-11-07 * Multiple changes
+//                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
+//                                    I want folks to use standard APEX 5.1 Page Designer functionality
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2015-2017 Filip van Vooren <filip.van-vooren at oratronik.de>
+// http://www.oratronik.de
+//
+// The MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//

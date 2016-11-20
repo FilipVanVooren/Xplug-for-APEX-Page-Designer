@@ -9,6 +9,7 @@
 /* jshint -W030 */
 /* jshint -W083 */
 
+
 Xplug.prototype.install_menu = function() {
 
     function __install_SubmenuPickStyles() {
@@ -69,11 +70,11 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "action",
-           label    : get_label('LBL-STYLE-GALLERY'),
+           label    : xplug.get_label('LBL-STYLE-GALLERY'),
            icon    : "icon-theme-roller",
            action   : function()
                       {
-                         window.pageDesigner.customizeStyle(get_label('LBL-STYLE-CUSTOM'));
+                         window.pageDesigner.customizeStyle(xplug.get_label('LBL-STYLE-CUSTOM'));
                       },
            disabled : function()
                       {
@@ -111,9 +112,9 @@ Xplug.prototype.install_menu = function() {
                    },
 
             choices : [
-                {   label : get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
-                {   label : get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
-                {   label : get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
+                {   label : xplug.get_label('LBL-LEFT'),   value : "LEFT",   disabled : true  },
+                {   label : xplug.get_label('LBL-MIDDLE'), value : "MIDDLE", disabled : false },
+                {   label : xplug.get_label('LBL-RIGHT'),  value : "RIGHT",  disabled : false }
             ]
          }
        );
@@ -128,7 +129,7 @@ Xplug.prototype.install_menu = function() {
        l_arr_menu_items.push(
          {
            type     : "toggle",
-           label    : get_label('NOTOOLTIPS'),
+           label    : xplug.get_label('NOTOOLTIPS'),
            get      : function()
                       {
                          return xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES';
@@ -139,14 +140,14 @@ Xplug.prototype.install_menu = function() {
                         if (xplug.getStorage('TOOLTIPS_DISABLED','NO') == 'YES') {
 
                            apex.actions.invoke('pd-xplug-enable-tooltips')
-                              ? pageDesigner.showSuccess(get_label('MSG-TT-ENABLE-OK'))
-                              : pageDesigner.showError(get_label('MSG-TT-ENABLE-NOK'));
+                              ? pageDesigner.showSuccess(xplug.get_label('MSG-TT-ENABLE-OK'))
+                              : pageDesigner.showError(xplug.get_label('MSG-TT-ENABLE-NOK'));
 
                         } else {
 
                             apex.actions.invoke('pd-xplug-disable-tooltips')
-                            ? pageDesigner.showSuccess(get_label('MSG-TT-DISABLE-OK'))
-                            : pageDesigner.showError(get_label('MSG-TT-DISABLE-NOK'));
+                            ? pageDesigner.showSuccess(xplug.get_label('MSG-TT-DISABLE-OK'))
+                            : pageDesigner.showError(xplug.get_label('MSG-TT-DISABLE-NOK'));
                         }
 
                         // Remove notification afer 1.5 seconds
@@ -162,24 +163,24 @@ Xplug.prototype.install_menu = function() {
 
          {
            type     : "toggle",
-           label    : get_label('LBL-ADD-POWERBOX'),
+           label    : xplug.get_label('LBL-ADD-SIDEKICK'),
            get      : function()
                       {
-                         return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES';
+                         return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES';
                       },
 
            set      : function()
                       {
-                        if (xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'YES') {
-                           apex.actions.invoke('pd-xplug-remove-powerbox');
+                        if (xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'YES') {
+                           apex.actions.invoke('pd-xplug-remove-sidekick');
                         } else {
-                           apex.actions.invoke('pd-xplug-add-powerbox');
+                           apex.actions.invoke('pd-xplug-add-sidekick');
                         }
                       },
 
            disabled : function()
                       {
-                        return xplug.getStorage('SHOW_POWERBOX_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
+                        return xplug.getStorage('SHOW_SIDEKICK_PANE','NO') == 'NO' && window.pe.hasChanged() === true;
                       }
          }
        );
@@ -196,24 +197,12 @@ Xplug.prototype.install_menu = function() {
     var l_menu$ = $("<div id='ORATRONIK_XPLUG_PLUGIN_MENU'></div>");
     $("body").append(l_menu$);
 
-    l_menu$.menu(
+
+    var oItems =
     {
       items : [
-        {
-
-          type     : "subMenu",
-          label    : get_label('DOCK-GRID'),
-          icon     : "icon-region-native-sql-report",
-          menu     : { items : install_SubmenuDockGrid() },
-          disabled : function() {
-                        return false;
-                     },
-        },
-
-        { type   : "separator" },
-
         { type     : "subMenu",
-          label    : get_label('QUICK-CTRL'),
+          label    : xplug.get_label('QUICK-CTRL'),
           menu     : { items : install_SubmenuQuickControls() },
           disabled : function()
                      {
@@ -225,7 +214,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type     : "subMenu",
-          label    : get_label('LBL-STYLE'),
+          label    : xplug.get_label('LBL-STYLE'),
           menu     : { items : __install_SubmenuPickStyles() },
           disabled : function()
                      {
@@ -237,7 +226,7 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "action",
-          label   : get_label('CONFIGURE'),
+          label   : xplug.get_label('CONFIGURE'),
           icon    : "icon-tools",
           action   : xplug.configureDialog,
           disabled : function()
@@ -246,8 +235,24 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
-        { type     : "separator"
+        { type     : "separator" },
+
+
+        { type    : "action",
+          label   : xplug.get_label('BUG'),
+          icon    : "icon-bug",
+          action  : function() {
+                         window.open('https://gitreports.com/issue/FilipVanVooren/Xplug-for-APEX-Page-Designer');
+                    },
+          disabled : function()
+                     {
+                       return 0;
+                     }
         },
+
+
+        { type     : "separator" },
+
         {
           type     : "action",
           label    : xplug.getVersion(),
@@ -256,5 +261,29 @@ Xplug.prototype.install_menu = function() {
                      }
         }
       ]
-    });
+    };
+
+
+    // For APEX 5.0 only!
+    if (xplug.apex_version.substring(0,4) === '5.0.') {
+
+        oItems.items.unshift(
+        {
+          type     : "subMenu",
+          label    : xplug.get_label('DOCK-GRID'),
+          icon     : "icon-region-native-sql-report",
+          menu     : { items : install_SubmenuDockGrid() },
+          disabled : function() {
+                        return false;
+                     },
+        },
+
+        { type   : "separator" }
+      );
+
+    } // if
+
+
+    // Build the menu
+    l_menu$.menu(oItems);
 }; // install_menu
