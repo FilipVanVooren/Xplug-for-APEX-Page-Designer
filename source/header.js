@@ -304,6 +304,15 @@
 //                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
 //                                    I want folks to use standard APEX 5.1 Page Designer functionality
 //
+//
+//   V1.4.0.1 2016-11-21 Bug-fix: version number still contained "beta 2", switched from "1.4.0.0 beta2" to "1.4.0.1"
+//
+//   V1.4.1.0 2017-01-02 * Multiple changes
+//                          - Introduced xplug_feature_clean_ui.js
+//                          - Added possibility to hide/show some Page Designer buttons
+//                                 - Team Development menu
+//                                 - Add Comment menu
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

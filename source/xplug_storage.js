@@ -117,6 +117,8 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
        xplug.getStorage('SHOW_SIDEKICK_PANE','YES') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
        xplug.getStorage('BTN-PRVNEXT-PAGE','YES')   == 'YES' && xplug.installPageButtons();
        xplug.getStorage('BTN-THEME-SWITCH','YES')   == 'YES' && xplug.installThemeSwitch();
+       xplug.getStorage('BTN-MENU-TEAMDEV','YES')   == 'NO'  && xplug.hideBtnMenuTeamDev();
+       xplug.getStorage('BTN-ADD-COMMENT','YES')    == 'NO'  && xplug.hideBtnComments();
        xplug.getStorage('BTN-SWAP-GRID-PANE','YES') == 'YES' && xplug.installSwapGrid();
        xplug.getStorage('APP+ID-IN-PD-TITLE','YES') == 'YES' && xplug.installPDTitle();
      }; // Xplug.prototype.loadSettings

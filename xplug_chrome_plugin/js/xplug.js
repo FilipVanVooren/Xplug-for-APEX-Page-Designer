@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Nov 07 2016 20:58:47
+// Built using Gulp. Built date: Mon Jan 02 2017 21:31:27
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -304,6 +304,9 @@
 //   V1.4.0.0 2016-11-07 * Multiple changes
 //                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
 //                                    I want folks to use standard APEX 5.1 Page Designer functionality
+//
+//
+//   V1.4.0.1 2016-11-21 Bug-fix: version number still contained "beta 2", switched from "1.4.0.0 beta2" to "1.4.0.1"
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -1622,7 +1625,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.4.0.0 beta 2';
+   var C_version = 'Xplug v1.4.1.0';
    var C_author  = 'Filip van Vooren';
 
    // Exit if not in APEX Page Designer
@@ -3360,6 +3363,56 @@ Xplug.prototype.showDocumentation = function ()
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
 //
+// xplug_feature_swap_grid.js
+// 2016-07-28 * Initial version
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* jshint laxbreak: true, laxcomma: true */
+/* jshint -W030 */
+/* jshint -W083 */
+
+
+
+/****************************************************************************
+ * Hide Team Development button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnMenuTeamDev = function()
+{
+    $('button#menu-team-dev').css('display','none');
+    xplug.setStorage('BTN-MENU-TEAMDEV','NO');
+}; // hideBtnMenuTeamDev
+
+/****************************************************************************
+ * Show Team Development button
+ ***************************************************************************/
+ Xplug.prototype.showBtnMenuTeamDev = function()
+{
+    $('button#menu-team-dev').css('display','inline');
+    xplug.setStorage('BTN-MENU-TEAMDEV','YES');
+}; // showBtnMenuTeamDev
+
+/****************************************************************************
+ * Hide Comments button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnComments = function()
+{
+    $('button#button-comments').css('display','none');
+    xplug.setStorage('BTN-ADD-COMMENT','NO');
+}; // hideBtnComments
+
+
+/****************************************************************************
+ * Show Comments button
+ ***************************************************************************/
+ Xplug.prototype.showBtnComments = function()
+{
+    $('button#button-comments').css('display','inline');
+    xplug.setStorage('BTN-ADD-COMMENT','YES');        
+}; // showBtnComments
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Xplug - Plugin for Oracle Application Express 5.0 Page Designer
+// www.oratronik.de - Author Filip van Vooren
+//
 // xplug_storage.js
 // 2016-01-03 * Initial version
 // 2016-01-03 * Possibility to set/retrieve global keys (meaning not dependant on host url)
@@ -3475,6 +3528,8 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
        xplug.getStorage('SHOW_SIDEKICK_PANE','YES') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
        xplug.getStorage('BTN-PRVNEXT-PAGE','YES')   == 'YES' && xplug.installPageButtons();
        xplug.getStorage('BTN-THEME-SWITCH','YES')   == 'YES' && xplug.installThemeSwitch();
+       xplug.getStorage('BTN-MENU-TEAMDEV','YES')   == 'NO'  && xplug.hideBtnMenuTeamDev();
+       xplug.getStorage('BTN-ADD-COMMENT','YES')    == 'NO'  && xplug.hideBtnComments();
        xplug.getStorage('BTN-SWAP-GRID-PANE','YES') == 'YES' && xplug.installSwapGrid();
        xplug.getStorage('APP+ID-IN-PD-TITLE','YES') == 'YES' && xplug.installPDTitle();
      }; // Xplug.prototype.loadSettings
@@ -4042,6 +4097,40 @@ Xplug.prototype.configureDialog = function()
                                   warnings: []
                               });
 
+                              l_properties1.push(
+                                {
+                                  propertyName: "show_menu_teamdev_button",
+                                  value:        xplug.getStorage('BTN-MENU-TEAMDEV','YES'),
+                                  metaData: {
+                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                      prompt:         '',
+                                      noValue:        "NO",
+                                      yesValue:       "YES",
+                                      isReadOnly:     false,
+                                      isRequired:     true,
+                                      displayGroupId: "buttons"
+                                  },
+                                  errors:   [],
+                                  warnings: []
+                              });
+
+                              l_properties1.push(
+                                {
+                                  propertyName: "show_add_comment_button",
+                                  value:        xplug.getStorage('BTN-ADD-COMMENT','YES'),
+                                  metaData: {
+                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                      prompt:         '',
+                                      noValue:        "NO",
+                                      yesValue:       "YES",
+                                      isReadOnly:     false,
+                                      isRequired:     true,
+                                      displayGroupId: "buttons"
+                                  },
+                                  errors:   [],
+                                  warnings: []
+                              });
+
 
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
                                  l_properties1.push(
@@ -4061,6 +4150,7 @@ Xplug.prototype.configureDialog = function()
                                      warnings: []
                                 });
                               }  // if
+
 
 
                                //
@@ -4201,9 +4291,14 @@ Xplug.prototype.configureDialog = function()
                                       .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
                                             + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
 
+                              $('#ConfigDlgPE_3_label')
+                                      .append('&nbsp; <span class="a-Icon icon-users"></span>');
+
+                              $('#ConfigDlgPE_4_label')
+                                      .append('&nbsp; <span class="a-Icon icon-add-comment"></span>');
 
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
-                                  $('#ConfigDlgPE_3_label')
+                                  $('#ConfigDlgPE_5_label')
                                         .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
                               }
 
@@ -4220,27 +4315,32 @@ Xplug.prototype.configureDialog = function()
 
                               { text  : xplug.get_label('BTN-APPLY'),
                                 click : function() {
-                                  var sThemeSwitch, sPageNav, sSwapGrid, sStyle1, sStyle2, sPDTitle,
+                                  var sThemeSwitch, sPageNav, sSwapGrid, sMenuTeamDev, sAddComment,
+                                      sStyle1, sStyle2, sPDTitle,
                                       sTabPageDet, sLanguage, sOldLangVal, sNewLangVal;
 
                                   if (xplug.apex_version.substring(0,3) == '5.0') {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
                                      sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
-                                     sSwapGrid    = 'input[name=ConfigDlgPE_3_name]:checked';
-                                     sStyle1      = '#ConfigDlgPE_4';
-                                     sStyle2      = '#ConfigDlgPE_5';
-                                     sPDTitle     = 'input[name=ConfigDlgPE_6_name]:checked';
-                                     sTabPageDet  = 'input[name=ConfigDlgPE_7_name]:checked';
-                                     sLanguage    = '#ConfigDlgPE_8';
+                                     sMenuTeamDev = 'input[name=ConfigDlgPE_3_name]:checked';
+                                     sAddComment  = 'input[name=ConfigDlgPE_4_name]:checked';
+                                     sSwapGrid    = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sStyle1      = '#ConfigDlgPE_6';
+                                     sStyle2      = '#ConfigDlgPE_7';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_8_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_9_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_10';
                                   } else {
                                      sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
                                      sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
+                                     sMenuTeamDev = 'input[name=ConfigDlgPE_3_name]:checked';
+                                     sAddComment  = 'input[name=ConfigDlgPE_4_name]:checked';
                                      sSwapGrid    = '';
-                                     sStyle1      = '#ConfigDlgPE_3';
-                                     sStyle2      = '#ConfigDlgPE_4';
-                                     sPDTitle     = 'input[name=ConfigDlgPE_5_name]:checked';
-                                     sTabPageDet  = 'input[name=ConfigDlgPE_6_name]:checked';
-                                     sLanguage    = '#ConfigDlgPE_7';
+                                     sStyle1      = '#ConfigDlgPE_5';
+                                     sStyle2      = '#ConfigDlgPE_6';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_7_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_8_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_9';
                                   }
 
                                   if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
@@ -4249,6 +4349,11 @@ Xplug.prototype.configureDialog = function()
                                   if ($(sPageNav).val() == 'YES') { xplug.installPageButtons();   }
                                                             else  { xplug.deinstallPageButtons(); }
 
+                                  if ($(sMenuTeamDev).val() == 'YES') { xplug.showBtnMenuTeamDev(); }
+                                                                else  { xplug.hideBtnMenuTeamDev(); }
+
+                                  if ($(sAddComment).val() == 'YES') { xplug.showBtnComments(); }
+                                                               else  { xplug.hideBtnComments(); }
 
                                   if (xplug.apex_version.substring(0,3) == '5.0')  {
                                       if ($(sSwapGrid).val() == 'YES') { xplug.installSwapGrid();   }
@@ -4279,7 +4384,6 @@ Xplug.prototype.configureDialog = function()
                                                                                 : l_style1
                                     );
                                   }
-
 
                                   sOldLangVal = xplug.getStorage('LANGUAGE','en', true);
                                   sNewLangVal = $(sLanguage).val();
