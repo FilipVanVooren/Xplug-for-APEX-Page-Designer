@@ -16,6 +16,7 @@ if (typeof(window.pageDesigner) == 'object') {
 
    xplug.setLanguage();
    xplug.install_actions();
+   xplug.installThemes();
    xplug.install_menu();
    xplug.loadSettings();
 }

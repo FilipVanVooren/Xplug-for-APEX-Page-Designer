@@ -45,5 +45,5 @@
  Xplug.prototype.showBtnComments = function()
 {
     $('button#button-comments').css('display','inline');
-    xplug.setStorage('BTN-ADD-COMMENT','YES');        
+    xplug.setStorage('BTN-ADD-COMMENT','YES');
 }; // showBtnComments

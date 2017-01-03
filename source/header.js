@@ -313,6 +313,11 @@
 //                                 - Team Development menu
 //                                 - Add Comment menu
 //
+//    V1.4.1.0 2017-01-03 * Multiple changes
+//                           - Changed order of buttons in configuration dialog
+//                           - Added possibility to pre-install Themes upon startup
+//                           - Added "Clean UI"-Theme as pre-installed theme
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)

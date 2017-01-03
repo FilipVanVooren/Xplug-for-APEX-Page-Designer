@@ -81,6 +81,24 @@ Xplug.prototype.configureDialog = function()
                                l_dialogPE$ = $('#ConfigDlgPE');
 
                                l_properties1.push(
+                                 {
+                                   propertyName: "show_prevnext_buttons",
+                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                       prompt:         '',
+                                       noValue:        "NO",
+                                       yesValue:       "YES",
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "buttons"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               });
+
+
+                               l_properties1.push(
                                 {
                                    propertyName: "show_moonlight_toggle",
                                    value:        xplug.getStorage('BTN-THEME-SWITCH','NO'),
@@ -97,23 +115,6 @@ Xplug.prototype.configureDialog = function()
                                    warnings: []
                                 });
 
-
-                              l_properties1.push(
-                                {
-                                  propertyName: "show_prevnext_buttons",
-                                  value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
-                                  metaData: {
-                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                      prompt:         '',
-                                      noValue:        "NO",
-                                      yesValue:       "YES",
-                                      isReadOnly:     false,
-                                      isRequired:     true,
-                                      displayGroupId: "buttons"
-                                  },
-                                  errors:   [],
-                                  warnings: []
-                              });
 
                               l_properties1.push(
                                 {
@@ -227,10 +228,7 @@ Xplug.prototype.configureDialog = function()
                                });
 
 
-                               //
-                               // Build Properties for property group 4 (Experimental)
-                               //
-                               l_properties4.push(
+                               l_properties3.push(
                                  {
                                    propertyName: "enable-tab-pagedet",
                                    value:        xplug.getStorage('SIDEKICK-TAB-PAGEDET','NO'),
@@ -247,6 +245,10 @@ Xplug.prototype.configureDialog = function()
                                    warnings: []
                                });
 
+
+                               //
+                               // Build Properties for property group 4 (Experimental)
+                               //
                                l_properties4.push(
                                  {
                                    propertyName: "language",
@@ -269,7 +271,7 @@ Xplug.prototype.configureDialog = function()
                                // Create Property Editor
                                //
                                $('#ConfigDlgPE').propertyEditor( {
-                                 focusPropertyName: "show_moonlight_toggle",
+                                 focusPropertyName: "show_prevnext_buttons",
                                  data: {
                                    propertySet: [
                                      {
@@ -338,8 +340,8 @@ Xplug.prototype.configureDialog = function()
                                       sTabPageDet, sLanguage, sOldLangVal, sNewLangVal;
 
                                   if (xplug.apex_version.substring(0,3) == '5.0') {
-                                     sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
-                                     sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
+                                     sPageNav     = 'input[name=ConfigDlgPE_1_name]:checked';
+                                     sThemeSwitch = 'input[name=ConfigDlgPE_2_name]:checked';
                                      sMenuTeamDev = 'input[name=ConfigDlgPE_3_name]:checked';
                                      sAddComment  = 'input[name=ConfigDlgPE_4_name]:checked';
                                      sSwapGrid    = 'input[name=ConfigDlgPE_5_name]:checked';
@@ -349,8 +351,8 @@ Xplug.prototype.configureDialog = function()
                                      sTabPageDet  = 'input[name=ConfigDlgPE_9_name]:checked';
                                      sLanguage    = '#ConfigDlgPE_10';
                                   } else {
-                                     sThemeSwitch = 'input[name=ConfigDlgPE_1_name]:checked';
-                                     sPageNav     = 'input[name=ConfigDlgPE_2_name]:checked';
+                                     sPageNav     = 'input[name=ConfigDlgPE_1_name]:checked';
+                                     sThemeSwitch = 'input[name=ConfigDlgPE_2_name]:checked';
                                      sMenuTeamDev = 'input[name=ConfigDlgPE_3_name]:checked';
                                      sAddComment  = 'input[name=ConfigDlgPE_4_name]:checked';
                                      sSwapGrid    = '';

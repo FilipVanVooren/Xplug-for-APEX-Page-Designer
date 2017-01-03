@@ -122,3 +122,16 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
        xplug.getStorage('BTN-SWAP-GRID-PANE','YES') == 'YES' && xplug.installSwapGrid();
        xplug.getStorage('APP+ID-IN-PD-TITLE','YES') == 'YES' && xplug.installPDTitle();
      }; // Xplug.prototype.loadSettings
+
+
+     Xplug.prototype.installThemes = function()
+     {
+         'use strict';
+
+         var sJSON;       // Escaped with: http://www.url-encode-decode.com/
+
+         // Theme: Clean UI
+         sJSON = '%7B%0D%0A    %22STYLE_NAME%22%3A %22Clean UI%22%2C%0D%0A    %22DARK_STYLE%22%3A %22NO%22%2C%0D%0A    %22SHOW_GRID%22%3A %22NO%22%2C%0D%0A    %22PROTECTED%22%3A %22YES%22%2C%0D%0A    %22C1%22%3A %22%23000000%22%2C%0D%0A    %22C2%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C3%22%3A %22%23CFE6FA%22%2C%0D%0A    %22C4%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C5%22%3A %22%232D7BBB%22%2C%0D%0A    %22C6%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C7%22%3A %22%234F9CDB%22%2C%0D%0A    %22C8%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C9%22%3A %22%23000000%22%2C%0D%0A    %22C10%22%3A %22%23000000%22%2C%0D%0A    %22OVERRIDE_CSS%22%3A %22YES%22%2C%0D%0A    %22CUSTOM_CSS%22%3A %22%2F%2A%2A%2A%2A%5CnColors used%3A%5CnC1%3A  Foreground color for all buttons%5CnC2%3A  Background color for all buttons%5CnC3%3A  Background color for %27Save%27 button%5CnC4%3A  Foreground color for %27Run%27 button%5CnC5%3A  Background color for %27Run%27 button%5CnC6%3A  Properties Group header icon %26 label color%5CnC7%3A  Properties Group header background color%5CnC8%3A  Property border color%5CnC9%3A  not used%5CnC10%3A not used%5Cn%2A%2A%2A%2A%2F%5Cn%5Cn%2F%2A For all buttons not in popup editor or alert msg %2A%2F%5Cnbutton%3Anot%28%5Bid%5E%3DeditorDlg%5D%29.a-Button%3Anot%28.a-Button--alertMessages%29%5Cn  %7B %5Cn    color%3A             %25%25C1%25%25%3B %5Cn    background-color%3A  %25%25C2%25%25%3B%5Cn    box-shadow%3A        0 0 0 0px%3B %5Cn  %7D%5Cn%5Cnbutton%23button-save-page%5Cn  %7B%5Cn    background-color%3A %25%25C3%25%25%3B%5Cn  %7D%5Cn%5Cn%5Cnbutton%23button-save-run-page%5Cn  %7B%5Cn    color%3A            %25%25C4%25%25%3B%5Cn    background-color%3A %25%25C5%25%25%3B%5Cn  %7D%5Cn%5Cn.a-PageSelect%5Cn  %7B%5Cn    border%3A 0px%3B%5Cn  %7D%5Cn%5Cn%2F%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A Properties Group Header %2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2F%5Cn%5Cn%2F%2A  icon color %2A%2F%5Cndiv%23sp_right  .a-PropertyEditor-propertyGroup-header span%5Cn  %7B%5Cn    color%3A %25%25C6%25%25 %21important%3B %5Cn  %7D%5Cn%5Cn%2F%2A Properties Group Header label color %2A%2F%5Cndiv%23sp_right .a-PropertyEditor-propertyGroup-title %5Cn  %7B %5Cn    color%3A %25%25C6%25%25%3B %5Cn  %7D%5Cn%5Cn%2F%2A Properties Group Header background color %2A%2F%5Cndiv%23sp_right .a-PropertyEditor-propertyGroup-header %5Cn  %7B%5Cn   background-color%3A %25%25C7%25%25%3B %5Cn  %7D%5Cn%5Cn%2F%2A Property border color %2A%2F%5Cn.a-PropertyEditor-propertyGroup-body .a-Property %5Cn  %7B%5Cn   border-color%3A %25%25C8%25%25%3B%5Cn  %7D%22%0D%0A%7D%0D%0A';
+         xplug.setStorage('STYLE_Clean UI', unescape(sJSON), true);
+     };
+     
