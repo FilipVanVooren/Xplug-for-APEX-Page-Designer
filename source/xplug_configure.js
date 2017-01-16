@@ -80,40 +80,59 @@ Xplug.prototype.configureDialog = function()
 
                                l_dialogPE$ = $('#ConfigDlgPE');
 
-                               l_properties1.push(
-                                 {
-                                   propertyName: "show_prevnext_buttons",
-                                   value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         '',
-                                       noValue:        "NO",
-                                       yesValue:       "YES",
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "buttons"
-                                   },
-                                   errors:   [],
-                                   warnings: []
+
+                                l_properties1.push(
+                                  {
+                                    propertyName: "show_prevnext_buttons",
+                                    value:        xplug.getStorage('BTN-PRVNEXT-PAGE','NO'),
+                                    metaData: {
+                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                        prompt:         '',
+                                        noValue:        "NO",
+                                        yesValue:       "YES",
+                                        isReadOnly:     false,
+                                        isRequired:     true,
+                                        displayGroupId: "buttons"
+                                    },
+                                    errors:   [],
+                                    warnings: []
+                                });
+
+
+                              l_properties1.push(
+                               {
+                                  propertyName: "show_moonlight_toggle",
+                                  value:        xplug.getStorage('BTN-THEME-SWITCH','NO'),
+                                  metaData: {
+                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                      prompt:         '',
+                                      noValue:        "NO",
+                                      yesValue:       "YES",
+                                      isReadOnly:     false,
+                                      isRequired:     true,
+                                      displayGroupId: "buttons"
+                                  },
+                                  errors:   [],
+                                  warnings: []
                                });
 
 
-                               l_properties1.push(
+                              l_properties1.push(
                                 {
-                                   propertyName: "show_moonlight_toggle",
-                                   value:        xplug.getStorage('BTN-THEME-SWITCH','NO'),
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         '',
-                                       noValue:        "NO",
-                                       yesValue:       "YES",
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "buttons"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                                });
+                                  propertyName: "show_compview_button",
+                                  value:        xplug.getStorage('BTN-COMPVIEW','YES'),
+                                  metaData: {
+                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                      prompt:         '',
+                                      noValue:        "NO",
+                                      yesValue:       "YES",
+                                      isReadOnly:     false,
+                                      isRequired:     true,
+                                      displayGroupId: "buttons"
+                                  },
+                                  errors:   [],
+                                  warnings: []
+                              });
 
 
                               l_properties1.push(
@@ -303,22 +322,25 @@ Xplug.prototype.configureDialog = function()
                                });
 
                               $('#ConfigDlgPE_1_label')
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
+                                            + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
+
+                              $('#ConfigDlgPE_2_label')
                                       .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>'
                                             + '/'
                                             + '&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
 
-                              $('#ConfigDlgPE_2_label')
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-previous"></span>'
-                                            + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
-
                               $('#ConfigDlgPE_3_label')
-                                      .append('&nbsp; <span class="a-Icon icon-users"></span>');
+                                      .append('&nbsp; <span class="a-Icon icon-comp-view"></span>');
 
                               $('#ConfigDlgPE_4_label')
+                                      .append('&nbsp; <span class="a-Icon icon-users"></span>');
+
+                              $('#ConfigDlgPE_5_label')
                                       .append('&nbsp; <span class="a-Icon icon-add-comment"></span>');
 
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
-                                  $('#ConfigDlgPE_5_label')
+                                  $('#ConfigDlgPE_6_label')
                                         .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
                               }
 
@@ -335,39 +357,45 @@ Xplug.prototype.configureDialog = function()
 
                               { text  : xplug.get_label('BTN-APPLY'),
                                 click : function() {
-                                  var sThemeSwitch, sPageNav, sSwapGrid, sMenuTeamDev, sAddComment,
+                                  var sThemeSwitch, sPageNav, sSwapGrid, sCompView, sMenuTeamDev, sAddComment,
                                       sStyle1, sStyle2, sPDTitle,
                                       sTabPageDet, sLanguage, sOldLangVal, sNewLangVal;
 
                                   if (xplug.apex_version.substring(0,3) == '5.0') {
                                      sPageNav     = 'input[name=ConfigDlgPE_1_name]:checked';
                                      sThemeSwitch = 'input[name=ConfigDlgPE_2_name]:checked';
-                                     sMenuTeamDev = 'input[name=ConfigDlgPE_3_name]:checked';
-                                     sAddComment  = 'input[name=ConfigDlgPE_4_name]:checked';
-                                     sSwapGrid    = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sCompView    = 'input[name=ConfigDlgPE_3_name]:checked';
+                                     sMenuTeamDev = 'input[name=ConfigDlgPE_4_name]:checked';
+                                     sAddComment  = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sSwapGrid    = 'input[name=ConfigDlgPE_6_name]:checked';
+                                     sStyle1      = '#ConfigDlgPE_7';
+                                     sStyle2      = '#ConfigDlgPE_8';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_9_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_10_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_11';
+                                  } else {
+                                     sPageNav     = 'input[name=ConfigDlgPE_1_name]:checked';
+                                     sThemeSwitch = 'input[name=ConfigDlgPE_2_name]:checked';
+                                     sCompView    = 'input[name=ConfigDlgPE_3_name]:checked';
+                                     sMenuTeamDev = 'input[name=ConfigDlgPE_4_name]:checked';
+                                     sAddComment  = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sSwapGrid    = '';
                                      sStyle1      = '#ConfigDlgPE_6';
                                      sStyle2      = '#ConfigDlgPE_7';
                                      sPDTitle     = 'input[name=ConfigDlgPE_8_name]:checked';
                                      sTabPageDet  = 'input[name=ConfigDlgPE_9_name]:checked';
                                      sLanguage    = '#ConfigDlgPE_10';
-                                  } else {
-                                     sPageNav     = 'input[name=ConfigDlgPE_1_name]:checked';
-                                     sThemeSwitch = 'input[name=ConfigDlgPE_2_name]:checked';
-                                     sMenuTeamDev = 'input[name=ConfigDlgPE_3_name]:checked';
-                                     sAddComment  = 'input[name=ConfigDlgPE_4_name]:checked';
-                                     sSwapGrid    = '';
-                                     sStyle1      = '#ConfigDlgPE_5';
-                                     sStyle2      = '#ConfigDlgPE_6';
-                                     sPDTitle     = 'input[name=ConfigDlgPE_7_name]:checked';
-                                     sTabPageDet  = 'input[name=ConfigDlgPE_8_name]:checked';
-                                     sLanguage    = '#ConfigDlgPE_9';
                                   }
+
+
+                                  if ($(sPageNav).val() == 'YES') { xplug.installPageButtons();   }
+                                                            else  { xplug.deinstallPageButtons(); }
 
                                   if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
                                                                 else  { xplug.deinstallThemeSwitch(); }
 
-                                  if ($(sPageNav).val() == 'YES') { xplug.installPageButtons();   }
-                                                            else  { xplug.deinstallPageButtons(); }
+                                  if ($(sCompView).val() == 'YES') { xplug.showBtnCompView(); }
+                                                             else  { xplug.hideBtnCompView(); }
 
                                   if ($(sMenuTeamDev).val() == 'YES') { xplug.showBtnMenuTeamDev(); }
                                                                 else  { xplug.hideBtnMenuTeamDev(); }
@@ -407,10 +435,11 @@ Xplug.prototype.configureDialog = function()
 
                                   sOldLangVal = xplug.getStorage('LANGUAGE','en', true);
                                   sNewLangVal = $(sLanguage).val();
+
                                   if (sOldLangVal != sNewLangVal) {
                                      xplug.setStorage('LANGUAGE',$(sLanguage).val(),true);
                                      $(this).dialog("close");
-                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));
+                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));                                     
                                   } else {
                                     $(this).dialog("close");
                                   }

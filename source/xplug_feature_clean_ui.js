@@ -10,6 +10,25 @@
 /* jshint -W083 */
 
 
+/****************************************************************************
+ * Hide Component View button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnCompView = function()
+{
+    $('button#menu-comp-view').css('display','none');
+    xplug.setStorage('BTN-COMPVIEW','NO');
+}; // hideBtnCompView
+
+
+/****************************************************************************
+ * Show Component View button
+ ***************************************************************************/
+ Xplug.prototype.showBtnCompView = function()
+{
+    $('button#menu-comp-view').css('display','inline');
+    xplug.setStorage('BTN-COMPVIEW','YES');
+}; // showBtnCompView
+
 
 /****************************************************************************
  * Hide Team Development button
@@ -47,3 +66,34 @@
     $('button#button-comments').css('display','inline');
     xplug.setStorage('BTN-ADD-COMMENT','YES');
 }; // showBtnComments
+
+
+
+/****************************************************************************
+ * Presentation Mode on - Beamer with small screen size expected
+ ***************************************************************************/
+Xplug.prototype.presentationModeOn = function()
+{
+    xplug.deinstallThemeSwitch();
+    xplug.deinstallPageButtons();
+    xplug.hideBtnCompView();
+    xplug.hideBtnMenuTeamDev();
+    xplug.hideBtnComments();
+    xplug.deinstallSidekick();
+    xplug.setStorage('PRESENTATION-MODE','YES');
+}; // presentationModeOn
+
+
+/****************************************************************************
+ * Presentation Mode off - Normal screen size expected
+ ***************************************************************************/
+Xplug.prototype.presentationModeOff = function()
+{
+    xplug.installThemeSwitch();
+    xplug.installPageButtons();
+    xplug.showBtnCompView();
+    xplug.showBtnMenuTeamDev();
+    xplug.showBtnComments();
+    xplug.installSidekick();
+    xplug.setStorage('PRESENTATION-MODE','NO');
+}; // presentationModeOff

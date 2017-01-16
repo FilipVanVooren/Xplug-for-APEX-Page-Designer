@@ -129,6 +129,32 @@ Xplug.prototype.install_menu = function() {
        l_arr_menu_items.push(
          {
            type     : "toggle",
+           label    : xplug.get_label('LBL-PRESENTATION-MODE'),
+           get      : function()
+                      {
+                         return xplug.getStorage('PRESENTATION-MODE','NO') == 'YES';
+                      },
+
+           set      : function()
+                      {
+                        if (xplug.getStorage('PRESENTATION-MODE','NO') == 'YES') {
+                          xplug.presentationModeOff();
+
+                        } else {
+                           xplug.presentationModeOn();
+                        }
+                      },
+
+           disabled : function()
+                      {
+                        return false;
+                      }
+         },
+
+         { type     : "separator" },
+         
+         {
+           type     : "toggle",
            label    : xplug.get_label('NOTOOLTIPS'),
            get      : function()
                       {

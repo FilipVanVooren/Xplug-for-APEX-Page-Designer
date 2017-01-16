@@ -313,10 +313,19 @@
 //                                 - Team Development menu
 //                                 - Add Comment menu
 //
-//    V1.4.1.0 2017-01-03 * Multiple changes
+//   V1.4.1.0 2017-01-03 * Multiple changes
 //                           - Changed order of buttons in configuration dialog
 //                           - Added possibility to pre-install Themes upon startup
 //                           - Added "Clean UI"-Theme as pre-installed theme
+//
+//
+//   V1.4.1.0 2017-01-15 * Multiple changes
+//                            - Added possibility to hide Component View button
+//                            - Changed order of buttons in configuration dialog again
+//                            - Introduced "Presentation mode" toggle in Quick Controls submenu
+//                            - "Clean UI" is now the default theme for APEX 5.0
+//                            - Markdown format is enabled by default now
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
