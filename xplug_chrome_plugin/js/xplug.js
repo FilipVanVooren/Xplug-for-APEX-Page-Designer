@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Jan 16 2017 21:39:45
+// Built using Gulp. Built date: Mon Jan 30 2017 21:22:50
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -327,6 +327,9 @@
 //                            - "Clean UI" is now the default theme for APEX 5.0
 //                            - Markdown format is enabled by default now
 //
+//    V1.4.1.0 2017-01-30 * Multiple changes
+//                            - Prevent swap-grid button in APEX 5.1
+//                            - Prevent previous/next page buttons in APEX 5.1
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -2424,7 +2427,10 @@ window.pageDesigner.goToNextPage = function () {
  ***************************************************************************/
 Xplug.prototype.installPageButtons = function ()
 {
-  if  ( $('button#ORATRONIK_XPLUG_prev_page_button').length == 1 ) return;
+  if  (    $('button#ORATRONIK_XPLUG_prev_page_button').length == 1
+        || xplug.apex_version.substr(0,4) === "5.1."
+      ) return;
+
 
   var l_node = $('button#ORATRONIK_XPLUG_moonsun_button').length == 1
                    ? 'button#ORATRONIK_XPLUG_moonsun_button'
@@ -2432,13 +2438,8 @@ Xplug.prototype.installPageButtons = function ()
 
   var l_class_btn_left, l_class_btn_right;
 
-  if (xplug.apex_version.substring(0,4) === '5.1.') {
-    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapLeft a-Button--simple"';
-    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapRight a-Button--simple"';
-  } else {
-    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
-    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
-  }
+  l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+  l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
 
   $(l_node)
       .before( '<button'
@@ -2774,16 +2775,11 @@ window.pageDesigner.dockGridMiddle = function()
  {
    'use strict';
 
-   if  ( $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1 ) return;
+   if  (    $('button#ORATRONIK_XPLUG_swap_panes_button').length == 1
+         || xplug.apex_version.substr(0,4) === "5.1."
+       ) return;
 
-   var l_class_btn;
-
-   if (xplug.apex_version.substring(0,4) === '5.1.') {
-     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--simple"';
-   } else {
-     l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
-   }
-
+   var l_class_btn = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
 
    $('button#glvExpandRestoreBtn')
             .after( '<button'

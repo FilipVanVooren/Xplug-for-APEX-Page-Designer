@@ -306,7 +306,10 @@ window.pageDesigner.goToNextPage = function () {
  ***************************************************************************/
 Xplug.prototype.installPageButtons = function ()
 {
-  if  ( $('button#ORATRONIK_XPLUG_prev_page_button').length == 1 ) return;
+  if  (    $('button#ORATRONIK_XPLUG_prev_page_button').length == 1
+        || xplug.apex_version.substr(0,4) === "5.1."
+      ) return;
+
 
   var l_node = $('button#ORATRONIK_XPLUG_moonsun_button').length == 1
                    ? 'button#ORATRONIK_XPLUG_moonsun_button'
@@ -314,13 +317,8 @@ Xplug.prototype.installPageButtons = function ()
 
   var l_class_btn_left, l_class_btn_right;
 
-  if (xplug.apex_version.substring(0,4) === '5.1.') {
-    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapLeft a-Button--simple"';
-    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon js-actionButton a-Button--gapRight a-Button--simple"';
-  } else {
-    l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
-    l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
-  }
+  l_class_btn_left  = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillStart js-actionButton"';
+  l_class_btn_right = ' class="a-Button a-Button--noLabel a-Button--withIcon a-Button--pillEnd js-actionButton"';
 
   $(l_node)
       .before( '<button'
