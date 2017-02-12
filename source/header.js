@@ -5,7 +5,7 @@
 //
 // Music listened to while programming Xplug (in no particular order)
 //   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
-//   Birdy, GusGus, Massive Attack, ...
+//   Birdy, GusGus, Massive Attack, Telephone Tel Aviv, ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -326,9 +326,18 @@
 //                            - "Clean UI" is now the default theme for APEX 5.0
 //                            - Markdown format is enabled by default now
 //
-//    V1.4.1.0 2017-01-30 * Multiple changes
+//   V1.4.1.0 2017-01-30 * Multiple changes
 //                            - Prevent swap-grid button in APEX 5.1
 //                            - Prevent previous/next page buttons in APEX 5.1
+//
+//   V1.4.1.0 2017-02-13  * Multiple changes
+//                            Theme handling reworked
+//                            - Introduced "Compatible with" APEX version in theme
+//                            - Reworked Theme Gallery and theme configuration dialog
+//                            - Changed default settings when creating new theme
+//                            - Moonlight theme: No longer built-in CSS in javascript, it is
+//                              now a normal theme
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

@@ -45,7 +45,7 @@ Xplug.prototype.configureDialog = function()
         .dialog(
                 { modal   : false,
                   title   : xplug.get_label('LBL-XPLUG-SETTINGS'),
-                  width   : 450,
+                  width   : 500,
 
                   close   : function(pEvent) {
                                // Hide any remaining notifications
@@ -326,9 +326,9 @@ Xplug.prototype.configureDialog = function()
                                             + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
 
                               $('#ConfigDlgPE_2_label')
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>'
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>'
                                             + '/'
-                                            + '&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+                                            + '&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
 
                               $('#ConfigDlgPE_3_label')
                                       .append('&nbsp; <span class="a-Icon icon-comp-view"></span>');
@@ -342,6 +342,18 @@ Xplug.prototype.configureDialog = function()
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
                                   $('#ConfigDlgPE_6_label')
                                         .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
+
+                                  $('#ConfigDlgPE_7_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+
+                                  $('#ConfigDlgPE_8_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
+                              } else {
+                                $('#ConfigDlgPE_6_label')
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+
+                                $('#ConfigDlgPE_7_label')
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
                               }
 
                               $('div#ORATRONIK_XPLUG_CONFIG_DIALOG .a-Property-labelContainer')
@@ -439,7 +451,7 @@ Xplug.prototype.configureDialog = function()
                                   if (sOldLangVal != sNewLangVal) {
                                      xplug.setStorage('LANGUAGE',$(sLanguage).val(),true);
                                      $(this).dialog("close");
-                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));                                     
+                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));
                                   } else {
                                     $(this).dialog("close");
                                   }

@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Jan 30 2017 21:22:50
+// Built using Gulp. Built date: Sun Feb 12 2017 21:39:38
 
 
 
@@ -159,7 +159,8 @@ window.pageDesigner.setStyle = function( p_style_name,
                                          p_show_grid,
                                          p_override_css,
                                          p_custom_css,
-                                         p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err
+                                         p1,p2,p3,p4,p5,p6,p7,p8,p9,p_err,
+                                         p_compatible
                                        )
 {
    'use strict';
@@ -185,8 +186,9 @@ window.pageDesigner.setStyle = function( p_style_name,
 
 
     var l_settings_obj = { "STYLE_NAME"   : p_style_name,
-                           "DARK_STYLE"   : typeof(p_is_dark_style) == 'undefined' ? 'YES' : p_is_dark_style,
-                           "SHOW_GRID"    : typeof(p_show_grid)     == 'undefined' ? 'YES' : p_show_grid,
+                           "COMPATIBLE"   : typeof(p_compatible)    === 'undefined' ? '5.0' : p_compatible,
+                           "DARK_STYLE"   : typeof(p_is_dark_style) === 'undefined' ? 'NO'  : p_is_dark_style,
+                           "SHOW_GRID"    : typeof(p_show_grid)     === 'undefined' ? 'NO'  : p_show_grid,
                            "PROTECTED"    : is_protected(p_style_name),
                            "C1"           : l_c1,
                            "C2"           : l_c2,
@@ -198,12 +200,11 @@ window.pageDesigner.setStyle = function( p_style_name,
                            "C8"           : l_c8,
                            "C9"           : l_c9,
                            "C10"          : l_cerr,
-                           "OVERRIDE_CSS" : typeof(p_override_css)  == 'undefined' ? 'NO'  : p_override_css,
                            "CUSTOM_CSS"   : p_custom_css
                       };
 
     if (p_save_style == 'SAVE' || p_save_style == 'SAVE_ONLY') {
-       xplug.setStorage('STYLE_' + p_style_name, JSON.stringify(l_settings_obj), true);         
+       xplug.setStorage('STYLE_' + p_style_name, JSON.stringify(l_settings_obj), true);
 
        if (p_save_style == 'SAVE_ONLY') {
           return;
@@ -212,156 +213,24 @@ window.pageDesigner.setStyle = function( p_style_name,
 
     window.pageDesigner.unsetStyle();
 
-    var l_icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" enable-background="new 0 0 24 24">'
-               + '<path fill="' + l_c1 + '" d="M0 0h24v24h-24z"/>'                                  
-               + '<path fill="' + l_c2 + '" d="M0 0h1v24h-1z"/>'                                    
-               + '<path fill="' + l_c9 + '" d="M16.5 14.293c0 .128-.049.256-.146.354l-4.354 4.353-4.354-4.354c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.647 3.647 3.646-3.646c.195-.195.512-.195.707 0 .098.097.147.225.147.353zM7.5 9.707c0-.128.049-.256.146-.354l4.354-4.353 4.354 4.354c.195.195.195.512 0 .707s-.512.195-.707 0l-3.647-3.647-3.646 3.646c-.195.195-.512.195-.707 0-.098-.097-.147-.225-.147-.353z"/>'
-               + '</svg>';
-
-
-    l_css = l_lf + ' body                                    { background-color: ' + l_c2 + '; }';
-
-    l_css +=  l_lf + ' .ui-tabs-active .ui-tabs-anchor       { background-color: ' + l_c1 + ' !important; }'
-          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor span  { color: '            + l_c7 +  '!important; }'
-          +   l_lf + ' .ui-tabs-active .ui-tabs-anchor       { color: '            + l_c7 +  '!important; }'
-          +   l_lf + ' #sp_main a.ui-tabs-anchor             { background-color:'  + l_c6 + '; }';
-
-    l_css += l_lf + ' .ui-tabs-anchor > span                 { color: ' + l_c6 + '; }'                   
-          + l_lf  + ' .a-PageDesigner-treeTitle              { color: ' + l_c7 + '; }'   
-          + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav'
-                  + ' .ui-tabs-anchor { color: ' + l_c1 + '; border-right-color: ' + l_c4 + '; }'
-          + l_lf  + ' .ui-tabs--simpleInset>.a-Tabs-toolbar>.ui-tabs-nav .ui-state-default { background-color: ' + l_c6 + '; }';
-
-    l_css += l_lf  + ' div.a-Toolbar-items                   { background-color: ' + l_c1     + '; }';   
-
-
-    l_css +='.body,'
-          + '.ui-widget-content,'
-          + '.a-Toolbar-pageColumn,'
-          + '.a-Property, '
-          + '.a-PropertyEditor-propertyGroup, '
-          + '.a-PropertyEditor-propertyGroup-body, '
-          + '.a-PropertyEditor-propertyGroup-header, '
-          + 'div#sp_right .ui-dialog .a-Property    { border-color: ' + l_c4 + '; }'
-          + l_lf;
-
-    l_css +=        ' .ui-tabs-nav .ui-tabs-anchor           { border-right-color : ' + l_c4 + '; }'
-          +  l_lf + ' div#sp_main button.a-Button            { background-color   : ' + l_c5 + '; }'
-          +  l_lf + ' div#sp_main .a-Button.is-active,'
-          +  l_lf + ' div#sp_main .a-Button.is-active:active,'
-          +  l_lf + ' div#sp_main .a-MenuButton.is-active,'
-          +  l_lf + ' div#sp_main .fc-button.ui-state-active,'
-          +  l_lf + ' div#sp_main .ui-buttonset .ui-button.ui-state-active,'
-          +  l_lf + ' div#sp_main .ui-buttonset .ui-button.ui-state-active.ui-state-hover:active '
-          +  l_lf + '                                        { background-color: ' + l_c9 + ' !important; }'; 
-
-    l_css += ' div#sp_main .a-Button:hover,'
-           + ' div#sp_main .fc-button.ui-state-hover         { background-color: ' + l_c7 + '!important; }'   
-           + l_lf;
-
-
-    l_css +=        ' .a-PageDesigner-treeWrap               { background-color : ' + l_c1 + '; }'          
-          +  l_lf + ' div#PDrenderingTree.a-TreeView         { background-color : ' + l_c1 + '; }'          
-          +  l_lf + ' div#PDdynamicActionTree.a-TreeView     { background-color : ' + l_c1 + '; }'          
-          +  l_lf + ' div#PDprocessingTree.a-TreeView        { background-color : ' + l_c1 + '; }'          
-          +  l_lf + ' div#PDsharedCompTree.a-TreeView        { background-color : ' + l_c1 + '; }'          
-          +  l_lf + ' span.a-TreeView-label                  { color            : ' + l_c5 + '; }'          
-          +  l_lf + ' span.a-TreeView-toggle                 { color            : ' + l_c5 + '; }'          
-          +  l_lf + ' div.resize.u-ScrollingViewport         { background-color : ' + l_c1 + '; }'          
-          +  l_lf + ' ul.ui-widget-header                    { background-color : ' + l_c1 + '; }'          
-          +  l_lf;
-
-    l_css +=        ' div#sp_right .a-PropertyEditor-propertyGroup-header { background-color : ' + l_c3  + '; }'  
-          +  l_lf + ' div#sp_right .a-PropertyEditor-propertyGroup-title  { color            : ' + l_c7  + '; }'  
-          +  l_lf + ' div#sp_right div.a-Property-fieldContainer          { background-color : ' + l_c2  + '; }'  
-          +  l_lf + ' div#sp_right div.a-Property-labelContainer          { background-color : ' + l_c2  + '; }'  
-
-          +  l_lf + ' div.a-Property.is-error div.a-Property-labelContainer,'                                     
-          +  l_lf + ' div.a-Property.is-error div.a-Property-fieldContainer,'                                     
-          +  l_lf + ' .a-Property.is-error { background-color: ' + l_cerr + '!important; }'
-
-          +  l_lf + ' div#sp_right div.a-Property,'
-          +  l_lf + ' div#sp_right div.a-Property:hover,'
-          +  l_lf + ' div#sp_right div.a-Property:focus,'
-          +  l_lf + ' div#sp_right div.a-Property:active                  { background-color : ' + l_c2 + '; }'            
-          +  l_lf + ' div#sp_right div.a-Property                         { border-color     : ' + l_c1 + ' !important; }' 
-          +  l_lf + ' div#sp_right .a-Property-field:hover,'
-          +  l_lf + ' div#sp_right .a-Property-field:focus                { background-color : ' + l_c1 + '; }'            
-          +  l_lf + ' div#sp_right .a-Property-field                      { background-color : ' + l_c2 + '; }'            
-          +  l_lf + ' div#sp_right .a-Property-field                      { color            : ' + l_c9 + '; }'            
-          +  l_lf + ' div#sp_right .a-Property-label                      { color : ' + l_c5 + '; text-shadow : none; }'   
-          +  l_lf + ' div#sp_right .a-Property-checkbox-label             { color : ' + l_c9 + '; text-shadow : none; }'   
-          +  l_lf + ' div#sp_right .a-PropertyEditor-messageText          { color : ' + l_c6 + '; }'                       
-          +  l_lf +  'div#sp_right select { background-image : url(data:image/svg+xml;base64,' + btoa(l_icon) + '); }'     
-
-          +  l_lf + ' .a-Property-checkbox-label, .a-Property-radio, .a-Property-unit { text-shadow :  none; }'
-          +  l_lf;
-
-    l_css +=       ' div#gallery-tabs div             { background-color : ' + l_c2 + '; }'                       
-          + l_lf + ' div#gallery-tabs .aTabs-Toolbar  { }'                                                        
-          + l_lf + ' div#gallery-tabs .ui-tabs-anchor { background-color : ' + l_c6 + '; border: 0px solid ' + l_c2 + '; border-radius: 2px;}'
-          + l_lf + ' div#R1157688004078338241 li.ui-state-default { background-color : ' + l_c2 + '; } '          
-          + l_lf;
-
-    l_css += ' div#xplug_pb_tabs, div#xplug_pb_docu, div#xplug_pb_msgview, div#xplug_pb_search { background-color : ' + l_c2 + '; }'
-          +  l_lf + ' div#xplug_pb_resize, div#xplug_pb_right { background-color : ' + l_c2 + '; }';              
-
-    l_css +=       ' div#messages, div#search, div#help               { background-color : ' + l_c1 + '; }'
-          + l_lf + ' div#help-container                               { background-color : ' + l_c1 + '; }'
-          + l_lf + ' .ui-tabs-helpTab.ui-state-active .ui-tabs-anchor { background-color : ' + l_c1 + ' !important; }'
-          + l_lf + ' div#help-container h3, div#help-container h4     { color : '            + l_c7 + '; }'
-          + l_lf + ' div#help-container dt                            { color : '            + l_c7 + '; }'
-          + l_lf + ' div#help-container a                             { color : '            + l_c3 + '; }'
-          + l_lf + ' div#help-container *                             { color : '            + l_c5 + '; }';
-
-    l_css += l_lf + ' .a-AlertMessages-message                        {  color: '            + l_c6 + '; }'
-          +  l_lf + ' .a-AlertMessages-message.is-error:hover,'
-                  + ' .a-AlertMessages-message.is-error:focus         {  background-color : ' + l_c7 + ' !important; }';
-
-    l_css += l_lf + ' div.a-Form-labelContainer .a-Form-label, div#xplug_pb_docu, div#xplug_pb_search  .a-Form-label,'
-          +  l_lf + ' .a-Form-checkboxLabel, .a-Form-inputContainer .checkbox_group label, .a-Form-inputContainer .radio_group label, .a-Form-radioLabel'
-          +  l_lf + ' { color: ' + l_c7 + '; }';
-
-    l_css += l_lf + ' span.a-AlertBadge { color : ' + l_c7 + '; }';
-
-
-
-    var l_scroll =        '::-webkit-scrollbar              { width: 10px; height: 10px; }'
-                 + l_lf + '::-webkit-scrollbar-button       { width: 0px;  height: 0px;  }'
-                 + l_lf + '::-webkit-scrollbar-thumb        { background: ' + l_c5 + ';  border-radius: 50px; }'
-                 + l_lf + '::-webkit-scrollbar-thumb:hover  { background: #ffffff;      }'
-                 + l_lf + '::-webkit-scrollbar-thumb:active { background: ' + l_c3 + '; }'
-                 + l_lf + '::-webkit-scrollbar-track        { background: #666666; border: 90px none #ffffff; border-radius: 45px; }'
-                 + l_lf + '::-webkit-scrollbar-track:hover  { background: #666666;     }'
-                 + l_lf + '::-webkit-scrollbar-track:active { background: #333333;     }'
-                 + l_lf + '::-webkit-scrollbar-corner       { background: transparent; }'
-                 + l_lf;
-
-
     var l_style = '<style type="text/css" ID="XPLUG_THEME">' + l_lf;
 
-    if (p_override_css != 'YES') {
-        l_style += l_css    + l_lf;
-        l_style += l_scroll + l_lf;
-    }
+    l_custom_css = p_custom_css;
+    l_custom_css = l_custom_css.replace(/%%C1%%/gi,l_c1);
+    l_custom_css = l_custom_css.replace(/%%C2%%/gi,l_c2);
+    l_custom_css = l_custom_css.replace(/%%C3%%/gi,l_c3);
+    l_custom_css = l_custom_css.replace(/%%C4%%/gi,l_c4);
+    l_custom_css = l_custom_css.replace(/%%C5%%/gi,l_c5);
+    l_custom_css = l_custom_css.replace(/%%C6%%/gi,l_c6);
+    l_custom_css = l_custom_css.replace(/%%C7%%/gi,l_c7);
+    l_custom_css = l_custom_css.replace(/%%C8%%/gi,l_c8);
+    l_custom_css = l_custom_css.replace(/%%C9%%/gi,l_c9);
+    l_custom_css = l_custom_css.replace(/%%C10%%/gi,l_cerr);
 
-    if (typeof(p_custom_css) != 'undefined') {
-       l_custom_css = p_custom_css;
-       l_custom_css = l_custom_css.replace(/%%C1%%/gi,l_c1);
-       l_custom_css = l_custom_css.replace(/%%C2%%/gi,l_c2);
-       l_custom_css = l_custom_css.replace(/%%C3%%/gi,l_c3);
-       l_custom_css = l_custom_css.replace(/%%C4%%/gi,l_c4);
-       l_custom_css = l_custom_css.replace(/%%C5%%/gi,l_c5);
-       l_custom_css = l_custom_css.replace(/%%C6%%/gi,l_c6);
-       l_custom_css = l_custom_css.replace(/%%C7%%/gi,l_c7);
-       l_custom_css = l_custom_css.replace(/%%C8%%/gi,l_c8);
-       l_custom_css = l_custom_css.replace(/%%C9%%/gi,l_c9);
-       l_custom_css = l_custom_css.replace(/%%C10%%/gi,l_cerr);
+    l_style += l_custom_css + l_lf;
+    l_style += '</style>'   + l_lf;
 
-       l_style += l_custom_css + l_lf;
-    }
-    l_style += '</style>' + l_lf;
-
+    void 0;
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
@@ -449,7 +318,8 @@ window.pageDesigner.loadStyle = function(p_style_name)
        l_imp_obj.C7,
        l_imp_obj.C8,
        l_imp_obj.C9,
-       l_imp_obj.C10
+       l_imp_obj.C10,
+       l_imp_obj.COMPATIBLE
     );
 
     xplug.darkmode = l_imp_obj.DARK_STYLE == 'YES';
@@ -470,6 +340,12 @@ window.pageDesigner.getStyles = function()
 
       if (l_key.substr(0,6) == 'STYLE_') {
          var l_style = JSON.parse(xplug.getStorage(l_key,null,true));
+
+         if (typeof(l_style.COMPATIBLE) === 'undefined') {
+            l_style.COMPATIBLE = 'APEX 5.0';
+         } else {
+            l_style.COMPATIBLE = 'APEX ' + l_style.COMPATIBLE;
+         }
 
          if (l_style.STYLE_NAME == l_current) {
             l_style.IS_CURRENT = 'YES';
@@ -503,10 +379,11 @@ window.pageDesigner.customizeStyle = function(p_title)
                   title             : xplug.get_label('LBL-STYLE-GALLERY'),
                   resizable         : true,
 
-                  columnDefinitions : [ { name  : "STYLE_NAME",  title : xplug.get_label('LBL-NAME')          },
-                                        { name  : "DARK_STYLE",  title : xplug.get_label('LBL-DARK-STYLE')    },
-                                        { name  : "IS_CURRENT",  title : xplug.get_label('LBL-CRNTLY-ACTIVE') },
-                                        { name  : "PROTECTED",   title : xplug.get_label("LBL-PROTECTED")     },
+                  columnDefinitions : [ { name  : "STYLE_NAME",   title : xplug.get_label('LBL-NAME')          },
+                                        { name  : "COMPATIBLE",   title : xplug.get_label('LBL-COMPATIBLE')    },
+                                        { name  : "DARK_STYLE",   title : xplug.get_label('LBL-DARK-STYLE')    },
+                                        { name  : "IS_CURRENT",   title : xplug.get_label('LBL-CRNTLY-ACTIVE') },
+                                        { name  : "PROTECTED",    title : xplug.get_label("LBL-PROTECTED")     },
                                        ],
 
                   filterLov         : function( pFilters, pRenderLovEntries ) {
@@ -618,8 +495,8 @@ window.pageDesigner.customizeStyle = function(p_title)
 
    var l_out = apex.util.htmlBuilder();
 
-   var C_valid = '#style_name#dark_style#show_grid#protected'
-               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#override_css#custom_css';
+   var C_valid = '#style_name#compatible#dark_style#show_grid#protected'
+               + '#c1#c2#c3#c4#c5#c6#c7#c8#c9#c10#custom_css';
 
    function verifyJSON(p_json) {
      var l_json_obj;
@@ -741,7 +618,8 @@ window.pageDesigner.customizeStyle = function(p_title)
                               l_imp_obj.C7,
                               l_imp_obj.C8,
                               l_imp_obj.C9,
-                              l_imp_obj.C10
+                              l_imp_obj.C10,
+                              l_imp_obj.COMPATIBLE
                            );
 
                          $(this).dialog( "close" );
@@ -817,10 +695,11 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
            p_save_mode,
            $('input[name=ColorDlgPE_2_name]:checked').val(),
            $('input[name=ColorDlgPE_3_name]:checked').val(),
-           $('input[name=ColorDlgPE_14_name]:checked').val(),
+           'YES',
            $('textarea[data-property-id="custom_css"').val(),
            l_c[1],l_c[2],l_c[3],l_c[4],l_c[5],
-           l_c[6],l_c[7],l_c[8],l_c[9],l_c[10]
+           l_c[6],l_c[7],l_c[8],l_c[9],l_c[10],
+           $('#ColorDlgPE_4').val()
         );
 
       l_style_applied = true;
@@ -839,7 +718,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
         .dialog(
                 { modal   : false,
                   title   : p_title,
-                  width   : 400,
+                  width   : 500,
 
                   close   : function(pEvent) {
                                pageDesigner.hideNotification();
@@ -866,9 +745,9 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                } catch(e) {
                                   void 0;
                                }
-                               l_settings_obj = { "STYLE_NAME"   : typeof(l_imp_obj.STYLE_NAME) == 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
-                                                  "DARK_STYLE"   : typeof(l_imp_obj.DARK_STYLE) == 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
-                                                  "SHOW_GRID"    : typeof(l_imp_obj.SHOW_GRID)  == 'undefined' ? "NO"      : l_imp_obj.SHOW_GRID,
+                               l_settings_obj = { "STYLE_NAME"   : typeof(l_imp_obj.STYLE_NAME) === 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
+                                                  "DARK_STYLE"   : typeof(l_imp_obj.DARK_STYLE) === 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
+                                                  "SHOW_GRID"    : typeof(l_imp_obj.SHOW_GRID)  === 'undefined' ? "NO"      : l_imp_obj.SHOW_GRID,
                                                   "C1"           : l_imp_obj.C1,
                                                   "C2"           : l_imp_obj.C2,
                                                   "C3"           : l_imp_obj.C3,
@@ -879,8 +758,8 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                                   "C8"           : l_imp_obj.C8,
                                                   "C9"           : l_imp_obj.C9,
                                                   "C10"          : l_imp_obj.C10,
-                                                  "OVERRIDE_CSS" : typeof(l_imp_obj.OVERRIDE_CSS) == 'undefined' ? "NO" : l_imp_obj.OVERRIDE_CSS,
-                                                  "CUSTOM_CSS"   : typeof(l_imp_obj.CUSTOM_CSS)   == 'undefined' ? ""   : l_imp_obj.CUSTOM_CSS
+                                                  "CUSTOM_CSS"   : typeof(l_imp_obj.CUSTOM_CSS)   === 'undefined' ? ""    : l_imp_obj.CUSTOM_CSS,
+                                                  "COMPATIBLE"   : typeof(l_imp_obj.COMPATIBLE)   === 'undefined' ? "5.0" : l_imp_obj.COMPATIBLE
                                              };
 
 
@@ -924,7 +803,24 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                        yesValue:       "YES",
                                        isReadOnly:     false,
                                        isRequired:     true,
-                                       displayGroupId: "advanced"
+                                       displayGroupId: "style_id"
+                                   },
+                                   errors:   [],
+                                   warnings: []
+                               };
+
+                               l_properties1[3] = {
+                                   propertyName: "compatible",
+                                   value:        "5.0",
+                                   metaData: {
+                                       type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
+                                       prompt:         xplug.get_label('LBL-COMPATIBLE'),
+                                       lovValues:      [ { d: "Oracle Application Express 5.0", r: "5.0" },
+                                                         { d: "Oracle Application Express 5.1", r: "5.1" },
+                                                         { d: "Oracle Application Express 5.x", r: "5.x" } ],
+                                       isReadOnly:     false,
+                                       isRequired:     true,
+                                       displayGroupId: "style_id"
                                    },
                                    errors:   [],
                                    warnings: []
@@ -948,30 +844,14 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                }
 
                                l_properties3[0] = {
-                                   propertyName: "override_css",
-                                   value:        l_settings_obj.OVERRIDE_CSS,
-                                   metaData: {
-                                       type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
-                                       prompt:         xplug.get_label('LBL-OVERRIDE-CSS'),
-                                       noValue:        "NO",
-                                       yesValue:       "YES",
-                                       isReadOnly:     false,
-                                       isRequired:     true,
-                                       displayGroupId: "advanced"
-                                   },
-                                   errors:   [],
-                                   warnings: []
-                               };
-
-                               l_properties3[1] = {
                                    propertyName: "custom_css",
                                    value:        l_settings_obj.CUSTOM_CSS,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.TEXTAREA,
-                                       prompt:         "Custom CSS",
+                                       prompt:         xplug.get_label('MSG-STYLE-CSS-COLOR'),
                                        isReadOnly:     false,
                                        isRequired:     false,
-                                       displayGroupId: "advanced"
+                                       displayGroupId: "custom_css"
                                    },
                                    errors:   [],
                                    warnings: []
@@ -988,16 +868,16 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                        properties        : l_properties1
                                      },
                                      {
+                                       displayGroupId    : "custom_css",
+                                       displayGroupTitle : xplug.get_label('LBL-CUST-CSS'),
+                                       properties        : l_properties3
+                                     },
+                                     {
                                        displayGroupId    : "cust_colors",
                                        displayGroupTitle : xplug.get_label('LBL-CUST-COLORS'),
                                        properties        : l_properties2
-                                     },
-                                     {
-                                       displayGroupId    : "advanced",
-                                       displayGroupTitle : xplug.get_label('LBL-ADVANCED'),
-                                       collapsed         : true,
-                                       properties        : l_properties3
                                      }
+
                                    ] 
                                  }   
                                });   
@@ -1018,8 +898,8 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                      }
                                    ); 
 
-                               $('#ColorDlgPE_15').css('height','150px')
-                                                  .attr('spellcheck','false');
+                               $('#ColorDlgPE_5').css('height','150px')
+                                                 .attr('spellcheck','false');
 
                             }, 
                   buttons : [
@@ -1210,14 +1090,15 @@ var Xplug = function() {
                              , "LBL-MIDDLE"            : "Middle"
                              , "LBL-RIGHT"             : "Right"
                              , "LBL-NAME"              : "Name"
+                             , 'LBL-APEX-VERSION'      : "APEX Version"
                              , "LBL-DARK-STYLE"        : "Night Mode"
                              , "LBL-CRNTLY-ACTIVE"     : "Currently Active"
                              , "LBL-PROTECTED"         : "Protected"
                              , "LBL-SHOW-GRID"         : "Show Grid"
+                             , "LBL-COMPATIBLE"        : "Compatible"
                              , "LBL-COLOR"             : "Color"
                              , "LBL-IDENTIFICATION"    : "Identification"
                              , "LBL-CUST-COLORS"       : "Customize Colors"
-                             , "LBL-OVERRIDE-CSS"      : "Override Xplug CSS"
                              , "LBL-CUST-CSS"          : "Custom CSS"
                              , "LBL-ADVANCED"          : "Advanced"
                              , "LBL-EXPERIMENTAL"      : "Experimental"
@@ -1247,10 +1128,11 @@ var Xplug = function() {
                              , "MSG-ERR-STORAGE-NOK" : "localStorage not enabled in browser. Xplug preferences can't be saved/retrieved. Please check!"
                              , "MSG-STYLE-EXPORT"    : "Please mark, copy and save the Xplug JSON code in a text file and press 'OK'"
                              , "MSG-STYLE-IMPORT"    : "Please copy the saved Xplug JSON code into the below field and press 'OK'"
-                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is valid"
-                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code is invalid. Please check."
-                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code is valid, but probably incompatible. Please check."
+                             , "MSG-STYLE-JSON-OK"   : "JSON code is valid and compatible with Xplug."
+                             , "MSG-STYLE-JSON-NOK"  : "JSON code is invalid. Please check."
+                             , "MSG-STYLE-JSON-FAIL" : "JSON code is valid, but possible incompatible with Xplug. Please check."
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer theme can't be saved. Please first change the theme name."
+                             , "MSG-STYLE-CSS-COLOR" : "Use %%C<num>%% to reference custom colors 1-10"
                              , "MSG-RELOAD-LANG"     : "Xplug language changed. Please reload page to activate."
                            },
 
@@ -1293,15 +1175,16 @@ var Xplug = function() {
                              , "LBL-MIDDLE"            : "Mittig"
                              , "LBL-RIGHT"             : "Rechts"
                              , "LBL-NAME"              : "Name"
+                             , 'LBL-APEX-VERSION'      : "APEX Version"
                              , "LBL-DARK-STYLE"        : "Dunkler Stil"
                              , "LBL-CRNTLY-ACTIVE"     : "Ist im Moment aktiv"
                              , "LBL-PROTECTED"         : "Gesperrt"
                              , "LBL-SHOW-GRID"         : "Grid anzeigen"
+                             , "LBL-COMPATIBLE"        : "Kompatibel"
                              , "LBL-COLOR"             : "Farbe"
                              , "LBL-IDENTIFICATION"    : "Identifizierung"
                              , "LBL-CUST-COLORS"       : "Farben anpassen"
-                             , "LBL-OVERRIDE-CSS"      : "Xplug CSS übersteuern"
-                             , "LBL-CUST-CSS"          : "Eigenes CSS"
+                             , "LBL-CUST-CSS"          : "Custom CSS"
                              , "LBL-ADVANCED"          : "Fortgeschritten"
                              , "LBL-EXPERIMENTAL"      : "Experimentel"
                              , "LBL-SHOW-BUTTONS"      : "Schaltflächen anzeigen"
@@ -1330,10 +1213,11 @@ var Xplug = function() {
                              , "MSG-ERR-STORAGE-NOK" : "localStorage nicht aktiviert im Browser. Xplug Einstellungen können nicht gespeichert/geladen werden. Bitte prüfen!"
                              , "MSG-STYLE-EXPORT"    : "Bitte markieren, kopieren und Speichern Sie den Xplug JSON code als Textdatei und drücken Sie danach 'OK'"
                              , "MSG-STYLE-IMPORT"    : "Bitte fügen Sie den gespeicherten Xplug JSON hier ein und drücken Sie 'OK'"
-                             , "MSG-STYLE-JSON-OK"   : "Xplug JSON code is gültig."
-                             , "MSG-STYLE-JSON-NOK"  : "Xplug JSON code ist ungültig. Bitte prüfen."
-                             , "MSG-STYLE-JSON-FAIL" : "Xplug JSON code ist gültig, aber vermutlich nicht kompatibel. Bitte prüfen."
+                             , "MSG-STYLE-JSON-OK"   : "JSON code is gültig und kompatibel mit Xplug."
+                             , "MSG-STYLE-JSON-NOK"  : "JSON code ist ungültig. Bitte prüfen."
+                             , "MSG-STYLE-JSON-FAIL" : "JSON code ist gültig, aber ggf. nicht kompatibel mit Xplug. Bitte prüfen."
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer Theme kann nicht gespeichert werden. Bitte zuerst Themenamen ändern."
+                             , "MSG-STYLE-CSS-COLOR" : "Benutze %%C<num>%% um Farben 1-10 zu referenzieren"
                              , "MSG-RELOAD-LANG"     : "Xplug Spracheinstellungen geändert. Bitte Seite neu laden um zu aktivieren."
                            },
                   };
@@ -2761,10 +2645,6 @@ Xplug.prototype.install_menu = function() {
        var l_arr_menu_items = [];
        var l_arr_keys       = [];
 
-       if (xplug.getStorage('STYLE_Moonlight','NOT_EXIST',true) == 'NOT_EXIST') {
-          window.pageDesigner.setStyle('Moonlight','SAVE_ONLY');
-       }
-
        l_arr_keys = xplug.getStorageKeys(true);
 
        for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
@@ -2776,21 +2656,29 @@ Xplug.prototype.install_menu = function() {
               if (l_style !== null) {
                 var l_label = l_style.STYLE_NAME.substr(0,25);
 
-                l_arr_menu_items.push(
-                  { type        : "toggle",
-                    label       : l_label,
-                    xplug_style : l_style.STYLE_NAME,
-                    get         : function()
-                                  {
-                                    return xplug.getStorage('CURRENT_STYLE',null,true) == this.xplug_style;
-                                  },
-                    set         : function()
-                                  {
-                                    window.pageDesigner.loadStyle(this.xplug_style);
-                                  }
-                  }
-                );
+                if (typeof(l_style.COMPATIBLE) === 'undefined') l_style.COMPATIBLE='5.0';
+
+                if (   (l_style.COMPATIBLE == "5.x")
+                    || (l_style.COMPATIBLE == xplug.apex_version.substr(0,3))  )
+                   {
+                      l_arr_menu_items.push(
+                        { type        : "toggle",
+                          label       : l_label,
+                          xplug_style : l_style.STYLE_NAME,
+                          get         : function()
+                                        {
+                                          return xplug.getStorage('CURRENT_STYLE',null,true) == this.xplug_style;
+                                        },
+                          set         : function()
+                                        {
+                                          window.pageDesigner.loadStyle(this.xplug_style);
+                                        }
+                        }
+                      );
+                   } 
+
              } 
+
            }   
        }       
 
@@ -2898,7 +2786,7 @@ Xplug.prototype.install_menu = function() {
 
          { type     : "separator" },
 
-                  {
+         {
            type     : "toggle",
            label    : xplug.get_label('NOTOOLTIPS'),
            get      : function()
@@ -3085,7 +2973,7 @@ Xplug.prototype.configureDialog = function()
         .dialog(
                 { modal   : false,
                   title   : xplug.get_label('LBL-XPLUG-SETTINGS'),
-                  width   : 450,
+                  width   : 500,
 
                   close   : function(pEvent) {
                                pageDesigner.hideNotification();
@@ -3353,9 +3241,9 @@ Xplug.prototype.configureDialog = function()
                                             + '&nbsp; <span class="a-Icon icon-xplug-next"></span>');
 
                               $('#ConfigDlgPE_2_label')
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>'
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>'
                                             + '/'
-                                            + '&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+                                            + '&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
 
                               $('#ConfigDlgPE_3_label')
                                       .append('&nbsp; <span class="a-Icon icon-comp-view"></span>');
@@ -3369,6 +3257,18 @@ Xplug.prototype.configureDialog = function()
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
                                   $('#ConfigDlgPE_6_label')
                                         .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
+
+                                  $('#ConfigDlgPE_7_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+
+                                  $('#ConfigDlgPE_8_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
+                              } else {
+                                $('#ConfigDlgPE_6_label')
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+
+                                $('#ConfigDlgPE_7_label')
+                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
                               }
 
                               $('div#ORATRONIK_XPLUG_CONFIG_DIALOG .a-Property-labelContainer')
@@ -3466,7 +3366,7 @@ Xplug.prototype.configureDialog = function()
                                   if (sOldLangVal != sNewLangVal) {
                                      xplug.setStorage('LANGUAGE',$(sLanguage).val(),true);
                                      $(this).dialog("close");
-                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));                                     
+                                     pageDesigner.showSuccess(xplug.get_label('MSG-RELOAD-LANG',sNewLangVal));
                                   } else {
                                     $(this).dialog("close");
                                   }
