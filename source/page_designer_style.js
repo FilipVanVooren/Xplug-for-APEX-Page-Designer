@@ -5,7 +5,7 @@
 // page_designer_style.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
+/* jshint laxbreak: true, laxcomma: true, loopfunc: true */
 /* jshint -W030 */
 
 /****************************************************************************
@@ -96,7 +96,7 @@ window.pageDesigner.setStyle = function( p_style_name,
     l_style += l_custom_css + l_lf;
     l_style += '</style>'   + l_lf;
 
-    console.debug(l_style);
+    // console.debug(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
@@ -172,7 +172,7 @@ window.pageDesigner.loadStyle = function(p_style_name)
 
 
    if (l_imp_obj === null) {
-      console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      console.log('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
       window.pageDesigner.loadStyle('NONE');
       return 0;
    }
@@ -857,7 +857,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                               { text  : xplug.get_label('BTN-DELETE'),
                                 click : function() {
                                   xplug.delStorage(l_style_name_orig,true);
-                                  console.debug('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
+                                  console.log('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
                                   $(this).dialog("close");
                                 },
                                 disabled : is_protected() || is_default()

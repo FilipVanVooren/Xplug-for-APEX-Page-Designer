@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Feb 12 2017 21:39:38
+// Built using Gulp. Built date: Sun Feb 19 2017 22:31:06
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -6,7 +6,7 @@
 //
 // Music listened to while programming Xplug (in no particular order)
 //   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
-//   Birdy, GusGus, Massive Attack, Telephone Tel Aviv, ...
+//   Birdy, GusGus, Massive Attack, Telephone Tel Aviv, Underworld, ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -292,7 +292,7 @@
 //                          - Bug-fix: Small delay before showing Page Details, required for firefox
 //                                     because otherwise it complains if marked.min library is not yet fully laoded.
 //
-//  V1.4.0.0 2016-11-01 * Multiple changes
+// V1.4.0.0 2016-11-01 * Multiple changes
 //                         - Bug-fix: disable 'Enable markdown' option in sidekick hamburger menu if 'Page Details'
 //                                    tab is deactivated.
 //                         - Added possibility to anonymously report bugs on GitHub by using Git reports service.
@@ -301,44 +301,47 @@
 //                           Probably introduced some bugs now, but it's required for multi-language support.
 //
 //
-//   V1.4.0.0 2016-11-07 * Multiple changes
+// V1.4.0.0 2016-11-07 * Multiple changes
 //                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
 //                                    I want folks to use standard APEX 5.1 Page Designer functionality
 //
 //
-//   V1.4.0.1 2016-11-21 Bug-fix: version number still contained "beta 2", switched from "1.4.0.0 beta2" to "1.4.0.1"
+// V1.4.0.1 2016-11-21 Bug-fix: version number still contained "beta 2", switched from "1.4.0.0 beta2" to "1.4.0.1"
 //
-//   V1.4.1.0 2017-01-02 * Multiple changes
+// V1.4.1.0 2017-01-02 * Multiple changes
 //                          - Introduced xplug_feature_clean_ui.js
 //                          - Added possibility to hide/show some Page Designer buttons
 //                                 - Team Development menu
 //                                 - Add Comment menu
 //
-//   V1.4.1.0 2017-01-03 * Multiple changes
-//                           - Changed order of buttons in configuration dialog
-//                           - Added possibility to pre-install Themes upon startup
-//                           - Added "Clean UI"-Theme as pre-installed theme
+// V1.4.1.0 2017-01-03 * Multiple changes
+//                          - Changed order of buttons in configuration dialog
+//                          - Added possibility to pre-install Themes upon startup
+//                          - Added "Clean UI"-Theme as pre-installed theme
 //
 //
-//   V1.4.1.0 2017-01-15 * Multiple changes
-//                            - Added possibility to hide Component View button
-//                            - Changed order of buttons in configuration dialog again
-//                            - Introduced "Presentation mode" toggle in Quick Controls submenu
-//                            - "Clean UI" is now the default theme for APEX 5.0
-//                            - Markdown format is enabled by default now
+// V1.4.1.0 2017-01-15 * Multiple changes
+//                          - Added possibility to hide Component View button
+//                          - Changed order of buttons in configuration dialog again
+//                          - Introduced "Presentation mode" toggle in Quick Controls submenu
+//                          - "Clean UI" is now the default theme for APEX 5.0
+//                          - Markdown format is enabled by default now
 //
-//   V1.4.1.0 2017-01-30 * Multiple changes
-//                            - Prevent swap-grid button in APEX 5.1
-//                            - Prevent previous/next page buttons in APEX 5.1
+// V1.4.1.0 2017-01-30 * Multiple changes
+//                          - Prevent swap-grid button in APEX 5.1
+//                          - Prevent previous/next page buttons in APEX 5.1
 //
-//   V1.4.1.0 2017-02-13  * Multiple changes
-//                            Theme handling reworked
-//                            - Introduced "Compatible with" APEX version in theme
-//                            - Reworked Theme Gallery and theme configuration dialog
-//                            - Changed default settings when creating new theme
-//                            - Moonlight theme: No longer built-in CSS in javascript, it is
+// V1.4.1.0 2017-02-13  * Multiple changes
+//                          Theme handling reworked
+//                           - Introduced "Compatible with" APEX version in theme
+//                           - Reworked Theme Gallery and theme configuration dialog
+//                           - Changed default settings when creating new theme
+//                           - Moonlight theme: No longer built-in CSS in javascript, it is
 //                              now a normal theme
 //
+// V1.4.1.0 2017-02-19  * Multiple changes
+//                          - JSON containing theme definition is now loaded from Xplug browser addon
+//                            web resource. At least for Chrome that is.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -584,7 +587,7 @@ window.pageDesigner.customizeShortcuts = function(p_title)
 // page_designer_style.js
 // 2015-12-13 * Initial version
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
+/* jshint laxbreak: true, laxcomma: true, loopfunc: true */
 /* jshint -W030 */
 
 /****************************************************************************
@@ -675,7 +678,7 @@ window.pageDesigner.setStyle = function( p_style_name,
     l_style += l_custom_css + l_lf;
     l_style += '</style>'   + l_lf;
 
-    console.debug(l_style);
+    // console.debug(l_style);
 
     $("link[href*='/css/Theme-Standard']").after(l_style);
 
@@ -751,7 +754,7 @@ window.pageDesigner.loadStyle = function(p_style_name)
 
 
    if (l_imp_obj === null) {
-      console.error('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      console.log('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
       window.pageDesigner.loadStyle('NONE');
       return 0;
    }
@@ -1436,7 +1439,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                               { text  : xplug.get_label('BTN-DELETE'),
                                 click : function() {
                                   xplug.delStorage(l_style_name_orig,true);
-                                  console.debug('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
+                                  console.log('XPLUG - Page Designer Style "' + l_style_name_orig.substring(6) + '" deleted.');
                                   $(this).dialog("close");
                                 },
                                 disabled : is_protected() || is_default()
@@ -3340,7 +3343,7 @@ Xplug.prototype.presentationModeOff = function()
 // 2016-01-04 * Added getStorageKeys method for retrieving all Xplug keys in localStorage
 // 2016-01-07 * Added delStorage method for deleting entries
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* jshint laxbreak: true, laxcomma: true */
+/* jshint laxbreak: true, laxcomma: true, loopfunc: true */
 /* jshint -W030 */
 
 Xplug.prototype.setStorage = function(p_key, p_value, p_is_global)
@@ -3440,11 +3443,9 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
      ****************************************************************************/
      Xplug.prototype.loadSettings = function ()
      {
-       // Set "Clean UI" as default theme upon initial startup
        if (xplug.getStorage('CURRENT_STYLE','*NOT SET*',true) == '*NOT SET*') {
-          window.pageDesigner.loadStyle('Clean UI');
-          xplug.setStorage('DEFAULT_STYLE1','Clean UI',true);
        } else {
+         // Load current style if set
          window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','Clean UI',true));
        }
 
@@ -3469,7 +3470,6 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
 
 
 
-
      /*****************************************************************************
       * Install themes upon startup
       ****************************************************************************/
@@ -3477,11 +3477,29 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
      {
          'use strict';
 
-         var sJSON;       // Escaped with: http://www.url-encode-decode.com/
+         var oAttr, sStyle, sJSON;
 
-         // Theme: Clean UI
-         sJSON = '%7B%0D%0A    %22STYLE_NAME%22%3A %22Clean UI%22%2C%0D%0A    %22DARK_STYLE%22%3A %22NO%22%2C%0D%0A    %22SHOW_GRID%22%3A %22NO%22%2C%0D%0A    %22PROTECTED%22%3A %22YES%22%2C%0D%0A    %22C1%22%3A %22%23000000%22%2C%0D%0A    %22C2%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C3%22%3A %22%23CFE6FA%22%2C%0D%0A    %22C4%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C5%22%3A %22%232D7BBB%22%2C%0D%0A    %22C6%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C7%22%3A %22%234F9CDB%22%2C%0D%0A    %22C8%22%3A %22%23FFFFFF%22%2C%0D%0A    %22C9%22%3A %22%23000000%22%2C%0D%0A    %22C10%22%3A %22%23000000%22%2C%0D%0A    %22OVERRIDE_CSS%22%3A %22YES%22%2C%0D%0A    %22CUSTOM_CSS%22%3A %22%2F%2A%2A%2A%2A%5CnColors used%3A%5CnC1%3A  Foreground color for all buttons%5CnC2%3A  Background color for all buttons%5CnC3%3A  Background color for %27Save%27 button%5CnC4%3A  Foreground color for %27Run%27 button%5CnC5%3A  Background color for %27Run%27 button%5CnC6%3A  Properties Group header icon %26 label color%5CnC7%3A  Properties Group header background color%5CnC8%3A  Property border color%5CnC9%3A  not used%5CnC10%3A not used%5Cn%2A%2A%2A%2A%2F%5Cn%5Cn%2F%2A For all buttons not in popup editor or alert msg %2A%2F%5Cnbutton%3Anot%28%5Bid%5E%3DeditorDlg%5D%29.a-Button%3Anot%28.a-Button--alertMessages%29%5Cn  %7B %5Cn    color%3A             %25%25C1%25%25%3B %5Cn    background-color%3A  %25%25C2%25%25%3B%5Cn    box-shadow%3A        0 0 0 0px%3B %5Cn  %7D%5Cn%5Cnbutton%23button-save-page%5Cn  %7B%5Cn    background-color%3A %25%25C3%25%25%3B%5Cn  %7D%5Cn%5Cn%5Cnbutton%23button-save-run-page%5Cn  %7B%5Cn    color%3A            %25%25C4%25%25%3B%5Cn    background-color%3A %25%25C5%25%25%3B%5Cn  %7D%5Cn%5Cn.a-PageSelect%5Cn  %7B%5Cn    border%3A 0px%3B%5Cn  %7D%5Cn%5Cn%2F%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A Properties Group Header %2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2A%2F%5Cn%5Cn%2F%2A  icon color %2A%2F%5Cndiv%23sp_right  .a-PropertyEditor-propertyGroup-header span%5Cn  %7B%5Cn    color%3A %25%25C6%25%25 %21important%3B %5Cn  %7D%5Cn%5Cn%2F%2A Properties Group Header label color %2A%2F%5Cndiv%23sp_right .a-PropertyEditor-propertyGroup-title %5Cn  %7B %5Cn    color%3A %25%25C6%25%25%3B %5Cn  %7D%5Cn%5Cn%2F%2A Properties Group Header background color %2A%2F%5Cndiv%23sp_right .a-PropertyEditor-propertyGroup-header %5Cn  %7B%5Cn   background-color%3A %25%25C7%25%25%3B %5Cn  %7D%5Cn%5Cn%2F%2A Property border color %2A%2F%5Cn.a-PropertyEditor-propertyGroup-body .a-Property %5Cn  %7B%5Cn   border-color%3A %25%25C8%25%25%3B%5Cn  %7D%22%0D%0A%7D%0D%0A';
-         xplug.setStorage('STYLE_Clean UI', unescape(sJSON), true);
+         console.log('XPLUG - Installing themes....');
+
+         //
+         // Loop over all attributes of DIV#XLPUG_SETTINGS, filtering for
+         // "xplug-theme(1-xx)". For each matched attribute get theme
+         // from browser addon resource (Chrome or Firefox)
+         //
+         oAttr = $('div#XPLUG_SETTINGS').get(0).attributes;
+         for (var l=0; l < oAttr.length; l++) {
+             if (oAttr[l].name.substr(0,11) == 'xplug-theme') {
+                $.get(oAttr[l].value, function (pData)
+                  {
+                     console.log('Installing theme "' + pData.STYLE_NAME + '"');
+                     sStyle = 'STYLE_' + pData.STYLE_NAME;
+                     sJSON  = JSON.stringify(pData);
+                     xplug.setStorage(sStyle, sJSON, true);
+                  } // function
+                  , "json"
+                );  // $.get
+             }      // uf
+         }          // for
      };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
