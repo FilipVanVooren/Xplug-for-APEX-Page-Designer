@@ -166,13 +166,13 @@ window.pageDesigner.loadStyle = function(p_style_name)
    try {
       l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
    } catch(e) {
-      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
+      console.warn("XPLUG - can't fetch " + p_style_name + " from localStorage.");
       return 0;
    }
 
 
    if (l_imp_obj === null) {
-      console.log('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      console.log('XPLUG - could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
       window.pageDesigner.loadStyle('NONE');
       return 0;
    }
@@ -669,7 +669,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                try {
                                   l_imp_obj = JSON.parse(xplug.getStorage(l_style_name,null,true));
                                } catch(e) {
-                                  console.warn("XPLUG: can't fetch " + l_style_name + " from localStorage. Using defaults.");
+                                  console.warn("XPLUG - can't fetch " + l_style_name + " from localStorage. Using defaults.");
                                }
                                l_settings_obj = { "STYLE_NAME"   : typeof(l_imp_obj.STYLE_NAME) === 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
                                                   "DARK_STYLE"   : typeof(l_imp_obj.DARK_STYLE) === 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,

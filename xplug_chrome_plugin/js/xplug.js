@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Feb 19 2017 22:31:06
+// Built using Gulp. Built date: Thu Feb 23 2017 21:04:22
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -748,13 +748,13 @@ window.pageDesigner.loadStyle = function(p_style_name)
    try {
       l_imp_obj = JSON.parse(xplug.getStorage('STYLE_' + p_style_name,null,true));
    } catch(e) {
-      console.warn("XPLUG: can't fetch " + p_style_name + " from localStorage.");
+      console.warn("XPLUG - can't fetch " + p_style_name + " from localStorage.");
       return 0;
    }
 
 
    if (l_imp_obj === null) {
-      console.log('XPLUG: could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
+      console.log('XPLUG - could not retrieve Page Designer style "' + p_style_name + '". Reverting to NONE.');
       window.pageDesigner.loadStyle('NONE');
       return 0;
    }
@@ -1251,7 +1251,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
                                try {
                                   l_imp_obj = JSON.parse(xplug.getStorage(l_style_name,null,true));
                                } catch(e) {
-                                  console.warn("XPLUG: can't fetch " + l_style_name + " from localStorage. Using defaults.");
+                                  console.warn("XPLUG - can't fetch " + l_style_name + " from localStorage. Using defaults.");
                                }
                                l_settings_obj = { "STYLE_NAME"   : typeof(l_imp_obj.STYLE_NAME) === 'undefined' ? "Default" : l_imp_obj.STYLE_NAME,
                                                   "DARK_STYLE"   : typeof(l_imp_obj.DARK_STYLE) === 'undefined' ? "NO"      : l_imp_obj.DARK_STYLE,
@@ -3477,30 +3477,38 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
      {
          'use strict';
 
-         var oAttr, sStyle, sJSON;
-
-         console.log('XPLUG - Installing themes....');
+         var oAttr, sStyle, sURL, sJSON, iDelim;
 
          //
          // Loop over all attributes of DIV#XLPUG_SETTINGS, filtering for
          // "xplug-theme(1-xx)". For each matched attribute get theme
-         // from browser addon resource (Chrome or Firefox)
+         // from browser addon resource (Chrome or Firefox) unless
+         // in localStorage already.
          //
          oAttr = $('div#XPLUG_SETTINGS').get(0).attributes;
          for (var l=0; l < oAttr.length; l++) {
              if (oAttr[l].name.substr(0,11) == 'xplug-theme') {
-                $.get(oAttr[l].value, function (pData)
-                  {
-                     console.log('Installing theme "' + pData.STYLE_NAME + '"');
-                     sStyle = 'STYLE_' + pData.STYLE_NAME;
-                     sJSON  = JSON.stringify(pData);
-                     xplug.setStorage(sStyle, sJSON, true);
-                  } // function
-                  , "json"
-                );  // $.get
-             }      // uf
-         }          // for
-     };
+
+                iDelim = oAttr[l].value.indexOf('$');
+                sStyle = 'STYLE_' + oAttr[l].value.substr(0,iDelim);
+                sURL   = oAttr[l].value.substr(iDelim + 1);
+
+                if (xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND') {
+
+                   $.get(sURL, function (pData)
+                      {
+                        console.log('XPLUG - Installing theme "' + pData.STYLE_NAME + '"');
+                        sStyle = 'STYLE_' + pData.STYLE_NAME;
+                        sJSON  = JSON.stringify(pData);
+                        xplug.setStorage(sStyle, sJSON, true);
+                      } // Callback
+                      , "json"
+                  );  // $.get
+
+                }     // if xplug.getStorage
+              }       // if xplug-theme
+         }            // for
+     };               // installThemes()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
@@ -4498,9 +4506,9 @@ if (typeof(window.pageDesigner) == 'object') {
 
    console.info('XPLUG - Detected APEX version: ' + xplug.apex_version);
 
+   xplug.installThemes();
    xplug.setLanguage();
    xplug.install_actions();
-   xplug.installThemes();
    xplug.install_menu();
    xplug.loadSettings();
 }

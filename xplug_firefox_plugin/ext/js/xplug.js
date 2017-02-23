@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Feb 19 2017 22:31:06
+// Built using Gulp. Built date: Thu Feb 23 2017 21:04:22
 
 
 
@@ -2484,25 +2484,32 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
      {
          'use strict';
 
-         var oAttr, sStyle, sJSON;
-
-         void 0;
+         var oAttr, sStyle, sURL, sJSON, iDelim;
 
          oAttr = $('div#XPLUG_SETTINGS').get(0).attributes;
          for (var l=0; l < oAttr.length; l++) {
              if (oAttr[l].name.substr(0,11) == 'xplug-theme') {
-                $.get(oAttr[l].value, function (pData)
-                  {
-                     void 0;
-                     sStyle = 'STYLE_' + pData.STYLE_NAME;
-                     sJSON  = JSON.stringify(pData);
-                     xplug.setStorage(sStyle, sJSON, true);
-                  } 
-                  , "json"
-                );  
-             }      
-         }          
-     };
+
+                iDelim = oAttr[l].value.indexOf('$');
+                sStyle = 'STYLE_' + oAttr[l].value.substr(0,iDelim);
+                sURL   = oAttr[l].value.substr(iDelim + 1);
+
+                if (xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND') {
+
+                   $.get(sURL, function (pData)
+                      {
+                        void 0;
+                        sStyle = 'STYLE_' + pData.STYLE_NAME;
+                        sJSON  = JSON.stringify(pData);
+                        xplug.setStorage(sStyle, sJSON, true);
+                      } 
+                      , "json"
+                  );  
+
+                }     
+              }       
+         }            
+     };               
 
 
 
@@ -3425,9 +3432,9 @@ if (typeof(window.pageDesigner) == 'object') {
 
    void 0;
 
+   xplug.installThemes();
    xplug.setLanguage();
    xplug.install_actions();
-   xplug.installThemes();
    xplug.install_menu();
    xplug.loadSettings();
 }

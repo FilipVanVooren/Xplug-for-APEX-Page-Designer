@@ -10,9 +10,9 @@ chrome.extension.sendMessage({}, function(response) {
 
       var l_div = document.createElement('div');
       l_div.setAttribute('id','XPLUG_SETTINGS');
-      l_div.setAttribute('xplug-background',chrome.runtime.getURL('/resources/grid_4k_3840_2160_dark.png'));
-      l_div.setAttribute('xplug-theme1',chrome.runtime.getURL('/resources/themes/theme_clean_ui.json'));
-      l_div.setAttribute('xplug-theme2',chrome.runtime.getURL('/resources/themes/theme_moonlight.json'));
+      l_div.setAttribute('xplug-background',           chrome.runtime.getURL('/resources/grid_4k_3840_2160_dark.png'));
+      l_div.setAttribute('xplug-theme1','Clean UI$'  + chrome.runtime.getURL('/resources/themes/theme_clean_ui.json'));
+      l_div.setAttribute('xplug-theme2','Moonlight$' + chrome.runtime.getURL('/resources/themes/theme_moonlight.json'));
 
       document.body.appendChild(l_div);
 
