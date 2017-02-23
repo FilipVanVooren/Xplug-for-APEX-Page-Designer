@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Thu Feb 23 2017 21:04:22
+// Built using Gulp. Built date: Thu Feb 23 2017 21:44:12
 
 
 
@@ -2460,6 +2460,7 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
          window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','Clean UI',true));
        }
 
+
        if (xplug.getStorage('MARKDOWN_ENABLED','*NOT SET*',true) == '*NOT SET*')  {
          xplug.setStorage('MARKDOWN_ENABLED','YES',true);
        }
@@ -2502,6 +2503,18 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
                         sStyle = 'STYLE_' + pData.STYLE_NAME;
                         sJSON  = JSON.stringify(pData);
                         xplug.setStorage(sStyle, sJSON, true);
+
+                        window.setTimeout(function()
+                                            {
+                                              xplug.install_menu();
+
+                                              if (xplug.getStorage('CURRENT_STYLE','*NOT SET*',true) == '*NOT SET*') {
+                                                 window.pageDesigner.loadStyle('Clean UI');
+                                                 xplug.setStorage('DEFAULT_STYLE1','Clean UI',true);
+                                              }
+                                            },
+                                            Math.random() * 1000 + 1
+                                         );
                       } 
                       , "json"
                   );  

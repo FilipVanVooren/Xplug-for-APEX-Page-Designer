@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Thu Feb 23 2017 21:04:22
+// Built using Gulp. Built date: Thu Feb 23 2017 21:44:12
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -342,6 +342,12 @@
 // V1.4.1.0 2017-02-19  * Multiple changes
 //                          - JSON containing theme definition is now loaded from Xplug browser addon
 //                            web resource. At least for Chrome that is.
+//
+// V1.4.1.0  2017-02-19  * Multiple changes
+//                          - Refactored theme bootstrapping for better stability and performance
+//                          - Refresh Xplug menu after loading theme
+//                          - Set "Clean UI" as default theme upon initial startup
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -3449,6 +3455,7 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
          window.pageDesigner.loadStyle(xplug.getStorage('CURRENT_STYLE','Clean UI',true));
        }
 
+
        // Enable Markdown format upon initial startup
        if (xplug.getStorage('MARKDOWN_ENABLED','*NOT SET*',true) == '*NOT SET*')  {
          xplug.setStorage('MARKDOWN_ENABLED','YES',true);
@@ -3501,6 +3508,20 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
                         sStyle = 'STYLE_' + pData.STYLE_NAME;
                         sJSON  = JSON.stringify(pData);
                         xplug.setStorage(sStyle, sJSON, true);
+
+                        // Update themes in Xplug menu and set "Clean UI" as default
+                        window.setTimeout(function()
+                                            {
+                                              xplug.install_menu();
+
+                                              // Set "Clean UI" as default theme upon initial startup                                              
+                                              if (xplug.getStorage('CURRENT_STYLE','*NOT SET*',true) == '*NOT SET*') {
+                                                 window.pageDesigner.loadStyle('Clean UI');
+                                                 xplug.setStorage('DEFAULT_STYLE1','Clean UI',true);
+                                              }
+                                            },
+                                            Math.random() * 1000 + 1
+                                         );
                       } // Callback
                       , "json"
                   );  // $.get
