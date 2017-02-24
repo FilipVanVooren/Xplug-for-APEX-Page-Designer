@@ -342,10 +342,12 @@
 //                          - JSON containing theme definition is now loaded from Xplug browser addon
 //                            web resource. At least for Chrome that is.
 //
-// V1.4.1.0  2017-02-19  * Multiple changes
+// V1.4.1.0 2017-02-19  * Multiple changes
 //                          - Refactored theme bootstrapping for better stability and performance
 //                          - Refresh Xplug menu after loading theme
 //                          - Set "Clean UI" as default theme upon initial startup
+//
+// V1.4.1.0 2017-02-24  * Some minor refactoring and some major CSS changes to the moonlight theme
 //
 //
 // REMARKS
