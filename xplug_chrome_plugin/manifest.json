@@ -1,6 +1,6 @@
 {
   "name"             : "Xplug for APEX Page Designer",
-  "version"          : "1.4.1.0",
+  "version"          : "1.5.0.0",
   "author"           : "Filip van Vooren",
   "manifest_version" : 2,
   "description"      : "Enhance the APEX 5.0 Page Designer with some features currently unavailable in the official release (switch panes, ...)",

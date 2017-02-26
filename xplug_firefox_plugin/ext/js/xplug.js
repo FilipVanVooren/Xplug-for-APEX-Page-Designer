@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sat Feb 25 2017 00:04:22
+// Built using Gulp. Built date: Sun Feb 26 2017 22:19:29
 
 
 
@@ -810,7 +810,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
                                l_properties1[3] = {
                                    propertyName: "compatible",
-                                   value:        "5.0",
+                                   value:        l_settings_obj.COMPATIBLE,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
                                        prompt:         xplug.get_label('LBL-COMPATIBLE'),
@@ -958,7 +958,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.4.1.0';
+   var C_version = 'Xplug v1.5.0.0';
    var C_author  = 'Filip van Vooren';
 
    if (typeof(window.pageDesigner) != 'object') {
@@ -2339,7 +2339,6 @@ Xplug.prototype.showDocumentation = function ()
 
 Xplug.prototype.presentationModeOn = function()
 {
-    xplug.deinstallThemeSwitch();
     xplug.deinstallPageButtons();
     xplug.hideBtnCompView();
     xplug.hideBtnMenuTeamDev();
@@ -2351,7 +2350,6 @@ Xplug.prototype.presentationModeOn = function()
 
 Xplug.prototype.presentationModeOff = function()
 {
-    xplug.installThemeSwitch();
     xplug.installPageButtons();
     xplug.showBtnCompView();
     xplug.showBtnMenuTeamDev();

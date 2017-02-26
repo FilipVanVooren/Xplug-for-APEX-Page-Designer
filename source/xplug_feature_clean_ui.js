@@ -74,7 +74,8 @@
  ***************************************************************************/
 Xplug.prototype.presentationModeOn = function()
 {
-    xplug.deinstallThemeSwitch();
+    // document.body.webkitRequestFullScreen();
+    //xplug.deinstallThemeSwitch();
     xplug.deinstallPageButtons();
     xplug.hideBtnCompView();
     xplug.hideBtnMenuTeamDev();
@@ -89,7 +90,8 @@ Xplug.prototype.presentationModeOn = function()
  ***************************************************************************/
 Xplug.prototype.presentationModeOff = function()
 {
-    xplug.installThemeSwitch();
+    // document.webkitCancelFullScreen();
+    // xplug.installThemeSwitch();
     xplug.installPageButtons();
     xplug.showBtnCompView();
     xplug.showBtnMenuTeamDev();

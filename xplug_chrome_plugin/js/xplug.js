@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sat Feb 25 2017 00:04:22
+// Built using Gulp. Built date: Sun Feb 26 2017 22:19:29
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -308,30 +308,30 @@
 //
 // V1.4.0.1 2016-11-21 Bug-fix: version number still contained "beta 2", switched from "1.4.0.0 beta2" to "1.4.0.1"
 //
-// V1.4.1.0 2017-01-02 * Multiple changes
+// V1.5.0.0 2017-01-02 * Multiple changes
 //                          - Introduced xplug_feature_clean_ui.js
 //                          - Added possibility to hide/show some Page Designer buttons
 //                                 - Team Development menu
 //                                 - Add Comment menu
 //
-// V1.4.1.0 2017-01-03 * Multiple changes
+// V1.5.0.0 2017-01-03 * Multiple changes
 //                          - Changed order of buttons in configuration dialog
 //                          - Added possibility to pre-install Themes upon startup
 //                          - Added "Clean UI"-Theme as pre-installed theme
 //
 //
-// V1.4.1.0 2017-01-15 * Multiple changes
+// V1.5.0.0 2017-01-15 * Multiple changes
 //                          - Added possibility to hide Component View button
 //                          - Changed order of buttons in configuration dialog again
 //                          - Introduced "Presentation mode" toggle in Quick Controls submenu
 //                          - "Clean UI" is now the default theme for APEX 5.0
 //                          - Markdown format is enabled by default now
 //
-// V1.4.1.0 2017-01-30 * Multiple changes
+// V1.5.0.0 2017-01-30 * Multiple changes
 //                          - Prevent swap-grid button in APEX 5.1
 //                          - Prevent previous/next page buttons in APEX 5.1
 //
-// V1.4.1.0 2017-02-13  * Multiple changes
+// V1.5.0.0 2017-02-13  * Multiple changes
 //                          Theme handling reworked
 //                           - Introduced "Compatible with" APEX version in theme
 //                           - Reworked Theme Gallery and theme configuration dialog
@@ -339,15 +339,21 @@
 //                           - Moonlight theme: No longer built-in CSS in javascript, it is
 //                              now a normal theme
 //
-// V1.4.1.0 2017-02-19  * Multiple changes
+// V1.5.0.0 2017-02-19  * Multiple changes
 //                          - JSON containing theme definition is now loaded from Xplug browser addon
 //                            web resource. At least for Chrome that is.
 //
-// V1.4.1.0  2017-02-19  * Multiple changes
+// V1.5.0.0 2017-02-19  * Multiple changes
 //                          - Refactored theme bootstrapping for better stability and performance
 //                          - Refresh Xplug menu after loading theme
 //                          - Set "Clean UI" as default theme upon initial startup
 //
+// V1.5.0.0 2017-02-24  * Some minor refactoring and some major CSS changes to the moonlight theme
+//
+// V1.5.0.0 2017-02-27  * Multiple changes
+//                           - Rebranded v1.4.1.0 to v1.5.0.0 plenty of changes to adjust just that.
+//                           - Bugfix in setting LOV default value of compatible version when opening theme details
+//                           - Made some more tweaks to the Moonlight theme.
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -1328,7 +1334,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
                                l_properties1[3] = {
                                    propertyName: "compatible",
-                                   value:        "5.0",
+                                   value:        l_settings_obj.COMPATIBLE,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
                                        prompt:         xplug.get_label('LBL-COMPATIBLE'),
@@ -1506,7 +1512,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.4.1.0';
+   var C_version = 'Xplug v1.5.0.0';
    var C_author  = 'Filip van Vooren';
 
    // Exit if not in APEX Page Designer
@@ -3315,7 +3321,8 @@ Xplug.prototype.showDocumentation = function ()
  ***************************************************************************/
 Xplug.prototype.presentationModeOn = function()
 {
-    xplug.deinstallThemeSwitch();
+    // document.body.webkitRequestFullScreen();
+    //xplug.deinstallThemeSwitch();
     xplug.deinstallPageButtons();
     xplug.hideBtnCompView();
     xplug.hideBtnMenuTeamDev();
@@ -3330,7 +3337,8 @@ Xplug.prototype.presentationModeOn = function()
  ***************************************************************************/
 Xplug.prototype.presentationModeOff = function()
 {
-    xplug.installThemeSwitch();
+    // document.webkitCancelFullScreen();
+    // xplug.installThemeSwitch();
     xplug.installPageButtons();
     xplug.showBtnCompView();
     xplug.showBtnMenuTeamDev();

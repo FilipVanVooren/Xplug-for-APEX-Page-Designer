@@ -740,7 +740,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
                                l_properties1[3] = {
                                    propertyName: "compatible",
-                                   value:        "5.0",
+                                   value:        l_settings_obj.COMPATIBLE,
                                    metaData: {
                                        type:           $.apex.propertyEditor.PROP_TYPE.SELECT_LIST,
                                        prompt:         xplug.get_label('LBL-COMPATIBLE'),
