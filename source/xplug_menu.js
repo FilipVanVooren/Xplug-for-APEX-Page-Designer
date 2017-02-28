@@ -191,6 +191,8 @@ Xplug.prototype.install_menu = function() {
            disabled : function() { return false; }
          },
 
+         { type   : "separator" },
+
          {
            type     : "toggle",
            label    : xplug.get_label('LBL-ADD-SIDEKICK'),

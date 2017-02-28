@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Feb 26 2017 22:19:29
+// Built using Gulp. Built date: Tue Feb 28 2017 22:16:36
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -354,6 +354,13 @@
 //                           - Rebranded v1.4.1.0 to v1.5.0.0 plenty of changes to adjust just that.
 //                           - Bugfix in setting LOV default value of compatible version when opening theme details
 //                           - Made some more tweaks to the Moonlight theme.
+//
+// V1.5.0.0  2017-02-28  * Multiple changes
+//                           - Refactored hide/show button stuff, so that Xplug configuration is no longer affected.
+//                             This is because Presentation Mode will have a different functionality as planned.
+//                           - Added possibility to hide/show Shared Components button
+//                           - Started rework on presentation mode functionality
+//                           - Started work on possibility to hide/show Page Designer Options menu (5.1 only)
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
@@ -3257,13 +3264,54 @@ Xplug.prototype.showDocumentation = function ()
 /* jshint -W083 */
 
 
+
+/****************************************************************************
+ * Hide ThemeSwitch button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnThemeSwitch = function()
+{
+    $('button#ORATRONIK_XPLUG_moonsun_button').css('display','none');
+}; // hideBtnThemeSwitch
+
+
+/****************************************************************************
+ * Show ThemeSwitch button
+ ***************************************************************************/
+ Xplug.prototype.showBtnThemeSwitch = function()
+{
+    if (xplug.getStorage('BTN-THEME-SWITCH') == 'YES') {
+       $('button#ORATRONIK_XPLUG_moonsun_button').css('display','inline');
+    }
+}; // showBtnThemeSwitch
+
+
+/****************************************************************************
+ * Hide Prev/Next button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnPrevNext = function()
+{
+    $('button#ORATRONIK_XPLUG_prev_page_button,button#ORATRONIK_XPLUG_next_page_button')
+          .css('display','none');
+}; // hideBtnPrevNext
+
+/****************************************************************************
+ * Hide Prev/Next button
+ ***************************************************************************/
+ Xplug.prototype.showBtnPrevNext = function()
+{
+  if (xplug.getStorage('BTN-PRVNEXT-PAGE') == 'YES') {
+       $('button#ORATRONIK_XPLUG_prev_page_button,button#ORATRONIK_XPLUG_next_page_button')
+             .css('display','inline');
+  }
+}; // showBtnPrevNext
+
+
 /****************************************************************************
  * Hide Component View button
  ***************************************************************************/
  Xplug.prototype.hideBtnCompView = function()
 {
     $('button#menu-comp-view').css('display','none');
-    xplug.setStorage('BTN-COMPVIEW','NO');
 }; // hideBtnCompView
 
 
@@ -3272,8 +3320,9 @@ Xplug.prototype.showDocumentation = function ()
  ***************************************************************************/
  Xplug.prototype.showBtnCompView = function()
 {
-    $('button#menu-comp-view').css('display','inline');
-    xplug.setStorage('BTN-COMPVIEW','YES');
+    if (xplug.getStorage('BTN-COMPVIEW') == 'YES') {
+       $('button#menu-comp-view').css('display','inline');
+    }
 }; // showBtnCompView
 
 
@@ -3283,7 +3332,6 @@ Xplug.prototype.showDocumentation = function ()
  Xplug.prototype.hideBtnMenuTeamDev = function()
 {
     $('button#menu-team-dev').css('display','none');
-    xplug.setStorage('BTN-MENU-TEAMDEV','NO');
 }; // hideBtnMenuTeamDev
 
 /****************************************************************************
@@ -3291,9 +3339,12 @@ Xplug.prototype.showDocumentation = function ()
  ***************************************************************************/
  Xplug.prototype.showBtnMenuTeamDev = function()
 {
-    $('button#menu-team-dev').css('display','inline');
-    xplug.setStorage('BTN-MENU-TEAMDEV','YES');
+    if (xplug.getStorage('BTN-MENU-TEAMDEV') == 'YES') {
+       $('button#menu-team-dev').css('display','inline');
+    }
 }; // showBtnMenuTeamDev
+
+
 
 /****************************************************************************
  * Hide Comments button
@@ -3301,7 +3352,6 @@ Xplug.prototype.showDocumentation = function ()
  Xplug.prototype.hideBtnComments = function()
 {
     $('button#button-comments').css('display','none');
-    xplug.setStorage('BTN-ADD-COMMENT','NO');
 }; // hideBtnComments
 
 
@@ -3310,10 +3360,30 @@ Xplug.prototype.showDocumentation = function ()
  ***************************************************************************/
  Xplug.prototype.showBtnComments = function()
 {
-    $('button#button-comments').css('display','inline');
-    xplug.setStorage('BTN-ADD-COMMENT','YES');
+  if (xplug.getStorage('BTN-ADD-COMMENT') == 'YES') {
+     $('button#menu-team-dev').css('display','inline');
+  }
 }; // showBtnComments
 
+
+/****************************************************************************
+ * Hide Shared Components button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnSharedComponents = function()
+{
+    $('button#menu-shared-components').css('display','none');
+}; // hideBtnSharedComponents
+
+
+/****************************************************************************
+ * Show Shared Components button
+ ***************************************************************************/
+ Xplug.prototype.showBtnSharedComponents = function()
+{
+  if (xplug.getStorage('BTN-SHARED-COMPONENTS') == 'YES') {
+     $('button#menu-shared-components').css('display','inline');
+  }
+}; // showBtnSharedComponents
 
 
 /****************************************************************************
@@ -3321,13 +3391,12 @@ Xplug.prototype.showDocumentation = function ()
  ***************************************************************************/
 Xplug.prototype.presentationModeOn = function()
 {
-    // document.body.webkitRequestFullScreen();
-    //xplug.deinstallThemeSwitch();
-    xplug.deinstallPageButtons();
+    xplug.hideBtnThemeSwitch();
+    xplug.hideBtnPrevNext();
     xplug.hideBtnCompView();
     xplug.hideBtnMenuTeamDev();
     xplug.hideBtnComments();
-    xplug.deinstallSidekick();
+    xplug.hideBtnSharedComponents();
     xplug.setStorage('PRESENTATION-MODE','YES');
 }; // presentationModeOn
 
@@ -3337,13 +3406,12 @@ Xplug.prototype.presentationModeOn = function()
  ***************************************************************************/
 Xplug.prototype.presentationModeOff = function()
 {
-    // document.webkitCancelFullScreen();
-    // xplug.installThemeSwitch();
-    xplug.installPageButtons();
+    xplug.showBtnThemeSwitch();
+    xplug.showBtnPrevNext();
     xplug.showBtnCompView();
     xplug.showBtnMenuTeamDev();
     xplug.showBtnComments();
-    xplug.installSidekick();
+    xplug.showBtnSharedComponents();
     xplug.setStorage('PRESENTATION-MODE','NO');
 }; // presentationModeOff
 
@@ -3798,6 +3866,8 @@ Xplug.prototype.install_menu = function() {
            disabled : function() { return false; }
          },
 
+         { type   : "separator" },
+
          {
            type     : "toggle",
            label    : xplug.get_label('LBL-ADD-SIDEKICK'),
@@ -4097,7 +4167,26 @@ Xplug.prototype.configureDialog = function()
                               });
 
 
+                              l_properties1.push(
+                                {
+                                  propertyName: "show_shared_components_button",
+                                  value:        xplug.getStorage('BTN-SHARED-COMPONENTS','YES'),
+                                  metaData: {
+                                      type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                      prompt:         '',
+                                      noValue:        "NO",
+                                      yesValue:       "YES",
+                                      isReadOnly:     false,
+                                      isRequired:     true,
+                                      displayGroupId: "buttons"
+                                  },
+                                  errors:   [],
+                                  warnings: []
+                              });
+
+
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
+                                 // 5.0 only
                                  l_properties1.push(
                                    {
                                      propertyName: "show_swap_gridpane",
@@ -4114,7 +4203,25 @@ Xplug.prototype.configureDialog = function()
                                      errors:   [],
                                      warnings: []
                                 });
-                              }  // if
+                              } else {
+                                // 5.1 only
+                                l_properties1.push(
+                                  {
+                                    propertyName: "show_page_dsgnr_options",
+                                    value:        xplug.getStorage('BTN-SHOW-PAGE-DESIGNER-OPTIONS','NO'),
+                                    metaData: {
+                                        type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
+                                        prompt:         '',
+                                        noValue:        "NO",
+                                        yesValue:       "YES",
+                                        isReadOnly:     false,
+                                        isRequired:     true,
+                                        displayGroupId: "buttons"
+                                    },
+                                    errors:   [],
+                                    warnings: []
+                               });
+                              }
 
 
 
@@ -4266,25 +4373,25 @@ Xplug.prototype.configureDialog = function()
                               $('#ConfigDlgPE_5_label')
                                       .append('&nbsp; <span class="a-Icon icon-add-comment"></span>');
 
+                              $('#ConfigDlgPE_6_label')
+                                      .append('&nbsp; <span class="a-Icon icon-shared-components"></span>');
+
                               if (xplug.apex_version.substring(0,3) == '5.0')  {
-                                  $('#ConfigDlgPE_6_label')
-                                        .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span>');
-
                                   $('#ConfigDlgPE_7_label')
-                                        .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
-
-                                  $('#ConfigDlgPE_8_label')
-                                        .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-arrows-h"></span> &nbsp; (apex 5.0)');
                               } else {
-                                $('#ConfigDlgPE_6_label')
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
-
-                                $('#ConfigDlgPE_7_label')
-                                      .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
+                                  $('#ConfigDlgPE_7_label')
+                                        .append('&nbsp; <span class="a-Icon icon-page-designer"></span> &nbsp; (apex 5.1)');
                               }
 
+                              $('#ConfigDlgPE_8_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-sun"></span>');
+
+                              $('#ConfigDlgPE_9_label')
+                                        .append('&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
+
                               $('div#ORATRONIK_XPLUG_CONFIG_DIALOG .a-Property-labelContainer')
-                                 .css('min-width','300px');
+                                       .css('min-width','300px');
 
                             }, // open
                   buttons : [
@@ -4297,7 +4404,7 @@ Xplug.prototype.configureDialog = function()
                               { text  : xplug.get_label('BTN-APPLY'),
                                 click : function() {
                                   var sThemeSwitch, sPageNav, sSwapGrid, sCompView, sMenuTeamDev, sAddComment,
-                                      sStyle1, sStyle2, sPDTitle,
+                                      sSharedComp, sPageDsgnr, sStyle1, sStyle2, sPDTitle,
                                       sTabPageDet, sLanguage, sOldLangVal, sNewLangVal;
 
                                   if (xplug.apex_version.substring(0,3) == '5.0') {
@@ -4306,24 +4413,28 @@ Xplug.prototype.configureDialog = function()
                                      sCompView    = 'input[name=ConfigDlgPE_3_name]:checked';
                                      sMenuTeamDev = 'input[name=ConfigDlgPE_4_name]:checked';
                                      sAddComment  = 'input[name=ConfigDlgPE_5_name]:checked';
-                                     sSwapGrid    = 'input[name=ConfigDlgPE_6_name]:checked';
-                                     sStyle1      = '#ConfigDlgPE_7';
-                                     sStyle2      = '#ConfigDlgPE_8';
-                                     sPDTitle     = 'input[name=ConfigDlgPE_9_name]:checked';
-                                     sTabPageDet  = 'input[name=ConfigDlgPE_10_name]:checked';
-                                     sLanguage    = '#ConfigDlgPE_11';
-                                  } else {
+                                     sSharedComp  = 'input[name=ConfigDlgPE_6_name]:checked';
+                                     sSwapGrid    = 'input[name=ConfigDlgPE_7_name]:checked';
+                                     sPageDsgnr   = '';
+                                     sStyle1      = '#ConfigDlgPE_8';
+                                     sStyle2      = '#ConfigDlgPE_9';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_10_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_11_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_12';
+                                  } else if (xplug.apex_version.substring(0,3) == '5.1')   {
                                      sPageNav     = 'input[name=ConfigDlgPE_1_name]:checked';
                                      sThemeSwitch = 'input[name=ConfigDlgPE_2_name]:checked';
                                      sCompView    = 'input[name=ConfigDlgPE_3_name]:checked';
                                      sMenuTeamDev = 'input[name=ConfigDlgPE_4_name]:checked';
                                      sAddComment  = 'input[name=ConfigDlgPE_5_name]:checked';
+                                     sSharedComp  = 'input[name=ConfigDlgPE_6_name]:checked';
+                                     sPageDsgnr   = 'input[name=ConfigDlgPE_7_name]:checked';
                                      sSwapGrid    = '';
-                                     sStyle1      = '#ConfigDlgPE_6';
-                                     sStyle2      = '#ConfigDlgPE_7';
-                                     sPDTitle     = 'input[name=ConfigDlgPE_8_name]:checked';
-                                     sTabPageDet  = 'input[name=ConfigDlgPE_9_name]:checked';
-                                     sLanguage    = '#ConfigDlgPE_10';
+                                     sStyle1      = '#ConfigDlgPE_8';
+                                     sStyle2      = '#ConfigDlgPE_9';
+                                     sPDTitle     = 'input[name=ConfigDlgPE_10_name]:checked';
+                                     sTabPageDet  = 'input[name=ConfigDlgPE_11_name]:checked';
+                                     sLanguage    = '#ConfigDlgPE_12';
                                   }
 
 
@@ -4333,18 +4444,47 @@ Xplug.prototype.configureDialog = function()
                                   if ($(sThemeSwitch).val() == 'YES') { xplug.installThemeSwitch();   }
                                                                 else  { xplug.deinstallThemeSwitch(); }
 
+
+                                  xplug.setStorage( 'BTN-COMPVIEW',
+                                                    $(sCompView).val() == 'YES' ? 'YES' : 'NO' );
+
                                   if ($(sCompView).val() == 'YES') { xplug.showBtnCompView(); }
                                                              else  { xplug.hideBtnCompView(); }
+
+
+                                  xplug.setStorage( 'BTN-MENU-TEAMDEV',
+                                                    $(sMenuTeamDev).val() == 'YES' ? 'YES' : 'NO' );
+
 
                                   if ($(sMenuTeamDev).val() == 'YES') { xplug.showBtnMenuTeamDev(); }
                                                                 else  { xplug.hideBtnMenuTeamDev(); }
 
+
+                                  xplug.setStorage( 'BTN-ADD-COMMENT',
+                                                    $(sAddComment).val() == 'YES' ? 'YES' : 'NO' );
+
                                   if ($(sAddComment).val() == 'YES') { xplug.showBtnComments(); }
                                                                else  { xplug.hideBtnComments(); }
+
+
+                                  xplug.setStorage( 'BTN-SHARED-COMPONENTS',
+                                                    $(sSharedComp).val() == 'YES' ? 'YES' : 'NO' );
+
+                                  if ($(sSharedComp).val() == 'YES') { xplug.showBtnSharedComponents(); }
+                                                               else  { xplug.hideBtnSharedComponents(); }
+
 
                                   if (xplug.apex_version.substring(0,3) == '5.0')  {
                                       if ($(sSwapGrid).val() == 'YES') { xplug.installSwapGrid();   }
                                                                  else  { xplug.deinstallSwapGrid(); }
+                                  }
+
+                                  if (xplug.apex_version.substring(0,3) == '5.1')  {
+                                      if ($(sPageDsgnr).val() == 'YES') {  }
+                                                                  else  {  }
+
+                                      xplug.setStorage( 'BTN-SHOW-PAGE-DESIGNER-OPTIONS',
+                                          $(sPageDsgnr).val() == 'YES' ? 'YES' : 'NO' );
                                   }
 
                                   if ($(sPDTitle).val() == 'YES') { xplug.installPDTitle();   }
@@ -4460,14 +4600,15 @@ Xplug.prototype.probeAPEXVersion = function ()
    xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
 
    xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
-   xplug.getStorage('SHOW_SIDEKICK_PANE','YES') == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
-   xplug.getStorage('BTN-PRVNEXT-PAGE','YES')   == 'YES' && xplug.installPageButtons();
-   xplug.getStorage('BTN-THEME-SWITCH','YES')   == 'YES' && xplug.installThemeSwitch();
-   xplug.getStorage('BTN-COMPVIEW','YES')       == 'NO'  && xplug.hideBtnCompView();
-   xplug.getStorage('BTN-MENU-TEAMDEV','YES')   == 'NO'  && xplug.hideBtnMenuTeamDev();
-   xplug.getStorage('BTN-ADD-COMMENT','YES')    == 'NO'  && xplug.hideBtnComments();
-   xplug.getStorage('BTN-SWAP-GRID-PANE','YES') == 'YES' && xplug.installSwapGrid();
-   xplug.getStorage('APP+ID-IN-PD-TITLE','YES') == 'YES' && xplug.installPDTitle();
+   xplug.getStorage('SHOW_SIDEKICK_PANE','YES')     == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
+   xplug.getStorage('BTN-PRVNEXT-PAGE','YES')       == 'YES' && xplug.installPageButtons();
+   xplug.getStorage('BTN-THEME-SWITCH','YES')       == 'YES' && xplug.installThemeSwitch();
+   xplug.getStorage('BTN-COMPVIEW','YES')           == 'NO'  && xplug.hideBtnCompView();
+   xplug.getStorage('BTN-MENU-TEAMDEV','YES')       == 'NO'  && xplug.hideBtnMenuTeamDev();
+   xplug.getStorage('BTN-ADD-COMMENT','YES')        == 'NO'  && xplug.hideBtnComments();
+   xplug.getStorage('BTN-SHARED-COMPONENTS','YES')  == 'NO'  && xplug.hideBtnSharedComponents();
+   xplug.getStorage('BTN-SWAP-GRID-PANE','YES')     == 'YES' && xplug.installSwapGrid();
+   xplug.getStorage('APP+ID-IN-PD-TITLE','YES')     == 'YES' && xplug.installPDTitle();
  }; // Xplug.prototype.loadSettings
 
 

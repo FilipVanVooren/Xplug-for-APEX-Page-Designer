@@ -10,13 +10,54 @@
 /* jshint -W083 */
 
 
+
+/****************************************************************************
+ * Hide ThemeSwitch button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnThemeSwitch = function()
+{
+    $('button#ORATRONIK_XPLUG_moonsun_button').css('display','none');
+}; // hideBtnThemeSwitch
+
+
+/****************************************************************************
+ * Show ThemeSwitch button
+ ***************************************************************************/
+ Xplug.prototype.showBtnThemeSwitch = function()
+{
+    if (xplug.getStorage('BTN-THEME-SWITCH') == 'YES') {
+       $('button#ORATRONIK_XPLUG_moonsun_button').css('display','inline');
+    }
+}; // showBtnThemeSwitch
+
+
+/****************************************************************************
+ * Hide Prev/Next button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnPrevNext = function()
+{
+    $('button#ORATRONIK_XPLUG_prev_page_button,button#ORATRONIK_XPLUG_next_page_button')
+          .css('display','none');
+}; // hideBtnPrevNext
+
+/****************************************************************************
+ * Hide Prev/Next button
+ ***************************************************************************/
+ Xplug.prototype.showBtnPrevNext = function()
+{
+  if (xplug.getStorage('BTN-PRVNEXT-PAGE') == 'YES') {
+       $('button#ORATRONIK_XPLUG_prev_page_button,button#ORATRONIK_XPLUG_next_page_button')
+             .css('display','inline');
+  }
+}; // showBtnPrevNext
+
+
 /****************************************************************************
  * Hide Component View button
  ***************************************************************************/
  Xplug.prototype.hideBtnCompView = function()
 {
     $('button#menu-comp-view').css('display','none');
-    xplug.setStorage('BTN-COMPVIEW','NO');
 }; // hideBtnCompView
 
 
@@ -25,8 +66,9 @@
  ***************************************************************************/
  Xplug.prototype.showBtnCompView = function()
 {
-    $('button#menu-comp-view').css('display','inline');
-    xplug.setStorage('BTN-COMPVIEW','YES');
+    if (xplug.getStorage('BTN-COMPVIEW') == 'YES') {
+       $('button#menu-comp-view').css('display','inline');
+    }
 }; // showBtnCompView
 
 
@@ -36,7 +78,6 @@
  Xplug.prototype.hideBtnMenuTeamDev = function()
 {
     $('button#menu-team-dev').css('display','none');
-    xplug.setStorage('BTN-MENU-TEAMDEV','NO');
 }; // hideBtnMenuTeamDev
 
 /****************************************************************************
@@ -44,9 +85,12 @@
  ***************************************************************************/
  Xplug.prototype.showBtnMenuTeamDev = function()
 {
-    $('button#menu-team-dev').css('display','inline');
-    xplug.setStorage('BTN-MENU-TEAMDEV','YES');
+    if (xplug.getStorage('BTN-MENU-TEAMDEV') == 'YES') {
+       $('button#menu-team-dev').css('display','inline');
+    }
 }; // showBtnMenuTeamDev
+
+
 
 /****************************************************************************
  * Hide Comments button
@@ -54,7 +98,6 @@
  Xplug.prototype.hideBtnComments = function()
 {
     $('button#button-comments').css('display','none');
-    xplug.setStorage('BTN-ADD-COMMENT','NO');
 }; // hideBtnComments
 
 
@@ -63,10 +106,30 @@
  ***************************************************************************/
  Xplug.prototype.showBtnComments = function()
 {
-    $('button#button-comments').css('display','inline');
-    xplug.setStorage('BTN-ADD-COMMENT','YES');
+  if (xplug.getStorage('BTN-ADD-COMMENT') == 'YES') {
+     $('button#menu-team-dev').css('display','inline');
+  }
 }; // showBtnComments
 
+
+/****************************************************************************
+ * Hide Shared Components button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnSharedComponents = function()
+{
+    $('button#menu-shared-components').css('display','none');
+}; // hideBtnSharedComponents
+
+
+/****************************************************************************
+ * Show Shared Components button
+ ***************************************************************************/
+ Xplug.prototype.showBtnSharedComponents = function()
+{
+  if (xplug.getStorage('BTN-SHARED-COMPONENTS') == 'YES') {
+     $('button#menu-shared-components').css('display','inline');
+  }
+}; // showBtnSharedComponents
 
 
 /****************************************************************************
@@ -74,13 +137,12 @@
  ***************************************************************************/
 Xplug.prototype.presentationModeOn = function()
 {
-    // document.body.webkitRequestFullScreen();
-    //xplug.deinstallThemeSwitch();
-    xplug.deinstallPageButtons();
+    xplug.hideBtnThemeSwitch();
+    xplug.hideBtnPrevNext();
     xplug.hideBtnCompView();
     xplug.hideBtnMenuTeamDev();
     xplug.hideBtnComments();
-    xplug.deinstallSidekick();
+    xplug.hideBtnSharedComponents();
     xplug.setStorage('PRESENTATION-MODE','YES');
 }; // presentationModeOn
 
@@ -90,12 +152,11 @@ Xplug.prototype.presentationModeOn = function()
  ***************************************************************************/
 Xplug.prototype.presentationModeOff = function()
 {
-    // document.webkitCancelFullScreen();
-    // xplug.installThemeSwitch();
-    xplug.installPageButtons();
+    xplug.showBtnThemeSwitch();
+    xplug.showBtnPrevNext();
     xplug.showBtnCompView();
     xplug.showBtnMenuTeamDev();
     xplug.showBtnComments();
-    xplug.installSidekick();
+    xplug.showBtnSharedComponents();
     xplug.setStorage('PRESENTATION-MODE','NO');
 }; // presentationModeOff

@@ -354,6 +354,13 @@
 //                           - Bugfix in setting LOV default value of compatible version when opening theme details
 //                           - Made some more tweaks to the Moonlight theme.
 //
+// V1.5.0.0  2017-02-28  * Multiple changes
+//                           - Refactored hide/show button stuff, so that Xplug configuration is no longer affected.
+//                             This is because Presentation Mode will have a different functionality as planned.
+//                           - Added possibility to hide/show Shared Components button
+//                           - Started rework on presentation mode functionality
+//                           - Started work on possibility to hide/show Page Designer Options menu (5.1 only)
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
