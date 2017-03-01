@@ -29,15 +29,17 @@
    xplug.getStorage('TOOLTIPS_DISABLED','NO')  == 'YES' && apex.actions.invoke('pd-xplug-disable-tooltips');
 
    xplug.setStorage('orig.a-PageSelect', $('.a-PageSelect').css('border-left'));
-   xplug.getStorage('SHOW_SIDEKICK_PANE','YES')     == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
-   xplug.getStorage('BTN-PRVNEXT-PAGE','YES')       == 'YES' && xplug.installPageButtons();
-   xplug.getStorage('BTN-THEME-SWITCH','YES')       == 'YES' && xplug.installThemeSwitch();
-   xplug.getStorage('BTN-COMPVIEW','YES')           == 'NO'  && xplug.hideBtnCompView();
-   xplug.getStorage('BTN-MENU-TEAMDEV','YES')       == 'NO'  && xplug.hideBtnMenuTeamDev();
-   xplug.getStorage('BTN-ADD-COMMENT','YES')        == 'NO'  && xplug.hideBtnComments();
-   xplug.getStorage('BTN-SHARED-COMPONENTS','YES')  == 'NO'  && xplug.hideBtnSharedComponents();
-   xplug.getStorage('BTN-SWAP-GRID-PANE','YES')     == 'YES' && xplug.installSwapGrid();
-   xplug.getStorage('APP+ID-IN-PD-TITLE','YES')     == 'YES' && xplug.installPDTitle();
+   xplug.getStorage('SHOW_SIDEKICK_PANE','YES')               == 'YES' && apex.actions.invoke('pd-xplug-add-sidekick');
+   xplug.getStorage('BTN-PRVNEXT-PAGE','YES')                 == 'YES' && xplug.installPageButtons();
+   xplug.getStorage('BTN-THEME-SWITCH','YES')                 == 'YES' && xplug.installThemeSwitch();
+   xplug.getStorage('BTN-COMPVIEW','YES')                     == 'NO'  && xplug.hideBtnCompView();
+   xplug.getStorage('BTN-MENU-TEAMDEV','YES')                 == 'NO'  && xplug.hideBtnMenuTeamDev();
+   xplug.getStorage('BTN-ADD-COMMENT','YES')                  == 'NO'  && xplug.hideBtnComments();
+   xplug.getStorage('BTN-SHARED-COMPONENTS','YES')            == 'NO'  && xplug.hideBtnSharedComponents();
+   xplug.getStorage('BTN-SHOW-PAGE-DESIGNER-SETTINGS','YES')  == 'NO'  && xplug.hideBtnPageDesignerSettings();
+   xplug.getStorage('BTN-SWAP-GRID-PANE','YES')               == 'YES' && xplug.installSwapGrid();
+   xplug.getStorage('APP+ID-IN-PD-TITLE','YES')               == 'YES' && xplug.installPDTitle();
+   xplug.getStorage('PRESENTATION-MODE','NO')                 == 'YES' && xplug.presentationModeOn();
  }; // Xplug.prototype.loadSettings
 
 

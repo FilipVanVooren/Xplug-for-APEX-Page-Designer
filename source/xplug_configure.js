@@ -33,6 +33,8 @@ Xplug.prototype.configureDialog = function()
     var l_properties4 = [];
     var l_out         = apex.util.htmlBuilder();
 
+    xplug.presentationModeOff();
+
     l_out.markup('<div')
          .attr('id','ORATRONIK_XPLUG_CONFIG_DIALOG')
          .markup('>')
@@ -211,7 +213,7 @@ Xplug.prototype.configureDialog = function()
                                 l_properties1.push(
                                   {
                                     propertyName: "show_page_dsgnr_options",
-                                    value:        xplug.getStorage('BTN-SHOW-PAGE-DESIGNER-OPTIONS','NO'),
+                                    value:        xplug.getStorage('BTN-SHOW-PAGE-DESIGNER-SETTINGS','YES'),
                                     metaData: {
                                         type:           $.apex.propertyEditor.PROP_TYPE.YES_NO,
                                         prompt:         '',
@@ -368,7 +370,7 @@ Xplug.prototype.configureDialog = function()
                                             + '&nbsp; <span class="a-Icon icon-xplug-moon"></span>');
 
                               $('#ConfigDlgPE_3_label')
-                                      .append('&nbsp; <span class="a-Icon icon-comp-view"></span>');
+                                      .append('&nbsp; <span class="a-Icon icon-comp-view"></span> &nbsp; (apex 5.0)');
 
                               $('#ConfigDlgPE_4_label')
                                       .append('&nbsp; <span class="a-Icon icon-users"></span>');
@@ -483,10 +485,10 @@ Xplug.prototype.configureDialog = function()
                                   }
 
                                   if (xplug.apex_version.substring(0,3) == '5.1')  {
-                                      if ($(sPageDsgnr).val() == 'YES') {  }
-                                                                  else  {  }
+                                      if ($(sPageDsgnr).val() == 'YES') { xplug.showBtnPageDesignerSettings();  }
+                                                                  else  { xplug.hideBtnPageDesignerSettings();  }
 
-                                      xplug.setStorage( 'BTN-SHOW-PAGE-DESIGNER-OPTIONS',
+                                      xplug.setStorage( 'BTN-SHOW-PAGE-DESIGNER-SETTINGS',
                                           $(sPageDsgnr).val() == 'YES' ? 'YES' : 'NO' );
                                   }
 

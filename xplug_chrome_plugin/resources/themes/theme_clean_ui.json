@@ -1,5 +1,6 @@
 {
     "STYLE_NAME": "Clean UI",
+    "COMPATIBLE": "5.x",    
     "DARK_STYLE": "NO",
     "SHOW_GRID": "NO",
     "PROTECTED": "YES",

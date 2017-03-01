@@ -306,9 +306,7 @@ window.pageDesigner.goToNextPage = function () {
  ***************************************************************************/
 Xplug.prototype.installPageButtons = function ()
 {
-  if  (    $('button#ORATRONIK_XPLUG_prev_page_button').length == 1
-        || xplug.apex_version.substr(0,4) === "5.1."
-      ) return;
+  if  ( $('button#ORATRONIK_XPLUG_prev_page_button').length == 1 ) return;
 
 
   var l_node = $('button#ORATRONIK_XPLUG_moonsun_button').length == 1

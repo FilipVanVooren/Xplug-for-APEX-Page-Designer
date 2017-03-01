@@ -133,32 +133,6 @@ Xplug.prototype.install_menu = function() {
        l_arr_menu_items.push(
          {
            type     : "toggle",
-           label    : xplug.get_label('LBL-PRESENTATION-MODE'),
-           get      : function()
-                      {
-                         return xplug.getStorage('PRESENTATION-MODE','NO') == 'YES';
-                      },
-
-           set      : function()
-                      {
-                        if (xplug.getStorage('PRESENTATION-MODE','NO') == 'YES') {
-                          xplug.presentationModeOff();
-
-                        } else {
-                           xplug.presentationModeOn();
-                        }
-                      },
-
-           disabled : function()
-                      {
-                        return false;
-                      }
-         },
-
-         { type     : "separator" },
-
-         {
-           type     : "toggle",
            label    : xplug.get_label('NOTOOLTIPS'),
            get      : function()
                       {
@@ -233,6 +207,28 @@ Xplug.prototype.install_menu = function() {
     var oItems =
     {
       items : [
+
+          { type     : "toggle",
+            label    : xplug.get_label('LBL-PRESENTATION-MODE'),
+            get      : function()
+                       {
+                          return xplug.getStorage('PRESENTATION-MODE','NO') == 'YES';
+                       },
+
+            set      : function()
+                       {
+                         if (xplug.getStorage('PRESENTATION-MODE','NO') == 'YES') {
+                           xplug.presentationModeOff();
+
+                         } else {
+                            xplug.presentationModeOn();
+                         }
+                       }
+        },
+
+        { type     : "separator" },
+
+
         { type     : "subMenu",
           label    : xplug.get_label('QUICK-CTRL'),
           menu     : { items : install_SubmenuQuickControls() },
@@ -252,10 +248,7 @@ Xplug.prototype.install_menu = function() {
                      {
                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
                      }
-
         },
-
-        { type     : "separator" },
 
         { type    : "action",
           label   : xplug.get_label('CONFIGURE'),
@@ -268,7 +261,6 @@ Xplug.prototype.install_menu = function() {
         },
 
         { type     : "separator" },
-
 
         { type    : "action",
           label   : xplug.get_label('BUG'),

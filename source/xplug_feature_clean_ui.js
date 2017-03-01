@@ -132,6 +132,27 @@
 }; // showBtnSharedComponents
 
 
+
+/****************************************************************************
+ * Hide Page Designer settings button
+ ***************************************************************************/
+ Xplug.prototype.hideBtnPageDesignerSettings = function()
+{
+    $('button#menu-settings').css('display','none');
+}; // hideBtnPageDesignerSettings
+
+
+/****************************************************************************
+ * Show Page Designer settings button
+ ***************************************************************************/
+ Xplug.prototype.showBtnPageDesignerSettings = function()
+{
+  if (xplug.getStorage('BTN-SHARED-COMPONENTS') == 'YES') {
+     $('button#menu-settings').css('display','inline');
+  }
+}; // showBtnPageDesignerSettings
+
+
 /****************************************************************************
  * Presentation Mode on - Beamer with small screen size expected
  ***************************************************************************/
@@ -143,7 +164,13 @@ Xplug.prototype.presentationModeOn = function()
     xplug.hideBtnMenuTeamDev();
     xplug.hideBtnComments();
     xplug.hideBtnSharedComponents();
+    xplug.hideBtnPageDesignerSettings();
+    xplug.deinstallSidekick();
     xplug.setStorage('PRESENTATION-MODE','YES');
+
+    $('button#menu-create,button#menu-utilities,button#button-lock,button#button-unlock')
+         .css('display','none');
+
 }; // presentationModeOn
 
 
@@ -158,5 +185,11 @@ Xplug.prototype.presentationModeOff = function()
     xplug.showBtnMenuTeamDev();
     xplug.showBtnComments();
     xplug.showBtnSharedComponents();
+    xplug.showBtnPageDesignerSettings();
+    xplug.installSidekick();    
     xplug.setStorage('PRESENTATION-MODE','NO');
+
+    $('button#menu-create,button#menu-utilities,button#button-lock,button#button-unlock')
+         .css('display','inline');
+
 }; // presentationModeOff

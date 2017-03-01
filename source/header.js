@@ -359,7 +359,12 @@
 //                             This is because Presentation Mode will have a different functionality as planned.
 //                           - Added possibility to hide/show Shared Components button
 //                           - Started rework on presentation mode functionality
-//                           - Started work on possibility to hide/show Page Designer Options menu (5.1 only)
+//                           - Started work on possibility to hide/show Page Designer settings menu (5.1 only)
+//
+//  V1.5.0.0  2017-03-01 * Multiple changes
+//                           - Completed work on hide/show Page Designer settings menu (5.1 only)
+//                           - Moved menu entry 'Presentation mode' from Quick controls to Xplug main menu
+//                           - Presentation mode is now more intuitive
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
