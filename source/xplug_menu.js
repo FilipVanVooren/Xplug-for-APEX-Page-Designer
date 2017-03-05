@@ -291,7 +291,9 @@ Xplug.prototype.install_menu = function() {
     // For APEX 5.0 only!
     if (xplug.apex_version.substring(0,4) === '5.0.') {
 
-        oItems.items.unshift(
+        oItems.items.splice(1,0,
+        { type   : "separator" },
+                  
         {
           type     : "subMenu",
           label    : xplug.get_label('DOCK-GRID'),

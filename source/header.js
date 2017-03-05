@@ -350,21 +350,28 @@
 // V1.5.0.0 2017-02-24  * Some minor refactoring and some major CSS changes to the moonlight theme
 //
 // V1.5.0.0 2017-02-27  * Multiple changes
-//                           - Rebranded v1.4.1.0 to v1.5.0.0 plenty of changes to adjust just that.
-//                           - Bugfix in setting LOV default value of compatible version when opening theme details
-//                           - Made some more tweaks to the Moonlight theme.
+//                          - Rebranded v1.4.1.0 to v1.5.0.0 plenty of changes to adjust just that.
+//                          - Bugfix in setting LOV default value of compatible version when opening theme details
+//                          - Made some more tweaks to the Moonlight theme.
 //
-// V1.5.0.0  2017-02-28  * Multiple changes
-//                           - Refactored hide/show button stuff, so that Xplug configuration is no longer affected.
-//                             This is because Presentation Mode will have a different functionality as planned.
-//                           - Added possibility to hide/show Shared Components button
-//                           - Started rework on presentation mode functionality
-//                           - Started work on possibility to hide/show Page Designer settings menu (5.1 only)
+// V1.5.0.0 2017-02-28  * Multiple changes
+//                          - Refactored hide/show button stuff, so that Xplug configuration is no longer affected.
+//                            This is because Presentation Mode will have a different functionality as planned.
+//                          - Added possibility to hide/show Shared Components button
+//                          - Started rework on presentation mode functionality
+//                          - Started work on possibility to hide/show Page Designer settings menu (5.1 only)
 //
-//  V1.5.0.0  2017-03-01 * Multiple changes
-//                           - Completed work on hide/show Page Designer settings menu (5.1 only)
-//                           - Moved menu entry 'Presentation mode' from Quick controls to Xplug main menu
-//                           - Presentation mode is now more intuitive
+//  V1.5.0.0 2017-03-01 * Multiple changes
+//                          - Completed work on hide/show Page Designer settings menu (5.1 only)
+//                          - Moved menu entry 'Presentation mode' from Quick controls to Xplug main menu
+//                          - Presentation mode is now more intuitive
+//
+//  V1.5.0.0 2017-03-05 * Multiple changes
+//                          - Do not hide Lock/Unlock Page button when turning on presentation mode, it's important
+//                            to known the current lock status of the page.
+//                          - Re-arranged Xplug menu in APEX 5.0 so that it gets the same menu item order as in 5.1
+//                            I wanted "Presentation Mode" to be the first menu item in the Xplug menu.
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

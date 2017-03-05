@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Wed Mar 01 2017 21:58:00
+// Built using Gulp. Built date: Sun Mar 05 2017 21:25:15
 
 
 
@@ -2407,8 +2407,7 @@ Xplug.prototype.presentationModeOn = function()
     xplug.deinstallSidekick();
     xplug.setStorage('PRESENTATION-MODE','YES');
 
-    $('button#menu-create,button#menu-utilities,button#button-lock,button#button-unlock')
-         .css('display','none');
+    $('button#menu-create,button#menu-utilities').css('display','none');
 
 }; 
 
@@ -2422,11 +2421,10 @@ Xplug.prototype.presentationModeOff = function()
     xplug.showBtnComments();
     xplug.showBtnSharedComponents();
     xplug.showBtnPageDesignerSettings();
-    xplug.installSidekick();    
+    xplug.installSidekick();
     xplug.setStorage('PRESENTATION-MODE','NO');
 
-    $('button#menu-create,button#menu-utilities,button#button-lock,button#button-unlock')
-         .css('display','inline');
+    $('button#menu-create,button#menu-utilities').css('display','inline');
 
 }; 
 
@@ -2942,8 +2940,10 @@ Xplug.prototype.install_menu = function() {
 
     if (xplug.apex_version.substring(0,4) === '5.0.') {
 
-        oItems.items.unshift(
-        {
+        oItems.items.splice(1,0,
+        { type   : "separator" },
+
+                          {
           type     : "subMenu",
           label    : xplug.get_label('DOCK-GRID'),
           icon     : "icon-region-native-sql-report",

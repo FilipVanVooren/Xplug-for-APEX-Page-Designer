@@ -168,8 +168,7 @@ Xplug.prototype.presentationModeOn = function()
     xplug.deinstallSidekick();
     xplug.setStorage('PRESENTATION-MODE','YES');
 
-    $('button#menu-create,button#menu-utilities,button#button-lock,button#button-unlock')
-         .css('display','none');
+    $('button#menu-create,button#menu-utilities').css('display','none');
 
 }; // presentationModeOn
 
@@ -186,10 +185,9 @@ Xplug.prototype.presentationModeOff = function()
     xplug.showBtnComments();
     xplug.showBtnSharedComponents();
     xplug.showBtnPageDesignerSettings();
-    xplug.installSidekick();    
+    xplug.installSidekick();
     xplug.setStorage('PRESENTATION-MODE','NO');
 
-    $('button#menu-create,button#menu-utilities,button#button-lock,button#button-unlock')
-         .css('display','inline');
+    $('button#menu-create,button#menu-utilities').css('display','inline');
 
 }; // presentationModeOff
