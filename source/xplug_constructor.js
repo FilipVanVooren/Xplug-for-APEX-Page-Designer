@@ -9,7 +9,7 @@
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.4.0.0 beta 2';
+   var C_version = 'Xplug v1.5.0.0';
    var C_author  = 'Filip van Vooren';
 
    // Exit if not in APEX Page Designer
