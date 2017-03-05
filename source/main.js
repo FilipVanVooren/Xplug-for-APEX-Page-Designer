@@ -14,6 +14,7 @@ if (typeof(window.pageDesigner) == 'object') {
 
    console.info('XPLUG - Detected APEX version: ' + xplug.apex_version);
 
+   xplug.installThemes();
    xplug.setLanguage();
    xplug.install_actions();
    xplug.install_menu();

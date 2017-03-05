@@ -26,11 +26,13 @@ gulp.task('1-Build Xplug plugin source', function() {
               'source/xplug_feature_window_title.js',
               'source/xplug_feature_sidekick.js',
               'source/xplug_feature_sidekick_markdown.js',
+              'source/xplug_feature_clean_ui.js',
               'source/xplug_storage.js',
-              'source/xplug_actions.js',              
+              'source/xplug_actions.js',
               'source/xplug_menu.js',
               'source/xplug_configure.js',
               'source/xplug_prototypes.js',
+              'source/xplug_startup.js',
               'source/main.js',
             ] )
 

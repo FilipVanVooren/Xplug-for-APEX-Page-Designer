@@ -16,10 +16,6 @@ Xplug.prototype.install_menu = function() {
        var l_arr_menu_items = [];
        var l_arr_keys       = [];
 
-       if (xplug.getStorage('STYLE_Moonlight','NOT_EXIST',true) == 'NOT_EXIST') {
-          window.pageDesigner.setStyle('Moonlight','SAVE_ONLY');
-       }
-
        l_arr_keys = xplug.getStorageKeys(true);
 
        for (var i = 0, l_length = l_arr_keys.length; i < l_length; ++i ) {
@@ -31,21 +27,29 @@ Xplug.prototype.install_menu = function() {
               if (l_style !== null) {
                 var l_label = l_style.STYLE_NAME.substr(0,25);
 
-                l_arr_menu_items.push(
-                  { type        : "toggle",
-                    label       : l_label,
-                    xplug_style : l_style.STYLE_NAME,
-                    get         : function()
-                                  {
-                                    return xplug.getStorage('CURRENT_STYLE',null,true) == this.xplug_style;
-                                  },
-                    set         : function()
-                                  {
-                                    window.pageDesigner.loadStyle(this.xplug_style);
-                                  }
-                  }
-                );
+                if (typeof(l_style.COMPATIBLE) === 'undefined') l_style.COMPATIBLE='5.0';
+
+                if (   (l_style.COMPATIBLE == "5.x")
+                    || (l_style.COMPATIBLE == xplug.apex_version.substr(0,3))  )
+                   {
+                      l_arr_menu_items.push(
+                        { type        : "toggle",
+                          label       : l_label,
+                          xplug_style : l_style.STYLE_NAME,
+                          get         : function()
+                                        {
+                                          return xplug.getStorage('CURRENT_STYLE',null,true) == this.xplug_style;
+                                        },
+                          set         : function()
+                                        {
+                                          window.pageDesigner.loadStyle(this.xplug_style);
+                                        }
+                        }
+                      );
+                   } // if compatible
+
              } // if l_style
+
            }   // if l_key
        }       // for
 
@@ -161,6 +165,8 @@ Xplug.prototype.install_menu = function() {
            disabled : function() { return false; }
          },
 
+         { type   : "separator" },
+
          {
            type     : "toggle",
            label    : xplug.get_label('LBL-ADD-SIDEKICK'),
@@ -201,6 +207,28 @@ Xplug.prototype.install_menu = function() {
     var oItems =
     {
       items : [
+
+          { type     : "toggle",
+            label    : xplug.get_label('LBL-PRESENTATION-MODE'),
+            get      : function()
+                       {
+                          return xplug.getStorage('PRESENTATION-MODE','NO') == 'YES';
+                       },
+
+            set      : function()
+                       {
+                         if (xplug.getStorage('PRESENTATION-MODE','NO') == 'YES') {
+                           xplug.presentationModeOff();
+
+                         } else {
+                            xplug.presentationModeOn();
+                         }
+                       }
+        },
+
+        { type     : "separator" },
+
+
         { type     : "subMenu",
           label    : xplug.get_label('QUICK-CTRL'),
           menu     : { items : install_SubmenuQuickControls() },
@@ -220,10 +248,7 @@ Xplug.prototype.install_menu = function() {
                      {
                        return $('#ORATRONIK_XPLUG_DIALOG_STYLE_LOV').length > 0;
                      }
-
         },
-
-        { type     : "separator" },
 
         { type    : "action",
           label   : xplug.get_label('CONFIGURE'),
@@ -236,7 +261,6 @@ Xplug.prototype.install_menu = function() {
         },
 
         { type     : "separator" },
-
 
         { type    : "action",
           label   : xplug.get_label('BUG'),
@@ -267,7 +291,9 @@ Xplug.prototype.install_menu = function() {
     // For APEX 5.0 only!
     if (xplug.apex_version.substring(0,4) === '5.0.') {
 
-        oItems.items.unshift(
+        oItems.items.splice(1,0,
+        { type   : "separator" },
+                  
         {
           type     : "subMenu",
           label    : xplug.get_label('DOCK-GRID'),

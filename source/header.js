@@ -5,7 +5,7 @@
 //
 // Music listened to while programming Xplug (in no particular order)
 //   Kraftwerk, Loverboy, Apparat, Kebu, Hot Chip, New Order, Moderat, Fleetwood Mac, Sisters of Mercy,
-//   Birdy, GusGus, Massive Attack, ...
+//   Birdy, GusGus, Massive Attack, Telephone Tel Aviv, Underworld, ...
 //
 // v0.1 - 2015-07-27  * Initial version
 // v0.2 - 2015-07-28  * Bug fix:
@@ -291,7 +291,7 @@
 //                          - Bug-fix: Small delay before showing Page Details, required for firefox
 //                                     because otherwise it complains if marked.min library is not yet fully laoded.
 //
-//  V1.4.0.0 2016-11-01 * Multiple changes
+// V1.4.0.0 2016-11-01 * Multiple changes
 //                         - Bug-fix: disable 'Enable markdown' option in sidekick hamburger menu if 'Page Details'
 //                                    tab is deactivated.
 //                         - Added possibility to anonymously report bugs on GitHub by using Git reports service.
@@ -300,9 +300,78 @@
 //                           Probably introduced some bugs now, but it's required for multi-language support.
 //
 //
-//   V1.4.0.0 2016-11-07 * Multiple changes
+// V1.4.0.0 2016-11-07 * Multiple changes
 //                         - Bug-fix: Exclude 'Dock grid' submenu in Xplug menu when running APEX 5.1
 //                                    I want folks to use standard APEX 5.1 Page Designer functionality
+//
+//
+// V1.4.0.1 2016-11-21 Bug-fix: version number still contained "beta 2", switched from "1.4.0.0 beta2" to "1.4.0.1"
+//
+// V1.5.0.0 2017-01-02 * Multiple changes
+//                          - Introduced xplug_feature_clean_ui.js
+//                          - Added possibility to hide/show some Page Designer buttons
+//                                 - Team Development menu
+//                                 - Add Comment menu
+//
+// V1.5.0.0 2017-01-03 * Multiple changes
+//                          - Changed order of buttons in configuration dialog
+//                          - Added possibility to pre-install Themes upon startup
+//                          - Added "Clean UI"-Theme as pre-installed theme
+//
+//
+// V1.5.0.0 2017-01-15 * Multiple changes
+//                          - Added possibility to hide Component View button
+//                          - Changed order of buttons in configuration dialog again
+//                          - Introduced "Presentation mode" toggle in Quick Controls submenu
+//                          - "Clean UI" is now the default theme for APEX 5.0
+//                          - Markdown format is enabled by default now
+//
+// V1.5.0.0 2017-01-30 * Multiple changes
+//                          - Prevent swap-grid button in APEX 5.1
+//                          - Prevent previous/next page buttons in APEX 5.1
+//
+// V1.5.0.0 2017-02-13  * Multiple changes
+//                          Theme handling reworked
+//                           - Introduced "Compatible with" APEX version in theme
+//                           - Reworked Theme Gallery and theme configuration dialog
+//                           - Changed default settings when creating new theme
+//                           - Moonlight theme: No longer built-in CSS in javascript, it is
+//                              now a normal theme
+//
+// V1.5.0.0 2017-02-19  * Multiple changes
+//                          - JSON containing theme definition is now loaded from Xplug browser addon
+//                            web resource. At least for Chrome that is.
+//
+// V1.5.0.0 2017-02-19  * Multiple changes
+//                          - Refactored theme bootstrapping for better stability and performance
+//                          - Refresh Xplug menu after loading theme
+//                          - Set "Clean UI" as default theme upon initial startup
+//
+// V1.5.0.0 2017-02-24  * Some minor refactoring and some major CSS changes to the moonlight theme
+//
+// V1.5.0.0 2017-02-27  * Multiple changes
+//                          - Rebranded v1.4.1.0 to v1.5.0.0 plenty of changes to adjust just that.
+//                          - Bugfix in setting LOV default value of compatible version when opening theme details
+//                          - Made some more tweaks to the Moonlight theme.
+//
+// V1.5.0.0 2017-02-28  * Multiple changes
+//                          - Refactored hide/show button stuff, so that Xplug configuration is no longer affected.
+//                            This is because Presentation Mode will have a different functionality as planned.
+//                          - Added possibility to hide/show Shared Components button
+//                          - Started rework on presentation mode functionality
+//                          - Started work on possibility to hide/show Page Designer settings menu (5.1 only)
+//
+//  V1.5.0.0 2017-03-01 * Multiple changes
+//                          - Completed work on hide/show Page Designer settings menu (5.1 only)
+//                          - Moved menu entry 'Presentation mode' from Quick controls to Xplug main menu
+//                          - Presentation mode is now more intuitive
+//
+//  V1.5.0.0 2017-03-05 * Multiple changes
+//                          - Do not hide Lock/Unlock Page button when turning on presentation mode, it's important
+//                            to known the current lock status of the page.
+//                          - Re-arranged Xplug menu in APEX 5.0 so that it gets the same menu item order as in 5.1
+//                            I wanted "Presentation Mode" to be the first menu item in the Xplug menu.
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
