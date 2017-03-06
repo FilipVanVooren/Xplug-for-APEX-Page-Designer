@@ -51,7 +51,7 @@
  {
      'use strict';
 
-     var oAttr, sStyle, sURL, sJSON, iDelim;
+     var oAttr, sStyle, sURL, sJSON, iDelim, bInstall;
 
      //
      // Loop over all attributes of DIV#XLPUG_SETTINGS, filtering for
@@ -67,8 +67,15 @@
             sStyle = 'STYLE_' + oAttr[l].value.substr(0,iDelim);
             sURL   = oAttr[l].value.substr(iDelim + 1);
 
-            if (xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND') {
-
+            //
+            // Install theme if not found in localStorage or if found, but old version
+            // We at least need the COMPATIBLE property to be present to know it's a
+            // theme >= Xplug 1.5.0
+            //
+            bInstall = xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND';
+            bInstall = bInstall || (xplug.getStorage(sStyle, '', true).indexOf("COMPATIBLE") == -1);
+            
+            if (bInstall === true) {
                $.get(sURL, function (pData)
                   {
                     console.log('XPLUG - Installing theme "' + pData.STYLE_NAME + '"');

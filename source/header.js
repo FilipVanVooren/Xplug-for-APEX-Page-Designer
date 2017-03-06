@@ -372,6 +372,13 @@
 //                          - Re-arranged Xplug menu in APEX 5.0 so that it gets the same menu item order as in 5.1
 //                            I wanted "Presentation Mode" to be the first menu item in the Xplug menu.
 //
+//  V1.5.0.1 2017-03-06 * Multiple changes
+//                          - Added possibility to retore factory settings. This is basically a bug-fix for removing
+//                            Xplug junk from previous versions. Resolves a problem with the moonlight theme
+//                          - Bug-fix: Lock/Unlock button background colors were not honoured. Solved that by updating
+//                                     theme "Clean UI" and theme "Moonlight"
+//                          - Bug-fix: Reinstall theme upon startup if we detect that it's an old theme in xplug_startup.js
+//
 //
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.

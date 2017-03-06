@@ -99,3 +99,24 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
              return p_default;
           }
         }; // Xplug.prototype.delStorage
+
+
+
+
+
+
+    Xplug.prototype.clearStorageAll = function()
+    {
+      'use strict';
+
+      var l_arr_keys = [];
+      var sKey;
+
+      console.info('XPLUG - Request for clearing all Xplug entries in local storage');
+
+      l_arr_keys = xplug.getStorageKeys();
+      for (sKey in l_arr_keys) { xplug.delStorage(l_arr_keys[sKey],false); }
+
+      l_arr_keys = xplug.getStorageKeys(true);
+      for (sKey in l_arr_keys) { xplug.delStorage(l_arr_keys[sKey],true);  }
+    }; // clearStorageAll
