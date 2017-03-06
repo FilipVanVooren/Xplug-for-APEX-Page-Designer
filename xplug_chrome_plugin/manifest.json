@@ -1,6 +1,6 @@
 {
   "name"             : "Xplug for APEX Page Designer",
-  "version"          : "1.5.0.0",
+  "version"          : "1.5.0.1",
   "author"           : "Filip van Vooren",
   "manifest_version" : 2,
   "description"      : "Enhance Oracle Application Express 5.0/5.1 Page Designer with some features missing in the official release",

@@ -75,6 +75,7 @@
                              , "LBL-EXPAND"            : "Expand"
                              , "LBL-LANGUAGE"          : "Language"
                              , "LBL-PRESENTATION-MODE" : "Presentation mode"
+                             , "LBL-FACTORY-RESET"     : "Restore factory settings"
 
                              , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
@@ -93,6 +94,7 @@
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer theme can't be saved. Please first change the theme name."
                              , "MSG-STYLE-CSS-COLOR" : "Use %%C<num>%% to reference custom colors 1-10"
                              , "MSG-RELOAD-LANG"     : "Xplug language changed. Please reload page to activate."
+                             , "MSG-FACTORY-DONE"    : "Xplug factory settings restored. Please reload page to activate."
                            },
 
                     'de' : {   "DOCK-GRID"    : "Grid positionieren"
@@ -160,6 +162,7 @@
                              , "LBL-EXPAND"            : "Aufklappen"
                              , "LBL-LANGUAGE"          : "Sprache"
                              , "LBL-PRESENTATION-MODE" : "Präsentationsmodus"
+                             , "LBL-FACTORY-RESET"     : "Werkseinstellungen wiederherstellen"
 
                              , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
@@ -178,6 +181,7 @@
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer Theme kann nicht gespeichert werden. Bitte zuerst Themenamen ändern."
                              , "MSG-STYLE-CSS-COLOR" : "Benutze %%C<num>%% um Farben 1-10 zu referenzieren"
                              , "MSG-RELOAD-LANG"     : "Xplug Spracheinstellungen geändert. Bitte Seite neu laden um zu aktivieren."
+                             , "MSG-FACTORY-DONE"    : "Xplug Werkeinstellungen wiederhergestellt.\nBitte Site neu laden um zu aktivieren."
                            },
                   };
  } // loadLabels

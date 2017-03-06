@@ -250,6 +250,8 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
+        { type     : "separator" },
+
         { type    : "action",
           label   : xplug.get_label('CONFIGURE'),
           icon    : "icon-tools",
@@ -263,6 +265,18 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "action",
+          label   : xplug.get_label('LBL-FACTORY-RESET'),
+          action  : function() {
+                         xplug.clearStorageAll();
+                         pageDesigner.showSuccess(xplug.get_label('MSG-FACTORY-DONE'));
+                    },
+          disabled : function()
+                     {
+                       return window.pe.hasChanged() === true;
+                     }
+        },
+
+        { type    : "action",
           label   : xplug.get_label('BUG'),
           icon    : "icon-bug",
           action  : function() {
@@ -273,7 +287,6 @@ Xplug.prototype.install_menu = function() {
                        return 0;
                      }
         },
-
 
         { type     : "separator" },
 
@@ -293,7 +306,7 @@ Xplug.prototype.install_menu = function() {
 
         oItems.items.splice(1,0,
         { type   : "separator" },
-                  
+
         {
           type     : "subMenu",
           label    : xplug.get_label('DOCK-GRID'),

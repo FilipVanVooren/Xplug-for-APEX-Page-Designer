@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Mar 05 2017 21:25:15
+// Built using Gulp. Built date: Mon Mar 06 2017 21:33:32
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -372,6 +372,13 @@
 //                            to known the current lock status of the page.
 //                          - Re-arranged Xplug menu in APEX 5.0 so that it gets the same menu item order as in 5.1
 //                            I wanted "Presentation Mode" to be the first menu item in the Xplug menu.
+//
+//  V1.5.0.1 2017-03-06 * Multiple changes
+//                          - Added possibility to retore factory settings. This is basically a bug-fix for removing
+//                            Xplug junk from previous versions. Resolves a problem with the moonlight theme
+//                          - Bug-fix: Lock/Unlock button background colors were not honoured. Solved that by updating
+//                                     theme "Clean UI" and theme "Moonlight"
+//                          - Bug-fix: Reinstall theme upon startup if we detect that it's an old theme in xplug_startup.js
 //
 //
 // REMARKS
@@ -1531,7 +1538,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 /* jshint -W030 */
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.5.0.0';
+   var C_version = 'Xplug v1.5.0.1';
    var C_author  = 'Filip van Vooren';
 
    // Exit if not in APEX Page Designer
@@ -1706,6 +1713,7 @@ var Xplug = function() {
                              , "LBL-EXPAND"            : "Expand"
                              , "LBL-LANGUAGE"          : "Language"
                              , "LBL-PRESENTATION-MODE" : "Presentation mode"
+                             , "LBL-FACTORY-RESET"     : "Restore factory settings"
 
                              , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
@@ -1724,6 +1732,7 @@ var Xplug = function() {
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer theme can't be saved. Please first change the theme name."
                              , "MSG-STYLE-CSS-COLOR" : "Use %%C<num>%% to reference custom colors 1-10"
                              , "MSG-RELOAD-LANG"     : "Xplug language changed. Please reload page to activate."
+                             , "MSG-FACTORY-DONE"    : "Xplug factory settings restored. Please reload page to activate."
                            },
 
                     'de' : {   "DOCK-GRID"    : "Grid positionieren"
@@ -1791,6 +1800,7 @@ var Xplug = function() {
                              , "LBL-EXPAND"            : "Aufklappen"
                              , "LBL-LANGUAGE"          : "Sprache"
                              , "LBL-PRESENTATION-MODE" : "Präsentationsmodus"
+                             , "LBL-FACTORY-RESET"     : "Werkseinstellungen wiederherstellen"
 
                              , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
@@ -1809,6 +1819,7 @@ var Xplug = function() {
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer Theme kann nicht gespeichert werden. Bitte zuerst Themenamen ändern."
                              , "MSG-STYLE-CSS-COLOR" : "Benutze %%C<num>%% um Farben 1-10 zu referenzieren"
                              , "MSG-RELOAD-LANG"     : "Xplug Spracheinstellungen geändert. Bitte Seite neu laden um zu aktivieren."
+                             , "MSG-FACTORY-DONE"    : "Xplug Werkeinstellungen wiederhergestellt.\nBitte Site neu laden um zu aktivieren."
                            },
                   };
  } // loadLabels
@@ -3558,6 +3569,27 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
           }
         }; // Xplug.prototype.delStorage
 
+
+
+
+
+
+    Xplug.prototype.clearStorageAll = function()
+    {
+      'use strict';
+
+      var l_arr_keys = [];
+      var sKey;
+
+      console.info('XPLUG - Request for clearing all Xplug entries in local storage');
+
+      l_arr_keys = xplug.getStorageKeys();
+      for (sKey in l_arr_keys) { xplug.delStorage(l_arr_keys[sKey],false); }
+
+      l_arr_keys = xplug.getStorageKeys(true);
+      for (sKey in l_arr_keys) { xplug.delStorage(l_arr_keys[sKey],true);  }
+    }; // clearStorageAll
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -3966,6 +3998,8 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
+        { type     : "separator" },
+
         { type    : "action",
           label   : xplug.get_label('CONFIGURE'),
           icon    : "icon-tools",
@@ -3979,6 +4013,18 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "action",
+          label   : xplug.get_label('LBL-FACTORY-RESET'),
+          action  : function() {
+                         xplug.clearStorageAll();
+                         pageDesigner.showSuccess(xplug.get_label('MSG-FACTORY-DONE'));
+                    },
+          disabled : function()
+                     {
+                       return window.pe.hasChanged() === true;
+                     }
+        },
+
+        { type    : "action",
           label   : xplug.get_label('BUG'),
           icon    : "icon-bug",
           action  : function() {
@@ -3989,7 +4035,6 @@ Xplug.prototype.install_menu = function() {
                        return 0;
                      }
         },
-
 
         { type     : "separator" },
 
@@ -4009,7 +4054,7 @@ Xplug.prototype.install_menu = function() {
 
         oItems.items.splice(1,0,
         { type   : "separator" },
-                  
+
         {
           type     : "subMenu",
           label    : xplug.get_label('DOCK-GRID'),
@@ -4659,7 +4704,7 @@ Xplug.prototype.probeAPEXVersion = function ()
  {
      'use strict';
 
-     var oAttr, sStyle, sURL, sJSON, iDelim;
+     var oAttr, sStyle, sURL, sJSON, iDelim, bInstall;
 
      //
      // Loop over all attributes of DIV#XLPUG_SETTINGS, filtering for
@@ -4675,8 +4720,15 @@ Xplug.prototype.probeAPEXVersion = function ()
             sStyle = 'STYLE_' + oAttr[l].value.substr(0,iDelim);
             sURL   = oAttr[l].value.substr(iDelim + 1);
 
-            if (xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND') {
-
+            //
+            // Install theme if not found in localStorage or if found, but old version
+            // We at least need the COMPATIBLE property to be present to know it's a
+            // theme >= Xplug 1.5.0
+            //
+            bInstall = xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND';
+            bInstall = bInstall || (xplug.getStorage(sStyle, '', true).indexOf("COMPATIBLE") == -1);
+            
+            if (bInstall === true) {
                $.get(sURL, function (pData)
                   {
                     console.log('XPLUG - Installing theme "' + pData.STYLE_NAME + '"');

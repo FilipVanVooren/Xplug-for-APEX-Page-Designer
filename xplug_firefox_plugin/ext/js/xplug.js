@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Sun Mar 05 2017 21:25:15
+// Built using Gulp. Built date: Mon Mar 06 2017 21:33:32
 
 
 
@@ -958,7 +958,7 @@ window.pageDesigner.customizeStyleDialog = function(p_style_name, p_title, p_LOV
 
 
 var Xplug = function() {
-   var C_version = 'Xplug v1.5.0.0';
+   var C_version = 'Xplug v1.5.0.1';
    var C_author  = 'Filip van Vooren';
 
    if (typeof(window.pageDesigner) != 'object') {
@@ -1115,6 +1115,7 @@ var Xplug = function() {
                              , "LBL-EXPAND"            : "Expand"
                              , "LBL-LANGUAGE"          : "Language"
                              , "LBL-PRESENTATION-MODE" : "Presentation mode"
+                             , "LBL-FACTORY-RESET"     : "Restore factory settings"
 
                              , "TAB-PB-DOCU"         : "Page Details"
                              , "TAB-PB-MESSAGES"     : "Messages"
@@ -1133,6 +1134,7 @@ var Xplug = function() {
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer theme can't be saved. Please first change the theme name."
                              , "MSG-STYLE-CSS-COLOR" : "Use %%C<num>%% to reference custom colors 1-10"
                              , "MSG-RELOAD-LANG"     : "Xplug language changed. Please reload page to activate."
+                             , "MSG-FACTORY-DONE"    : "Xplug factory settings restored. Please reload page to activate."
                            },
 
                     'de' : {   "DOCK-GRID"    : "Grid positionieren"
@@ -1200,6 +1202,7 @@ var Xplug = function() {
                              , "LBL-EXPAND"            : "Aufklappen"
                              , "LBL-LANGUAGE"          : "Sprache"
                              , "LBL-PRESENTATION-MODE" : "Präsentationsmodus"
+                             , "LBL-FACTORY-RESET"     : "Werkseinstellungen wiederherstellen"
 
                              , "TAB-PB-DOCU"         : "Details der Seite"
                              , "TAB-PB-MESSAGES"     : "Nachrichten"
@@ -1218,6 +1221,7 @@ var Xplug = function() {
                              , "MSG-STYLE-IS-DRAFT"  : "Page Designer Theme kann nicht gespeichert werden. Bitte zuerst Themenamen ändern."
                              , "MSG-STYLE-CSS-COLOR" : "Benutze %%C<num>%% um Farben 1-10 zu referenzieren"
                              , "MSG-RELOAD-LANG"     : "Xplug Spracheinstellungen geändert. Bitte Seite neu laden um zu aktivieren."
+                             , "MSG-FACTORY-DONE"    : "Xplug Werkeinstellungen wiederhergestellt.\nBitte Site neu laden um zu aktivieren."
                            },
                   };
  } 
@@ -2520,6 +2524,27 @@ Xplug.prototype.getStorage = function(p_key, p_default, p_is_global)
 
 
 
+
+
+
+    Xplug.prototype.clearStorageAll = function()
+    {
+      'use strict';
+
+      var l_arr_keys = [];
+      var sKey;
+
+      void 0;
+
+      l_arr_keys = xplug.getStorageKeys();
+      for (sKey in l_arr_keys) { xplug.delStorage(l_arr_keys[sKey],false); }
+
+      l_arr_keys = xplug.getStorageKeys(true);
+      for (sKey in l_arr_keys) { xplug.delStorage(l_arr_keys[sKey],true);  }
+    }; 
+
+
+
  Xplug.prototype.install_actions = function()
   {
      apex.actions.add(
@@ -2900,6 +2925,8 @@ Xplug.prototype.install_menu = function() {
                      }
         },
 
+        { type     : "separator" },
+
         { type    : "action",
           label   : xplug.get_label('CONFIGURE'),
           icon    : "icon-tools",
@@ -2913,6 +2940,18 @@ Xplug.prototype.install_menu = function() {
         { type     : "separator" },
 
         { type    : "action",
+          label   : xplug.get_label('LBL-FACTORY-RESET'),
+          action  : function() {
+                         xplug.clearStorageAll();
+                         pageDesigner.showSuccess(xplug.get_label('MSG-FACTORY-DONE'));
+                    },
+          disabled : function()
+                     {
+                       return window.pe.hasChanged() === true;
+                     }
+        },
+
+        { type    : "action",
           label   : xplug.get_label('BUG'),
           icon    : "icon-bug",
           action  : function() {
@@ -2923,7 +2962,6 @@ Xplug.prototype.install_menu = function() {
                        return 0;
                      }
         },
-
 
         { type     : "separator" },
 
@@ -2943,7 +2981,7 @@ Xplug.prototype.install_menu = function() {
         oItems.items.splice(1,0,
         { type   : "separator" },
 
-                          {
+        {
           type     : "subMenu",
           label    : xplug.get_label('DOCK-GRID'),
           icon     : "icon-region-native-sql-report",
@@ -3534,7 +3572,7 @@ Xplug.prototype.probeAPEXVersion = function ()
  {
      'use strict';
 
-     var oAttr, sStyle, sURL, sJSON, iDelim;
+     var oAttr, sStyle, sURL, sJSON, iDelim, bInstall;
 
      oAttr = $('div#XPLUG_SETTINGS').get(0).attributes;
      for (var l=0; l < oAttr.length; l++) {
@@ -3544,8 +3582,10 @@ Xplug.prototype.probeAPEXVersion = function ()
             sStyle = 'STYLE_' + oAttr[l].value.substr(0,iDelim);
             sURL   = oAttr[l].value.substr(iDelim + 1);
 
-            if (xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND') {
+            bInstall = xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND';
+            bInstall = bInstall || (xplug.getStorage(sStyle, '', true).indexOf("COMPATIBLE") == -1);
 
+                        if (bInstall === true) {
                $.get(sURL, function (pData)
                   {
                     void 0;
