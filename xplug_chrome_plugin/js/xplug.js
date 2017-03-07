@@ -1,4 +1,4 @@
-// Built using Gulp. Built date: Mon Mar 06 2017 21:33:32
+// Built using Gulp. Built date: Tue Mar 07 2017 20:33:03
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Xplug - Plugin for Oracle Application Express 5.0 Page Designer
 // www.oratronik.de - Author Filip van Vooren
@@ -4727,13 +4727,14 @@ Xplug.prototype.probeAPEXVersion = function ()
             //
             bInstall = xplug.getStorage(sStyle, 'NOT_FOUND', true) == 'NOT_FOUND';
             bInstall = bInstall || (xplug.getStorage(sStyle, '', true).indexOf("COMPATIBLE") == -1);
-            
+
             if (bInstall === true) {
+
                $.get(sURL, function (pData)
                   {
                     console.log('XPLUG - Installing theme "' + pData.STYLE_NAME + '"');
-                    sStyle = 'STYLE_' + pData.STYLE_NAME;
-                    sJSON  = JSON.stringify(pData);
+                    var sStyle = 'STYLE_' + pData.STYLE_NAME;
+                    var sJSON  = JSON.stringify(pData);
                     xplug.setStorage(sStyle, sJSON, true);
 
                     // Update themes in Xplug menu and set "Clean UI" as default
@@ -4753,7 +4754,7 @@ Xplug.prototype.probeAPEXVersion = function ()
                   , "json"
               );  // $.get
 
-            }     // if xplug.getStorage
+            }     // if bInstall
           }       // if xplug-theme
      }            // for
  };               // installThemes()
