@@ -380,6 +380,10 @@
 //                          - Bug-fix: Reinstall theme upon startup if we detect that it's an old theme in xplug_startup.js
 //
 //
+//  V1.5.0.2 2017-03-07  * Multiple changes
+//                          - Plugin infrastructure harmonized to WebExtension (Firefox)
+//
+//
 // REMARKS
 // This file contains the actual Xplug functionality. The goal is to have as much browser independent stuff in here.
 // That allows us to build small browser specific extensions (Chrome, Firefox, ...)
