@@ -1,0 +1,18 @@
+{
+    "STYLE_NAME": "Clean UI",
+    "COMPATIBLE": "5.x",
+    "DARK_STYLE": "NO",
+    "SHOW_GRID": "NO",
+    "PROTECTED": "YES",
+    "C1": "#000000",
+    "C2": "#FFFFFF",
+    "C3": "#CFE6FA",
+    "C4": "#FFFFFF",
+    "C5": "#2D7BBB",
+    "C6": "#FFFFFF",
+    "C7": "#4F9CDB",
+    "C8": "#FFFFFF",
+    "C9": "#58C14A",
+    "C10": "#D00000",
+    "CUSTOM_CSS": "/****\nColors used:\nC1:  Foreground color for all buttons\nC2:  Background color for all buttons\nC3:  Background color for 'Save' button\nC4:  Foreground color for 'Run' button\nC5:  Background color for 'Run' button\nC6:  Properties Group header icon & label color\nC7:  Properties Group header background color\nC8:  Property border color\nC9:  Background color for 'Page lock' button if locked by myself\nC10: Background color for 'Page lock' button if locked by other\n****/\n\n/* For all buttons not in popup editor or alert msg */\nbutton:not([id^=editorDlg]).a-Button:not(.a-Button--alertMessages)\n  { \n    color:             %%C1%%; \n    background-color:  %%C2%%;\n    box-shadow:        0 0 0 0px; \n  }\n\n/* Fix the lock/unlock button */\nbutton#button-lock.is-locked-by-self { background-color: %%C9%%; \n                                       color:            #FFFFFF; }\nbutton#button-lock.is-locked         { background-color: %%C10%%; \n                                       color:            #FFFFFF; }\n\nbutton#button-save-page\n  {\n    background-color: %%C3%%;\n  }\n\n\nbutton#button-save-run-page\n  {\n    color:            %%C4%%;\n    background-color: %%C5%%;\n  }\n\n.a-PageSelect\n  {\n    border: 0px;\n  }\n\n/**************** Properties Group Header *************/\n\n/*  icon color */\ndiv#sp_right  .a-PropertyEditor-propertyGroup-header span\n  {\n    color: %%C6%% !important; \n  }\n\n/* Properties Group Header label color */\ndiv#sp_right .a-PropertyEditor-propertyGroup-title \n  { \n    color: %%C6%%; \n  }\n\n/* Properties Group Header background color */\ndiv#sp_right .a-PropertyEditor-propertyGroup-header \n  {\n   background-color: %%C7%%; \n  }\n\n/* Property border color */\n.a-PropertyEditor-propertyGroup-body .a-Property \n  {\n   border-color: %%C8%%;\n  }"
+}
